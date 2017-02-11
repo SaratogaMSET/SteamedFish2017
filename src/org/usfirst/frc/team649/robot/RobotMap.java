@@ -7,13 +7,52 @@ package org.usfirst.frc.team649.robot;
  * floating around.
  */
 public class RobotMap {
-	// For example to map the left and right motors, you could define the
-	// following variables to use with your drivetrain subsystem.
-	// public static int leftMotor = 1;
-	// public static int rightMotor = 2;
+	public static final int OPERATOR_JOYSTICK = 0;
+	public static final int DRIVE_JOYSTICK_HORIZONTAL = 2;
+	public static final int DRIVE_JOYSTICK_VERTICAL = 1;
+	public static final int AUTO_SELECTOR_POT_PORT = 0;
+	
+	public static class Drivetrain {
+		public static final int[] LEFT_SIDE_ENCODER = {6,7};
+		public static final int[] RIGHT_SIDE_ENCODER = {8,9};
+		// FR,BR,BL,FL
+		public static final int[] MOTOR_PORTS = { 1, 2, 3, 4 };
+		public static final int[] LEFT_ENCODER_PORTS = {0,1};
+		public static final int[] RIGHT_ENCODER_PORTS = {2,3};
+	}
+	public static class Intake{
+		public static final int INTAKE_MOTOR_PORT = 5;
+		public static final int HOOPER_FEEDER_PORT = 6;
+		public static final int[] LEFT_INTAKE_SOL = {0,4,20};//Last number made up need to add on port map
+		public static final int[] RIGHT_INTAKE_SOL = {0,5,21};//Last number made up need to add on port map
 
-	// If you are using multiple modules, make sure to define both the port
-	// number and the module. For example you with a rangefinder:
-	// public static int rangefinderPort = 1;
-	// public static int rangefinderModule = 1;
+	}
+	public static class Hooper {
+		//add never rests for agitator
+	}
+	public static class Shooter {
+		public static final int SHOOTER_FEEDER_PORT = 7;
+		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 8;
+		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 9;
+		public static final int LEFT_SHOOTER_EIN_PORT = 6;
+		public static final int RIGHT_SHOOTER_EIN_PORT = 7;
+	}
+	public static class Hood {
+		public static final int HOOD_SERVO_PORT = 0;
+	}
+	public static class Turret {
+		public static final int TURRET_MOTOR_PORT = 10;
+		public static final int TURRET_ABS_ENCODER_PORT = 8;
+		public static final int TURRET_HALL_EFFECT_PORT = 9;
+	}
+	public static class Gear {
+		public static final int GEAR_ROLLER_PORT = 11;
+		public static final int GEAR_FUNNEL_SERVO_PORT = 1;
+		public static final int GEAR_IR_PORT = 11;
+	}
+	public static class Hanger {
+		public static final int HANGER_MOTOR_PORT = 12;
+		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
+	}
+
 }

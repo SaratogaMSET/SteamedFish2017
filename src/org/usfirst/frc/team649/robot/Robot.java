@@ -2,11 +2,16 @@
 package org.usfirst.frc.team649.robot;
 
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
+import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
+import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
+import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.shootercommands.BangBangThenShootCommand;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -31,7 +36,10 @@ public class Robot extends IterativeRobot {
 	public static ShooterSubsystem shoot;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	public boolean prevStateShooting;
-
+	public static DrivetrainSubsystem drive;
+	public static LeftDTPID leftDT;
+	public static RightDTPID rightDT;
+	public static LidarSubsystem lidar;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -39,10 +47,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-		compressor = new Compressor();
-		intake = new IntakeSubsytem();
-		shoot = new ShooterSubsystem();
-		prevStateShooting = false;
+//		drive = new DrivetrainSubsystem();
+//		compressor = new Compressor();
+//		intake = new IntakeSubsytem();
+//		shoot = new ShooterSubsystem();
+//		prevStateShooting = false;
+//		leftDT = new LeftDTPID();
+//		rightDT = new RightDTPID();
+		lidar = new LidarSubsystem(Port.kMXP);
 		
 	}
 
@@ -87,7 +99,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		new RunCommpresorCommand(true).start();
+//		new RunCommpresorCommand(true).start();
 	}
 
 	/**
@@ -96,10 +108,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		if(oi.operator.getShoot() && !prevStateShooting){
-			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
-		}
-		prevStateShooting = oi.operator.getShoot();
+//		if(oi.operator.getShoot() && !prevStateShooting){
+//			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
+//		}
+//		prevStateShooting = oi.operator.getShoot();
 	}
 
 	/**

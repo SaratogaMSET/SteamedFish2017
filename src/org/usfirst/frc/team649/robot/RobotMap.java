@@ -23,8 +23,8 @@ public class RobotMap {
 	public static class Intake{
 		public static final int INTAKE_MOTOR_PORT = 5;
 		public static final int HOOPER_FEEDER_PORT = 6;
-		public static final int[] LEFT_INTAKE_SOL = {0,4,20};//Last number made up need to add on port map
-		public static final int[] RIGHT_INTAKE_SOL = {0,5,21};//Last number made up need to add on port map
+		public static final int LEFT_INTAKE_SOL = 4;//Last number made up need to add on port map
+		public static final int RIGHT_INTAKE_SOL = 5;//Last number made up need to add on port map
 
 	}
 	public static class Hooper {
@@ -49,8 +49,10 @@ public class RobotMap {
 		public static final int GEAR_ROLLER_PORT = 11;
 		public static final int GEAR_FUNNEL_SERVO_PORT = 1;
 		public static final int GEAR_IR_PORT = 11;
+		public static final int GEAR_SOL_PORT = 10;
 	}
 	public static class Hanger {
+		public static final int HANGER_PISTON = 12;
 		public static final int HANGER_MOTOR_PORT = 12;
 		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
 	}

@@ -120,7 +120,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
     public double getTranslationalDistanceForTurn(double angle) {
 		return (angle/ 360.0) * (4 * Math.PI) * 1.08;
-	}
+	} 
 	
 	@Override
 	protected double returnPIDInput() {

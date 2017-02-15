@@ -3,6 +3,8 @@ package org.usfirst.frc.team649.robot;
 
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
 import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
@@ -40,6 +42,8 @@ public class Robot extends IterativeRobot {
 	public static LeftDTPID leftDT;
 	public static RightDTPID rightDT;
 	public static LidarSubsystem lidar;
+	public static GearSubsystem gear;
+	public static HangSubsystem hang;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -54,7 +58,9 @@ public class Robot extends IterativeRobot {
 //		prevStateShooting = false;
 //		leftDT = new LeftDTPID();
 //		rightDT = new RightDTPID();
-		lidar = new LidarSubsystem(Port.kMXP);
+		lidar = new LidarSubsystem();
+		gear = new GearSubsystem();
+		hang = new HangSubsystem();
 		
 	}
 
@@ -108,11 +114,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-//		if(oi.operator.getShoot() && !prevStateShooting){
-//			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
-//		}
-//		prevStateShooting = oi.operator.getShoot();
+		SmartDashboard.putNumber("lidar", lidar.getDistance());
+	/*	if(oi.operator.getShoot() && !prevStateShooting){
+			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
 	}
+		prevStateShooting = oi.operator.getShoot();
+	*/ }
 
 	/**
 	 * This function is called periodically during test mode

@@ -1,122 +1,44 @@
 package org.usfirst.frc.team649.robot.subsystems;
 
-import java.util.TimerTask;
-
+import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
- * This is the class that defines the LIDAR sensor and how it is supposed to work.
- * 
- * @author Manu S.
- * 
+ *
  */
-public class LidarSubsystem extends Subsystem {
-
-	private I2C i2c;
-	private byte[] distance;
-
-	private final int LIDAR_ADDR = 0x62;
-	private final int LIDAR_CONFIG_REGISTER = 0x00;
-	private final int LIDAR_DISTANCE_REGISTER = 0x8f;
-	private java.util.Timer updater;
-
-	private long lastUpdateTime;
-
-	public LidarSubsystem(Port port)
-	{
-		i2c = new I2C(port, LIDAR_ADDR);
-
-		distance = new byte[2];
-
-		lastUpdateTime = System.currentTimeMillis();
-		updater = new java.util.Timer();
+public class LidarSubsystem extends SensorBase{
+	    
+    I2C m_i2c;
+         
+    public LidarSubsystem() {  
+    	m_i2c = new I2C(I2C.Port.kMXP,0x62);
+    	initLidar();     	          	  
+    }
+    
+    public void initLidar(){		
+       // nothing to do
 	}
 
-	public void start()
-	{
-		updater.scheduleAtFixedRate(new LIDARUpdater(), 0, 100);
-	}
+	public int getDistance() {
+ 
+		byte[] buffer;  	
+		buffer = new byte[2];
+	
+		m_i2c.write(0x00, 0x04);
+		Timer.delay(0.1);
+		m_i2c.read(0x8f, 2, buffer);  	
 
-	public void start(int period)
-	{
-		updater.scheduleAtFixedRate(new LIDARUpdater(), 0, period);
+  	
+		return (int)Integer.toUnsignedLong(buffer[0] << 8) + Byte.toUnsignedInt(buffer[1]);	
 	}
+	
 
-	public void stop()
-	{
-		updater.cancel();
-		updater = new java.util.Timer();
-	}
-
-	public long updateTime()
-	{
-		return(System.currentTimeMillis() - lastUpdateTime);
-	}
-
-	/**
-	 * This method uses the updated distance array and converts it to an intelligible number that
-	 * represents the distance the LIDAR reads in inches.
-	 * 
-	 * @return the distance to the object most directly in the LIDAR's path
-	 */
-	public int getDistance()
-	{
-		return (int) Integer.toUnsignedLong(distance[0] << 8) + Byte.toUnsignedInt(distance[1]);
-	}
-
-	/**
-	 * This is what actually gets the distance and stores it in a byte array.
-	 * 
-	 * @return true - if the distance was read; false otherwise
-	 */
-	public boolean updateDistance()
-	{
-		if(System.currentTimeMillis() - lastUpdateTime >= 100)
-		{
-			i2c.write(LIDAR_CONFIG_REGISTER, 0x04);
-			Timer.delay(0.04);
-			i2c.read(LIDAR_DISTANCE_REGISTER, 2, distance);
-			Timer.delay(0.005);
-			lastUpdateTime = System.currentTimeMillis();
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * This small class helps the LIDAR time how often it reads in information so that it doesnt
-	 * overload itself.
-	 * 
-	 * @author Manu S.
-	 * 
-	 */
-	private class LIDARUpdater extends TimerTask
-	{
-		@Override
-		public void run()
-		{
-			while(true)
-			{
-				updateDistance();
-				try
-				{
-					Thread.sleep(10);
-				} catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        //setDefaultCommand(new MySpecialCommand());
+    }
+	
+	
 }
 

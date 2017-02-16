@@ -1,6 +1,7 @@
 package org.usfirst.frc.team649.robot.subsystems;
 
 import org.usfirst.frc.team649.robot.RobotMap;
+import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem.PIDConstants;
 
 import com.ctre.CANTalon;
 
@@ -20,20 +21,17 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	 * Values for Drivetrain Speeds
 	 */
 	
-	public static class DrivePID {
-		public static final double k_P = 0.2;
-		public static final double k_I = 0.0;
-		public static final double k_D = 0.01;
-		
-		public static final double ABSOLUTE_TOLERANCE = 0.05;
-		
+
+	public static class PIDConstants {
+		public static final double PID_ABSOLUTE_TOLERANCE =3.0;
+		public static final double ABS_TOLERANCE = 3.0;
+		public static  double k_P = .05; //0.2
+		public static double k_I = 0;
+		public static double k_D = 0.03;
 		public static final double DISTANCE_PER_PULSE = 12.56 / 256 * 60.0/14.0; // assuming cuz 4pi is circumference???
-		//tried 0.4, 0.9, 0.8;
-		// low  60/14
-		//high 44/32
+
 	}
 
-	public PIDController drivePID;
 	
 	public static final double MAX_SPEED = 1500.0;
 	public static final double MAX_LOW_SPEED = 700.0;
@@ -41,24 +39,26 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public Encoder leftEncoder, rightEncoder;
 	public CANTalon[] motors;
 	public DoubleSolenoid driveSol;
+	public PIDController encoderDrivePID;
 	public boolean isAutoShiftTrue;
 	Timer time;
 	
 	public DrivetrainSubsystem() {
-		super ("Drivetrain PID", DrivePID.k_P, DrivePID.k_I, DrivePID.k_P);
+		super ("Drivetrain PID", PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
 		isAutoShiftTrue = false;
 		
 		leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],false);
 		rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],true);
-	    leftEncoder.setDistancePerPulse(DrivePID.DISTANCE_PER_PULSE);
-		rightEncoder.setDistancePerPulse(DrivePID.DISTANCE_PER_PULSE);
+	    leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+		rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
 		motors = new CANTalon[4];
 		for(int i = 0; i<motors.length;i++){
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-		drivePID = this.getPIDController();
-		
+		encoderDrivePID = this.getPIDController();
+		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+		encoderDrivePID.setOutputRange(-.65, .65);		
 	}
 	public void shift(boolean highGear){
 		driveSol.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -114,28 +114,50 @@ public class DrivetrainSubsystem extends PIDSubsystem {
     	return rightEncoder.getDistance()/2 + leftEncoder.getDistance()/2;
     }
     
-    public boolean isOnTarget(double setpoint) {
-    	return Math.abs(getDistanceDTBoth()-setpoint) < DrivePID.ABSOLUTE_TOLERANCE;
-    }
-
-    public double getTranslationalDistanceForTurn(double angle) {
-		return (angle/ 360.0) * (4 * Math.PI) * 1.08;
-	} 
-	
-	@Override
+    @Override
 	protected double returnPIDInput() {
 		// TODO Auto-generated method stub
-//		SmartDashboard.putNumber("PIDInput", getDistanceDTBoth());
 		return getDistanceDTBoth();
+	}
+
+	public double getEncDistToSetpoint(double setpoint){
+		double diffL = Math.abs(leftEncoder.getDistance() - setpoint);
+		double diffR = Math.abs(rightEncoder.getDistance() - setpoint);
+		double diffEncoders = leftEncoder.getDistance()- rightEncoder.getDistance();
+		
+		if (Math.abs(diffEncoders) < 10){
+			if (diffL <= diffR){
+				return leftEncoder.getDistance();
+			}
+			else {
+				return rightEncoder.getDistance();
+			}
+		}
+		else{
+			if (diffEncoders > 0){
+				//left is greater than right
+				return leftEncoder.getDistance();
+			}
+			else{
+				return rightEncoder.getDistance();
+			}
+		}
 	}
 	@Override
 	protected void usePIDOutput(double output) {
 		// TODO Auto-generated method stub
-//		SmartDashboard.putNumber("PIDOutput", output);
-		rawDrive(output, output);
+		rawDrive(-output,-output);
 		
 	}
 
+	public double getTranslationalDistanceForTurn(double angle) {
+		 System.out.println((angle/ 360.0) * (25.125 * Math.PI));
+		 return (angle/ 360.0) * (25.125 * Math.PI) * 1.08;
+	}
+	public boolean isOnTarget(double distance) {
+		// TODO Auto-generated method stub
+		return Math.abs(getDistanceDTBoth() - distance) < DrivetrainSubsystem.PIDConstants.ABS_TOLERANCE;
+	}
     
 }
 

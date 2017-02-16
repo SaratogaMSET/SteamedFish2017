@@ -44,6 +44,9 @@ public class Robot extends IterativeRobot {
 	public static LidarSubsystem lidar;
 	public static GearSubsystem gear;
 	public static HangSubsystem hang;
+	public static boolean isPIDActiveLeft;
+	public static boolean isPIDActiveRight;
+	public static boolean isPIDActive;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -61,6 +64,10 @@ public class Robot extends IterativeRobot {
 		lidar = new LidarSubsystem();
 		gear = new GearSubsystem();
 		hang = new HangSubsystem();
+		isPIDActive = false;
+		isPIDActiveLeft = false;
+		isPIDActiveRight = false;
+		
 		
 	}
 

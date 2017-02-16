@@ -47,8 +47,9 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
-	public static boolean isTurretPIDActive;
-	public UsbCamera lifecam = new UsbCamera("cam2",1);
+	public static boolean isTurretPIDActive;	
+	public UsbCamera lifecam = new UsbCamera("cam2", 1);
+	public VideoCapture video = new VideoCapture();
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.

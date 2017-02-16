@@ -9,6 +9,7 @@ import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -42,9 +43,11 @@ public class Robot extends IterativeRobot {
 	public static LidarSubsystem lidar;
 	public static GearSubsystem gear;
 	public static HangSubsystem hang;
+	public static TurretSubsystem turret;
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
+	public static boolean isTurretPIDActive;
 	public UsbCamera lifecam = new UsbCamera("cam2",1);
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -66,6 +69,7 @@ public class Robot extends IterativeRobot {
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
+		isTurretPIDActive = false;
 		CameraServer.getInstance().startAutomaticCapture();
 		
 		

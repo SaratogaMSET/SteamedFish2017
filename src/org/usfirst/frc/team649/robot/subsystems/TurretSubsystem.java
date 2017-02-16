@@ -20,6 +20,7 @@ public class TurretSubsystem extends PIDSubsystem {
 	public DigitalInput turretHalLeft;
 	public Encoder turretABSEncoder;
 	public PIDController encoderTurretPID;
+	public static final double TURRET_CIRCUMFERENCE = 20;
 
 	public static class PIDConstantsTurret {
 		public static final double PID_ABSOLUTE_TOLERANCE =0.25;
@@ -60,6 +61,13 @@ public class TurretSubsystem extends PIDSubsystem {
     public void resetEncoder(){
     	turretABSEncoder.reset();
     }
+    /*
+     * Assumes that a positive angle is to the right
+     * Positive distance is right
+     */
+    public double translateAngleToInches(double angle){
+    	return TURRET_CIRCUMFERENCE*angle/360;  
+    }
     @Override
    	protected double returnPIDInput() {
    		// TODO Auto-generated method stub
@@ -69,6 +77,10 @@ public class TurretSubsystem extends PIDSubsystem {
     protected void usePIDOutput(double output) {
     	turretMotor.set(output);
     }
+	public boolean isOnTarget(double distance) {
+		// TODO Auto-generated method stub
+		return Math.abs(getEncoderDistance() - distance) < DrivetrainSubsystem.PIDConstants.ABS_TOLERANCE;
+	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());

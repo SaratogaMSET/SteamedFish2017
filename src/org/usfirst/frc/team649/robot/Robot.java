@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team649.robot;
 
-import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
@@ -10,14 +9,13 @@ import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
-import org.usfirst.frc.team649.shootercommands.BangBangThenShootCommand;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,6 +45,7 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
+	public UsbCamera lifecam = new UsbCamera("cam2",1);
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -67,6 +66,7 @@ public class Robot extends IterativeRobot {
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
+		CameraServer.getInstance().startAutomaticCapture();
 		
 		
 	}

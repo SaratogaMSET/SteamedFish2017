@@ -1,6 +1,10 @@
 
 package org.usfirst.frc.team649.robot;
 
+import java.util.concurrent.ScheduledExecutorService;
+
+import org.opencv.videoio.VideoCapture;
+import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
@@ -10,6 +14,7 @@ import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
+import org.usfirst.frc.team649.util.Center;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -48,8 +53,35 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
 	public static boolean isTurretPIDActive;	
+	public static boolean robotEnabled = false; 
 	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 	public VideoCapture video = new VideoCapture();
+	//Vision Paths
+	public static String initPath = "/home/admin/initializeAdb.sh";
+	public static String pullPath = "/home/admin/pullTextFile.sh";
+	public static String endPath = "/home/admin/endApp.sh";
+	public static String visionFile = "/home/admin/vision.txt";
+	/*
+	 * Vision
+	 * Need to change the values for this years vision
+	 */
+	public static String ip = "N/A";
+	public static Center currCenter;
+	public static double prevTimeCenterUpdated = 0;
+	public static double rateCenterUpdated = 0;
+	public static int PORT = 5805;
+	public static boolean isRIOServerStarted; //makes sure we are connected
+	public static boolean isReceivingData; //makes sure data is being sent regularly
+	public static double VISION_INIT_TIME_OUT = 6; //seconds
+	public static double MAX_PERIOD_BETWEEN_RECIEVING_DATA = 1.5; //seconds
+	public static ScheduledExecutorService adbTimer;
+	public static InitializeServerSocketThread initThread;
+	public static double SCREEN_X = 288;
+	public static double SCREEN_Y = 352;
+	public static double GOOD_X = SCREEN_X / 2.0;
+	public static double GOOD_Y = SCREEN_Y / 2.0;
+	public static double FIELD_OF_VIEW = 0.8339;
+	public static double CENTER_TOLERANCE = 8;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -127,6 +159,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("lidar", lidar.getDistance());
+		SmartDashboard.putBoolean("lidar", lidar.getAderess());
 	/*	if(oi.operator.getShoot() && !prevStateShooting){
 			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
 	}

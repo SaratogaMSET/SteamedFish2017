@@ -19,6 +19,9 @@ public class LidarSubsystem extends SensorBase{
     public void initLidar(){		
        // nothing to do
 	}
+    public boolean getAderess(){
+    	return m_i2c.addressOnly();
+    }
 
 	public int getDistance() {
  

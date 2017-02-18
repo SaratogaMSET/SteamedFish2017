@@ -31,7 +31,6 @@ public class OI {
 	 }
 	 public class Driver {
 		 public double getForward() {
-				// TODO Auto-generated method stub
 				if (driveJoystickVertical.getY() >= 0.05 || driveJoystickVertical.getY() <= -0.05) {
 					return -driveJoystickVertical.getY();
 				} else {

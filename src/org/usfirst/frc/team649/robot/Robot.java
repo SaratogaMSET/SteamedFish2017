@@ -12,6 +12,7 @@ import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
 import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
+import edu.wpi.cscore.AxisCamera;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 import org.usfirst.frc.team649.util.Center;
@@ -49,6 +50,7 @@ public class Robot extends IterativeRobot {
 	public static GearSubsystem gear;
 	public static HangSubsystem hang;
 	public static TurretSubsystem turret;
+	
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
@@ -56,6 +58,7 @@ public class Robot extends IterativeRobot {
 	public static boolean robotEnabled = false; 
 	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 	public VideoCapture video = new VideoCapture();
+	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
 	//Vision Paths
 	public static String initPath = "/home/admin/initializeAdb.sh";
 	public static String pullPath = "/home/admin/pullTextFile.sh";
@@ -71,6 +74,7 @@ public class Robot extends IterativeRobot {
 	public static double rateCenterUpdated = 0;
 	public static int PORT = 5805;
 	public static boolean isRIOServerStarted; //makes sure we are connected
+	
 	public static boolean isReceivingData; //makes sure data is being sent regularly
 	public static double VISION_INIT_TIME_OUT = 6; //seconds
 	public static double MAX_PERIOD_BETWEEN_RECIEVING_DATA = 1.5; //seconds
@@ -104,6 +108,7 @@ public class Robot extends IterativeRobot {
 		isPIDActiveRight = false;
 		isTurretPIDActive = false;
 		CameraServer.getInstance().startAutomaticCapture();
+		CameraServer.getInstance().addCamera(axiscam);
 		
 		
 	}

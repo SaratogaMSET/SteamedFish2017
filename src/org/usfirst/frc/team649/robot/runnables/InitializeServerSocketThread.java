@@ -87,7 +87,7 @@ public class InitializeServerSocketThread extends Thread {
 			
 			System.out.println("Socket about to be closed");
 			serverSocket.close();
-			Robot.logMessage("Socket Closed");
+//			Robot.logMessage("Socket Closed");
 			Robot.isRIOServerStarted = false;
 
 		}
@@ -133,7 +133,7 @@ public class InitializeServerSocketThread extends Thread {
 			while (!Robot.isRIOServerStarted){
 				if (t.get() > 15){
 					System.out.println("RATE CHECKER: CONNECTION TIMED OUT");
-					Robot.logMessage("Initialize socket: CHECKER > CONNECTION TIMED OUT");
+//					Robot.logMessage("Initialize socket: CHECKER > CONNECTION TIMED OUT");
 					return; //end thread if its taking too long for server to boot
 				}
 			}
@@ -151,15 +151,15 @@ public class InitializeServerSocketThread extends Thread {
 					
 					double diff = Robot.currCenter.x - Robot.GOOD_X; //positive means turn right
 					
-					if(Robot.currCenter.x == -1) {
-						Robot.drivetrain.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.RED);
-					} else if (diff < -8) {
-						Robot.drivetrain.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.GREEN);
-					} else if(diff > 8) {
-						Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.RED);
-					} else if(Math.abs(diff) < 8) {
-						Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.GREEN);
-					}
+//					if(Robot.currCenter.x == -1) {
+//						Robot.drive.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.RED);
+//					} else if (diff < -8) {
+//						Robot.drive.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.GREEN);
+//					} else if(diff > 8) {
+//						Robot.drive.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.RED);
+//					} else if(Math.abs(diff) < 8) {
+//						Robot.drive.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.GREEN);
+//					}
 					
 				}
 			}

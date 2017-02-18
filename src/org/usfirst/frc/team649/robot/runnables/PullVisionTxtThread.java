@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import org.usfirst.frc.team649.robot.Robot;
-import org.usfirst.frc.team649.robot.subsystems.drivetrain.DrivetrainSubsystem;
-import org.usfirst.frc.team649.robot.util.Center;
+import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team649.util.Center;
 
 public class PullVisionTxtThread implements Runnable {
 	
@@ -60,18 +60,18 @@ public class PullVisionTxtThread implements Runnable {
 
 	private void updateLEDs() {
 		// TODO Auto-generated method stub
-		if(Robot.currCenter.x == -1) {
-			Robot.drivetrain.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.RED);
-			return;
-		}
-		double diff = Robot.currCenter.x - Robot.GOOD_X; //positive means turn right
-		
-		if(diff > 5) {
-			Robot.drivetrain.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.GREEN);
-		} else if (diff < -5) {
-			Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.RED);
-		} else 
-			Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.GREEN);
+//		if(Robot.currCenter.x == -1) {
+//			Robot.drive.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.RED);
+//			return;
+//		}
+//		double diff = Robot.currCenter.x - Robot.GOOD_X; //positive means turn right
+//		
+//		if(diff > 5) {
+//			Robot.drivetrain.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.GREEN);
+//		} else if (diff < -5) {
+//			Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.RED);
+//		} else 
+//			Robot.drivetrain.setLEDs(DrivetrainSubsystem.GREEN, DrivetrainSubsystem.GREEN);
 	}
 
 }

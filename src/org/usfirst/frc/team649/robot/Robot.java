@@ -21,6 +21,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -74,7 +75,7 @@ public class Robot extends IterativeRobot {
 	public static double rateCenterUpdated = 0;
 	public static int PORT = 5805;
 	public static boolean isRIOServerStarted; //makes sure we are connected
-	
+	public static Timer timer;
 	public static boolean isReceivingData; //makes sure data is being sent regularly
 	public static double VISION_INIT_TIME_OUT = 6; //seconds
 	public static double MAX_PERIOD_BETWEEN_RECIEVING_DATA = 1.5; //seconds
@@ -107,6 +108,7 @@ public class Robot extends IterativeRobot {
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
 		isTurretPIDActive = false;
+		timer = new Timer();
 		CameraServer.getInstance().startAutomaticCapture();
 		CameraServer.getInstance().addCamera(axiscam);
 		
@@ -155,6 +157,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 //		new RunCommpresorCommand(true).start();
+		timer.reset();
+		timer.start();
 	}
 
 	/**
@@ -177,5 +181,33 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 
+	}
+	public static boolean isCenterWithinTolerance(boolean x, boolean y){
+		boolean x_inrange = Math.abs(GOOD_X - currCenter.x) < CENTER_TOLERANCE;
+		boolean y_inrange = Math.abs(GOOD_Y - currCenter.y) < CENTER_TOLERANCE;
+		
+		if (x && y){
+			return x_inrange && y_inrange;
+		}
+		else if (x){
+			return x_inrange;
+		}
+		else if (y){
+			return y_inrange;
+		}
+		else{
+			return false;
+		}
+	}
+	public static synchronized void updateCenter(Center c){
+		if (c != null){
+			currCenter = new Center(c.x,c.y);
+			rateCenterUpdated = 1/(timer.get() - prevTimeCenterUpdated); //seconds
+			prevTimeCenterUpdated = timer.get();
+			
+		}
+		else{
+			System.out.println("ERROR: passed in null center");
+		}
 	}
 }

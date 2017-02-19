@@ -27,15 +27,15 @@ public class RobotMap {
 		public static final int RIGHT_INTAKE_SOL = 5;//Last number made up need to add on port map
 
 	}
-	public static class Hooper {
-		//add never rests for agitator
-	}
+
 	public static class Shooter {
 		public static final int SHOOTER_FEEDER_PORT = 7;
 		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 8;
 		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 9;
 		public static final int LEFT_SHOOTER_EIN_PORT = 6;
 		public static final int RIGHT_SHOOTER_EIN_PORT = 7;
+		public static final int HOOPER_IN_PORT = 5;
+		public static final int HOOPER_OUT_PORT = 4;
 	}
 	public static class Hood {
 		public static final int HOOD_SERVO_PORT = 0;

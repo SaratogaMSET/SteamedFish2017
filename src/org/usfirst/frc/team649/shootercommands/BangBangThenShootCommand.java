@@ -65,9 +65,9 @@ public class BangBangThenShootCommand extends Command {
     		
     	}
     	if(isAtSpeed){
-    		Robot.shoot.feederMotor.set(Robot.shoot.feederSpeed);
+    		Robot.shoot.feederMotor.set(Robot.shoot.FEEDER_SPEED);
     	}
-    	if(shootOneBall.get()>ballShootTime && Robot.shoot.getLeftFlywheelEin() < minRPMThresh && Robot.shoot.getRightFlyhweelEin() < minRPMThresh){
+    	if(shootOneBall.get()>ballShootTime && ((Robot.shoot.getLeftFlywheelEin() < minRPMThresh || Robot.shoot.getRightFlyhweelEin() < minRPMThresh) || (Robot.shoot.getLeftFlywheelEin() > maxRPMThresh || Robot.shoot.getRightFlyhweelEin() > maxRPMThresh))){
     		isAtSpeed = false;
     		Robot.shoot.feederMotor.set(0.0);
     		shootOneBall.stop();
@@ -77,7 +77,7 @@ public class BangBangThenShootCommand extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.oi.operator.getShoot();
+        return !Robot.oi.operator.getShoot();
     }
 
     // Called once after isFinished returns true

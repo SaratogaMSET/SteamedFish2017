@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class RedSideGearOnlyFarSide extends CommandGroup {
+public class RedSideGearShootFarSide extends CommandGroup {
 
-    public RedSideGearOnlyFarSide() {
+    public RedSideGearShootFarSide() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

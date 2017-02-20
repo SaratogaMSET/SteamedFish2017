@@ -1,31 +1,26 @@
-package org.usfirst.frc.team649.gearcommands;
+package org.usfirst.frc.team649.shootercommands;
 
-import org.usfirst.frc.team649.robot.Robot;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class SetGearFlap extends Command {
-	boolean isOut;
-	/**
-	 * Used to drop off gears
-	 * @param isLoad
-	 */
-    public SetGearFlap(boolean isOut) {
+public class FeedBallsToShooterForTimeCommandWithDelays extends Command {
+	double timeShooting;
+	double delayPer;
+	double timeFeeding;
+	Timer time;
+    public FeedBallsToShooterForTimeCommandWithDelays(double timeShooting, double delayPer, double timeFeeding) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	this.isOut = isOut;
+    	this.timeShooting = timeShooting;
+    	time.start();
+
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(isOut){
-    		Robot.gear.setIntakeFlapPistonState(false);
-    	}else{
-    		Robot.gear.setIntakeFlapPistonState(true);
-    	}
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -34,7 +29,7 @@ public class SetGearFlap extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true

@@ -27,7 +27,6 @@ public class BlueSideHopperOnlyBoilerSide extends CommandGroup {
     	addSequential(new DrivetrainPIDCommand(19.375));
     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
     	addParallel(new SetHoodCommand(40)); //temporary
-
     	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
     }
 }

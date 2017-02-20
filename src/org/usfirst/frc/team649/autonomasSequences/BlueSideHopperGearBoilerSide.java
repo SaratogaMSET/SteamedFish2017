@@ -1,5 +1,6 @@
 package org.usfirst.frc.team649.autonomasSequences;
 
+import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.gearcommands.SetGearIntakeFlywheels;
 import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
@@ -30,13 +31,14 @@ public class BlueSideHopperGearBoilerSide extends CommandGroup {
     	addParallel(new SetHoodCommand(40)); //temporary
     	addSequential(new FeedBallsToShooterForTimeCommand(2.0));
     	addSequential(new DrivetrainPIDCommand(-37.5));
+    	addParallel(new SetIntakeGearCommand(false));
     	addParallel(new ShooterPID(72));
     	addSequential(new TurnWithEncoders(-150));
     	addSequential(new DrivetrainPIDCommand(63.875));
     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
-    	addSequential(new SetIntakeGearCommand(true));
+    	addSequential(new SetGearFlap(true));
     	addParallel(new FeedBallsToShooterForTimeCommand(15.0));
-    	addSequential(new WaitCommand(0.25));
-    	addSequential(new SetIntakeGearCommand(false));
+    	addSequential(new WaitCommand(0.5));
+    	addSequential(new SetGearFlap(false));
     }
 }

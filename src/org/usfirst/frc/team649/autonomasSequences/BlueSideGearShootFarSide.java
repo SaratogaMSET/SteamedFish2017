@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class BlueSideGearOnlyFarSide extends CommandGroup {
+public class BlueSideGearShootFarSide extends CommandGroup {
 
-    public BlueSideGearOnlyFarSide() {
+    public BlueSideGearShootFarSide() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
-        // these will run in order.
+        // these will run in order.v
 
         // To run multiple commands at the same time,
         // use addParallel()

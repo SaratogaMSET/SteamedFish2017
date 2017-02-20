@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.autonomasSequences;
+package org.usfirst.frc.team649.autonomousSequences;
 
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
@@ -14,18 +14,19 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 /**
  *
  */
-public class BlueSideGearShootMiddle extends CommandGroup {
+public class RedSideGearShootMiddle extends CommandGroup {
 
-    public BlueSideGearShootMiddle() {
-    	addSequential(new DrivetrainPIDCommand(85.375));
+    public RedSideGearShootMiddle() {
+        addSequential(new DrivetrainPIDCommand(85.375));
         addParallel(new BackToZeroTurretCommand());
         addSequential(new SetGearFlap(true));
-        addParallel(new ShooterPID(138));
-     	addParallel(new SetHoodCommand(40)); //temporary
-     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
+        addParallel(new ShooterPID(42));
+    	addParallel(new SetHoodCommand(40)); //temporary
+    	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
         addSequential(new WaitCommand(0.25));
-     	addSequential(new SetGearFlap(false));  
-     	addSequential(new DrivetrainPIDCommand(-3));
-     	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
+    	addSequential(new SetGearFlap(false));  
+    	addSequential(new DrivetrainPIDCommand(-3));
+    	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
+
     }
 }

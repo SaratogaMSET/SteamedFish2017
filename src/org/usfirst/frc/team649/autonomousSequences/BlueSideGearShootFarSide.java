@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.autonomasSequences;
+package org.usfirst.frc.team649.autonomousSequences;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 

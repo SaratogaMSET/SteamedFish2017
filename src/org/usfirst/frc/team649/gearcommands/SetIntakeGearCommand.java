@@ -1,19 +1,24 @@
-package org.usfirst.frc.team649.shootercommands;
+package org.usfirst.frc.team649.gearcommands;
+
+import org.usfirst.frc.team649.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class TurretPIDWithVision extends Command {
-
-    public TurretPIDWithVision() {
+public class SetIntakeGearCommand extends Command {
+	
+	boolean isOut;
+    public SetIntakeGearCommand(boolean state) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+    	isOut = state;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.gear.setIntakeFlapPistonState(isOut);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -22,7 +27,7 @@ public class TurretPIDWithVision extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 
     // Called once after isFinished returns true

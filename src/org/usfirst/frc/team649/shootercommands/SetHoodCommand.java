@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.gearcommands;
+package org.usfirst.frc.team649.shootercommands;
 
 import org.usfirst.frc.team649.robot.Robot;
 
@@ -7,18 +7,17 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetIntakeGearCommands extends Command {
-	
-	boolean isOut;
-    public SetIntakeGearCommands(boolean state) {
+public class SetHoodCommand extends Command {
+	double angle;
+    public SetHoodCommand(double angle) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	isOut = state;
+    	this.angle = angle;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.gear.setIntakeFlapPistonState(isOut);
+    	Robot.hood.setServoWIthAngle(angle);
     }
 
     // Called repeatedly when this Command is scheduled to run

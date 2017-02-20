@@ -8,6 +8,7 @@ import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
 import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
@@ -51,11 +52,13 @@ public class Robot extends IterativeRobot {
 	public static GearSubsystem gear;
 	public static HangSubsystem hang;
 	public static TurretSubsystem turret;
+	public static HoodSubsystem hood;
 	
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
 	public static boolean isTurretPIDActive;	
+	public static boolean isShooterRunning;
 	public static boolean robotEnabled = false; 
 	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 	public VideoCapture video = new VideoCapture();
@@ -94,23 +97,24 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-//		drive = new DrivetrainSubsystem();
+		drive = new DrivetrainSubsystem();
 //		compressor = new Compressor();
 //		intake = new IntakeSubsytem();
 //		shoot = new ShooterSubsystem();
 //		prevStateShooting = false;
 //		leftDT = new LeftDTPID();
 //		rightDT = new RightDTPID();
-		lidar = new LidarSubsystem();
-		gear = new GearSubsystem();
-		hang = new HangSubsystem();
+//		lidar = new LidarSubsystem();
+//	gear = new GearSubsystem();
+//		hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
 		isTurretPIDActive = false;
 		timer = new Timer();
-		CameraServer.getInstance().startAutomaticCapture();
-		CameraServer.getInstance().addCamera(axiscam);
+		isShooterRunning = false;
+//		CameraServer.getInstance().startAutomaticCapture();
+//	CameraServer.getInstance().addCamera(axiscam);
 		
 		
 	}
@@ -166,9 +170,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("lidar", lidar.getDistance());
-		SmartDashboard.putBoolean("lidar", lidar.getAderess());
+		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
+//		SmartDashboard.putNumber("lidar", lidar.getDistance());
+//		SmartDashboard.putBoolean("lidar", lidar.getAderess());
 	/*	if(oi.operator.getShoot() && !prevStateShooting){
 			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
 	}

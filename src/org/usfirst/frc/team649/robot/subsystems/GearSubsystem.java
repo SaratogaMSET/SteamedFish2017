@@ -25,8 +25,8 @@ public class GearSubsystem extends Subsystem {
 	public Solenoid intakeFlapSol;
 	public Solenoid gearSol;
 	
-	public static final double INTAKE_GEAR_SPEED = 0.3;
-	public static final double INTAKE_BALL_SPEED = -0.5;
+	public static final double INTAKE_GEAR_SPEED = 1.0;
+	public static final double INTAKE_BALL_SPEED = -0.15;
 	
 	public GearSubsystem(){
 		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);

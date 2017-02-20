@@ -16,7 +16,7 @@ public class RobotMap {
 		public static final int[] LEFT_SIDE_ENCODER = {6,7};
 		public static final int[] RIGHT_SIDE_ENCODER = {8,9};
 		// FR,BR,BL,FL
-		public static final int[] MOTOR_PORTS = { 1, 2, 3, 4 };
+		public static final int[] MOTOR_PORTS = { 2, 3, 4, 5 };
 		public static final int[] LEFT_ENCODER_PORTS = {0,1};
 		public static final int[] RIGHT_ENCODER_PORTS = {2,3};
 	}

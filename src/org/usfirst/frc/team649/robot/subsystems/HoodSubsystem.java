@@ -10,22 +10,29 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class HoodSubsystem extends Subsystem {
 	
-	public PWM hoodServo;
+	public PWM hoodServoLeft;
+	
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	public static final double zeroDegreePWM = 397;
-	public static final double ninteyDegreePWM = 1560;
+	public static final double zeroDegreePWMLeft = 397;
+	public static final double ninteyDegreePWMLeft = 1427/2;
+	public static final double zeroDegreeRight = 1427;
 	
-	public int angleToPWM(double angle){
-		double PWMDifference = ninteyDegreePWM-zeroDegreePWM;
-		return (int) (angle/90 * PWMDifference + zeroDegreePWM);
+	public int angleToPWMLeft(double angle){
+		double PWMDifference = ninteyDegreePWMLeft-zeroDegreePWMLeft;
+		return (int) (angle/90 * PWMDifference + zeroDegreePWMLeft);
 	}
-	public void setServoWithPWM(int PWM){
-		hoodServo.setRaw(PWM);
+	public int angleToPWMRight(double angle){
+		double PWMDifference = zeroDegreeRight-ninteyDegreePWMLeft;
+		return (int) (angle*90 * PWMDifference + ninteyDegreePWMLeft);
+	}
+	public void setServoWithPWM(int PWMLeft, int PWMRight){
+		hoodServoLeft.setRaw(PWMLeft);
+		hoodServoLeft.setRaw(PWMRight);
 	}
 	public void setServoWIthAngle(double angle){
-		setServoWithPWM(angleToPWM(angle));
+		setServoWithPWM(angleToPWMLeft(angle),angleToPWMRight(angle));
 	}
 	
     public void initDefaultCommand() {

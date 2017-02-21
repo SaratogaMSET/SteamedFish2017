@@ -4,15 +4,17 @@ package org.usfirst.frc.team649.robot;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.opencv.videoio.VideoCapture;
+import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
+import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
+import org.usfirst.frc.team649.drivetrain.LeftDTPID;
+import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
-import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
-import org.usfirst.frc.team649.robot.subsystems.LeftDTPID;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
-import org.usfirst.frc.team649.robot.subsystems.RightDTPID;
+
 import edu.wpi.cscore.AxisCamera;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
@@ -147,7 +149,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		
+		new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(), drive.getAlliance());
 	}
 
 	/**

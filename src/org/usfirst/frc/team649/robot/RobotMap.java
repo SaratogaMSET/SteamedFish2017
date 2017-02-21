@@ -17,15 +17,15 @@ public class RobotMap {
 		public static final int[] RIGHT_SIDE_ENCODER = {8,9};
 		// FR,BR,BL,FL
 		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
-		public static final int[] LEFT_ENCODER_PORTS = {0,1};
-		public static final int[] RIGHT_ENCODER_PORTS = {2,3};
+		public static final int[] RIGHT_DRIVE_SOL = {2,0,1};
+		public static final int[] LEFT_DRIVE_SOL = {2,2,3};
 	}
 	public static class Intake{
 		public static final int INTAKE_MOTOR_PORT_LEFT = 7;
 		public static final int INTAKE_MOTOR_PORT_RIGHT = 6;
 		//public static final int HOOPER_FEEDER_PORT = 6;
-		public static final int LEFT_INTAKE_SOL = 4;//Last number made up need to add on port map
-		public static final int RIGHT_INTAKE_SOL = 5;//Last number made up need to add on port map
+		public static final int[] LEFT_INTAKE_SOL = {1,4,5};
+		public static final int[] RIGHT_INTAKE_SOL = {1,6,7};
 
 	}
 
@@ -50,10 +50,11 @@ public class RobotMap {
 	public static class Gear {
 		public static final int GEAR_ROLLER_PORT = 4;
 		public static final int GEAR_IR_PORT = 11;
-		public static final int GEAR_SOL_PORT = 10;
+		public static final int[] GEAR_SOL_PORT = {2,6,7};
+		public static final int[] GEAR_FUNNEL_PORT = {2,4,5};
 	}
 	public static class Hanger {
-		public static final int HANGER_PISTON = 12;
+		public static final int[] HANGER_PISTON = {1,0,1}; 
 		public static final int HANGER_MOTOR_PORT = 5;
 		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
 	}

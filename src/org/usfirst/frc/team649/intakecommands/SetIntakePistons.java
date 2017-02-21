@@ -29,6 +29,11 @@ public class SetIntakePistons extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	if(setPistonsDown){
+    		Robot.prevStateIntakePistons = true;
+    	}else{
+    		Robot.prevStateIntakePistons = false;
+    	}
     }
 
     // Called when another command which requires one or more of the same

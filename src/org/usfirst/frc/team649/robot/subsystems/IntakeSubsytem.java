@@ -14,12 +14,13 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class IntakeSubsytem extends Subsystem {
 	
-	public CANTalon rollerMotor;
+	public CANTalon rollerMotorLeft, rollerMotorRight;
 	public CANTalon wheelRoller;
 	public Solenoid leftIntakeSol;
 	public Solenoid rightIntakeSol;
 	public void IntakeSubystem(){
-		rollerMotor = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT);
+		rollerMotorLeft = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_LEFT);
+		rollerMotorRight = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_RIGHT);
 		wheelRoller = new CANTalon(RobotMap.Intake.HOOPER_FEEDER_PORT);
 		leftIntakeSol = new Solenoid(RobotMap.Intake.LEFT_INTAKE_SOL);
 		rightIntakeSol = new Solenoid(RobotMap.Intake.RIGHT_INTAKE_SOL);
@@ -42,7 +43,8 @@ public class IntakeSubsytem extends Subsystem {
 		}
 	}
 	public void setIntakeRollerMotor(double power){
-		rollerMotor.set(power);
+		rollerMotorLeft.set(power);
+		rollerMotorLeft.set(-power);
 	}
 	public void setWheelRollers(double power){
 		wheelRoller.set(power);

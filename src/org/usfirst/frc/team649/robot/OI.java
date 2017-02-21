@@ -28,6 +28,30 @@ public class OI {
 		 public boolean getShoot(){
 			 return operatorJoystick.getRawButton(1);
 		 }
+		 public boolean setGearFlapOut(){
+			 return operatorJoystick.getRawButton(5);
+		 }
+		 public boolean setGearFlapIn(){
+			 return operatorJoystick.getRawButton(3);
+		 }
+		 public boolean setFunnelPistonUp(){
+			 return operatorJoystick.getRawButton(6);
+		 }
+		 public boolean setFunnelPistonDown(){
+			 return operatorJoystick.getRawButton(4);
+		 }
+		 public boolean runFunnelMotors(){
+			 return operatorJoystick.getRawButton(7);
+		 }
+		 public boolean setDownIntakePistons(){
+			 return operatorJoystick.getRawButton(8);
+		 }
+		 public boolean setUpIntakePistons(){
+			 return operatorJoystick.getRawButton(9);
+		 }
+		 public boolean runFeed() {
+			 return operatorJoystick.getRawButton(10);
+		 }
 	 }
 	 public class Driver {
 		 public double getForward() {

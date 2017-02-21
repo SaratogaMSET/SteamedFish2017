@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team649.robot;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,7 +10,6 @@ import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
 import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
-//import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
@@ -71,6 +69,7 @@ public class Robot extends IterativeRobot {
 	public static boolean prevStateGearFlap;
 	public static boolean prevStateFunnelFlap;
 	public static boolean robotEnabled = false; 
+	public static boolean isPIDTurn;
 	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 	public VideoCapture video = new VideoCapture();
 	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
@@ -126,6 +125,7 @@ public class Robot extends IterativeRobot {
 		isTurretPIDActive = false;
 		timer = new Timer();
 		isShooterRunning = false;
+		isPIDTurn = false;
 //		CameraServer.getInstance().startAutomaticCapture();
 //	CameraServer.getInstance().addCamera(axiscam);
 		
@@ -193,6 +193,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("Right Motor 1", drive.motors[0].getOutputCurrent());
+		SmartDashboard.putNumber("Right Motor 2", drive.motors[1].getOutputCurrent());
+		SmartDashboard.putNumber("Left Motor 1", drive.motors[2].getOutputCurrent());
+		SmartDashboard.putNumber("Left Motor 2", drive.motors[3].getOutputCurrent());
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
 		if(oi.operator.runFunnelMotors()){
 			intake.setIntakeRollerMotor(0.5);
@@ -224,8 +228,10 @@ public class Robot extends IterativeRobot {
 		if(oi.operator.setFunnelPistonUp()){
 			new SetIntakeGearCommand(false).start();
 		}
-		if(oi.operator.runFeed()){
+		if(oi.operator.runFeedIn()){
 			shoot.setFeedMotor(0.7);
+		} else if (oi.operator.runFeedOut()){
+			shoot.setFeedMotor(-0.7);
 		} else {
 			shoot.setFeedMotor(0);
 		}

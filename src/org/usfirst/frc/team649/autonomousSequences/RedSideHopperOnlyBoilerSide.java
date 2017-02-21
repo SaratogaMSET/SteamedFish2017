@@ -21,12 +21,12 @@ public class RedSideHopperOnlyBoilerSide extends CommandGroup {
     	/**
     	 * Start as close to boiler as possible
     	 */
-    	addSequential(new DrivetrainPIDCommand(92));
+    	addSequential(new DrivetrainPIDCommand(92, false));
     	addParallel(new BackToZeroTurretCommand());
-    	addSequential(new TurnWithEncoders(-90));
+    	addSequential(new DrivetrainPIDCommand(-90, true));//addSequential(new TurnWithEncoders(-90));
     	addParallel(new SetIntakeGearCommand(true));
     	addParallel(new SetGearIntakeFlywheels(1));
-    	addSequential(new DrivetrainPIDCommand(19.375));
+    	addSequential(new DrivetrainPIDCommand(19.375, false));
     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
     	addParallel(new SetHoodCommand(40)); //temporary
     	addSequential(new FeedBallsToShooterForTimeCommand(15.0));

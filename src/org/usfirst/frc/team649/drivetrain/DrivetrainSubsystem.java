@@ -1,6 +1,7 @@
 package org.usfirst.frc.team649.drivetrain;
 
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.PIDConstants;
+import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.RobotMap;
 import com.ctre.CANTalon;
 
@@ -165,10 +166,38 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public double getDistanceDTBoth() {
 		return rightEncoder.getDistance() / 2 + leftEncoder.getDistance() / 2;
 	}
+	
+	public double getDistanceDTTurn() {
+		   double distance = (Math.abs(getDistanceDTLeft()) + Math.abs(getDistanceDTRight()))/2;
+		   if (encoderDrivePID.getSetpoint() < 0) {
+			   return -distance;
+		   }
+		   return distance;
+   }
+	
+	public double getVoltageDTRight() {
+		return (motors[0].getOutputVoltage() + motors[1].getOutputVoltage())/2;
+	}
+		   
+    public double getVoltageDTLeft() {
+    	return (motors[2].getOutputVoltage() + motors[3].getOutputVoltage())/2;
+    }
+		   
+	public double getCurrentDTRight() {
+	    return (motors[0].getOutputCurrent() + motors[1].getOutputCurrent())/2;
+	}
+		   
+	public double getCurrentDTLeft() {
+		return (motors[2].getOutputCurrent() + motors[3].getOutputCurrent())/2;
+	}
 
 	@Override
 	protected double returnPIDInput() {
 		// TODO Auto-generated method stub
+		if (Robot.isPIDTurn == true) {
+			return getDistanceDTTurn();
+			//return getGyroValue();
+		}
 		return getDistanceDTBoth();
 	}
 
@@ -196,8 +225,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	@Override
 	protected void usePIDOutput(double output) {
 		// TODO Auto-generated method stub
-		rawDrive(-output, -output);
-
+		if (Robot.isPIDTurn == true) {
+			rawDrive(output, -output);
+		} else {
+			rawDrive(output,output);
+		}
 	}
 
 	public double getTranslationalDistanceForTurn(double angle) {

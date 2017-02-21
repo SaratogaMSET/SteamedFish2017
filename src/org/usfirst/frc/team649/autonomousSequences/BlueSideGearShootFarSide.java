@@ -17,16 +17,16 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class BlueSideGearShootFarSide extends CommandGroup {
 
     public BlueSideGearShootFarSide() {
-    	addSequential(new DrivetrainPIDCommand(70.565));
+    	addSequential(new DrivetrainPIDCommand(70.565, false));
     	addParallel(new BackToZeroTurretCommand());
-    	addSequential(new TurnWithEncoders(60));
-    	addSequential(new DrivetrainPIDCommand(56.535));
+    	addSequential(new DrivetrainPIDCommand(60, true));//addSequential(new TurnWithEncoders(60));
+    	addSequential(new DrivetrainPIDCommand(56.535, false));
     	addParallel(new ShooterPID(180));
     	addSequential(new WaitCommand(0.25));
      	addSequential(new SetGearFlap(false));
-     	addSequential(new DrivetrainPIDCommand(-56.535));
+     	addSequential(new DrivetrainPIDCommand(-56.535, false));
      	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
-    	addSequential(new TurnWithEncoders(-90));
+    	addSequential(new DrivetrainPIDCommand(-90, true));//addSequential(new TurnWithEncoders(-90));
     	addSequential(new FeedBallsToShooterForTimeCommandWithDelays(15.0,0.25,0.5));
     }
 }

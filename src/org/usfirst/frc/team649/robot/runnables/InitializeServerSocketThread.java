@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import org.usfirst.frc.team649.robot.Robot;
-import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.util.Center;
 
 import edu.wpi.first.wpilibj.Timer;

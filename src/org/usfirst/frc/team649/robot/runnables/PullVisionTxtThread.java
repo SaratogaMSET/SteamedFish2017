@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import org.usfirst.frc.team649.robot.Robot;
-import org.usfirst.frc.team649.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.util.Center;
 
 public class PullVisionTxtThread implements Runnable {

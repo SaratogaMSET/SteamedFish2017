@@ -10,6 +10,7 @@ import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
 import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
+import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
@@ -109,15 +110,15 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		drive = new DrivetrainSubsystem();
-//		compressor = new Compressor();
+		compressor = new Compressor();
 		intake = new IntakeSubsytem();
-//		shoot = new ShooterSubsystem();
-		hopper = new HopperSubsystem();
+		shoot = new ShooterSubsystem();
+		//hopper = new HopperSubsystem();
 //		prevStateShooting = false;
 //		leftDT = new LeftDTPID();
 //		rightDT = new RightDTPID();
 //		lidar = new LidarSubsystem();
-//		gear = new GearSubsystem();
+		gear = new GearSubsystem();
 //		hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
@@ -173,15 +174,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-//		new RunCommpresorCommand(true).start();
+		new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
 		prevStateGearFlap = false;
-//		new SetGearFlap(false).start();
-//		prevStateIntakePistons = false;
-//		new SetIntakePistons(false).start();
-//		prevStateFunnelFlap = false;
-//		new SetIntakeGearCommand(false).start();
+		new SetGearFlap(false).start();
+		prevStateIntakePistons = false;
+		new SetIntakePistons(false).start();
+		prevStateFunnelFlap = false;
+		new SetIntakeGearCommand(false).start();
 		
 	
 	}
@@ -236,11 +237,11 @@ public class Robot extends IterativeRobot {
 			shoot.setFeedMotor(0);
 		}
 		if(oi.operator.runAgitator()) {
-			hopper.setLeftPower(0.5);
-			hopper.setRightPower(0.5);
+			shoot.setHooperIn(1.0);
+			shoot.setHooperOutRaw(1.0);
 		} else {
-			hopper.setLeftPower(0);
-			hopper.setRightPower(0);
+			shoot.setHooperIn(0.0);
+			shoot.setHooperOutRaw(0.0);
 		}
 		if (oi.operator.runFunnelMotors()) {
 			gear.setFunnelMotor(0.5);

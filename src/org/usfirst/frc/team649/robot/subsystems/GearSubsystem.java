@@ -31,7 +31,7 @@ public class GearSubsystem extends Subsystem {
 	public GearSubsystem(){
 //		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
 		funnelMotor = new CANTalon(RobotMap.Gear.GEAR_ROLLER_PORT);
-//		gearSol = new Solenoid(RobotMap.Gear.GEAR_SOL_PORT);
+		gearSol = new Solenoid(RobotMap.Gear.GEAR_SOL_PORT);
 	}
 	
 	public boolean isGearLoaded(){

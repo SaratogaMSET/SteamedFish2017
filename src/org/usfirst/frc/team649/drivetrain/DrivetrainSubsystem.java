@@ -90,19 +90,19 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		time = new Timer();
 		isAutoShiftTrue = false;
 
-		leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0], RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
-				false);
-		rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0], RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
-				true);
-		leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
-		rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+//		leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0], RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
+//				false);
+//		rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0], RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
+//				true);
+//		leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+//		rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-		encoderDrivePID = this.getPIDController();
-		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		encoderDrivePID.setOutputRange(-.65, .65);
+//		encoderDrivePID = this.getPIDController();
+//		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+//		encoderDrivePID.setOutputRange(-.65, .65);
 	}
 
 	public void shift(boolean highGear) {

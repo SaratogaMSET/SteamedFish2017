@@ -11,10 +11,12 @@ import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
 import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
+//import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 
@@ -58,6 +60,7 @@ public class Robot extends IterativeRobot {
 	public static HangSubsystem hang;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
+	public static HopperSubsystem hopper;
 	
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
@@ -109,12 +112,13 @@ public class Robot extends IterativeRobot {
 		drive = new DrivetrainSubsystem();
 //		compressor = new Compressor();
 		intake = new IntakeSubsytem();
-		shoot = new ShooterSubsystem();
+//		shoot = new ShooterSubsystem();
+		hopper = new HopperSubsystem();
 //		prevStateShooting = false;
 //		leftDT = new LeftDTPID();
 //		rightDT = new RightDTPID();
 //		lidar = new LidarSubsystem();
-		gear = new GearSubsystem();
+//		gear = new GearSubsystem();
 //		hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
@@ -156,7 +160,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(), drive.getAlliance());
+		//new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(), drive.getAlliance());
 	}
 
 	/**
@@ -173,11 +177,11 @@ public class Robot extends IterativeRobot {
 		timer.reset();
 		timer.start();
 		prevStateGearFlap = false;
-		new SetGearFlap(false).start();
-		prevStateIntakePistons = false;
-		new SetIntakePistons(false).start();
-		prevStateFunnelFlap = false;
-		new SetIntakeGearCommand(false).start();
+//		new SetGearFlap(false).start();
+//		prevStateIntakePistons = false;
+//		new SetIntakePistons(false).start();
+//		prevStateFunnelFlap = false;
+//		new SetIntakeGearCommand(false).start();
 		
 	
 	}
@@ -191,9 +195,9 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
 		if(oi.operator.runFunnelMotors()){
-			Robot.intake.setIntakeRollerMotor(0.5);
+			intake.setIntakeRollerMotor(0.5);
 		}else{
-			Robot.intake.setIntakeRollerMotor(0.0);
+			intake.setIntakeRollerMotor(0.0);
 		}
 		if(oi.operator.getShoot()){
 			Robot.shoot.setLeftFlywheel(0.4);
@@ -221,8 +225,23 @@ public class Robot extends IterativeRobot {
 			new SetIntakeGearCommand(false).start();
 		}
 		if(oi.operator.runFeed()){
-			Robot.shoot.setFeedMotor(0.7);
+			shoot.setFeedMotor(0.7);
+		} else {
+			shoot.setFeedMotor(0);
 		}
+		if(oi.operator.runAgitator()) {
+			hopper.setLeftPower(0.5);
+			hopper.setRightPower(0.5);
+		} else {
+			hopper.setLeftPower(0);
+			hopper.setRightPower(0);
+		}
+		if (oi.operator.runFunnelMotors()) {
+			gear.setFunnelMotor(0.5);
+		} else {
+			gear.setFunnelMotor(0);
+		}
+		Robot.turret.manualSet(oi.operator.getTurret());
 //		SmartDashboard.putNumber("lidar", lidar.getDistance());
 //		SmartDashboard.putBoolean("lidar", lidar.getAderess());
 	/*	if(oi.operator.getShoot() && !prevStateShooting){

@@ -49,9 +49,23 @@ public class OI {
 		 public boolean setUpIntakePistons(){
 			 return operatorJoystick.getRawButton(9);
 		 }
-		 public boolean runFeed() {
+		 public boolean runFeedOut() {
 			 return operatorJoystick.getRawButton(10);
 		 }
+		 public boolean runFeedIn(){
+			 return operatorJoystick.getRawButton(11);
+		 }
+		 public boolean runAgitator() {
+			 return operatorJoystick.getRawButton(2);
+		 }
+		 public double getTurret(){
+			 if(operatorJoystick.getX() >= 0.05||operatorJoystick.getX()<=-0.05){
+				 return operatorJoystick.getX();
+			 }else{
+				 return 0.0;
+			 }
+		 }
+		
 	 }
 	 public class Driver {
 		 public double getForward() {

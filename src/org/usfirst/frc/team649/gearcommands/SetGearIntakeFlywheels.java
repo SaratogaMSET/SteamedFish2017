@@ -20,11 +20,11 @@ public class SetGearIntakeFlywheels extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	if(state == 1){
-        	Robot.gear.setfunnelMotor(Robot.gear.INTAKE_BALL_SPEED);
+        	Robot.gear.setFunnelMotor(Robot.gear.INTAKE_BALL_SPEED);
     	}else if(state == 2){
-    		Robot.gear.setfunnelMotor(Robot.gear.INTAKE_GEAR_SPEED);
+    		Robot.gear.setFunnelMotor(Robot.gear.INTAKE_GEAR_SPEED);
     	}else{
-    		Robot.gear.setfunnelMotor(0.0);
+    		Robot.gear.setFunnelMotor(0.0);
     	}
     }
 

@@ -21,7 +21,7 @@ public class IntakeSubsytem extends Subsystem {
 	public void IntakeSubystem(){
 		rollerMotorLeft = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_LEFT);
 		rollerMotorRight = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_RIGHT);
-		wheelRoller = new CANTalon(RobotMap.Intake.HOOPER_FEEDER_PORT);
+		//wheelRoller = new CANTalon(RobotMap.Intake.HOOPER_FEEDER_PORT);
 		leftIntakeSol = new Solenoid(RobotMap.Intake.LEFT_INTAKE_SOL);
 		rightIntakeSol = new Solenoid(RobotMap.Intake.RIGHT_INTAKE_SOL);
 		
@@ -43,7 +43,7 @@ public class IntakeSubsytem extends Subsystem {
 		}
 	}
 	public void setIntakeRollerMotor(double power){
-		rollerMotorLeft.set(power);
+		rollerMotorRight.set(power);
 		rollerMotorLeft.set(-power);
 	}
 	public void setWheelRollers(double power){

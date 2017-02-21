@@ -34,10 +34,10 @@ public class TurretSubsystem extends PIDSubsystem {
 	}
     public TurretSubsystem() {
     	super("Turret PID",PIDConstantsTurret.k_P,PIDConstantsTurret.k_I,PIDConstantsTurret.k_D);
-    	turretHalRight = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_RIGHT_PORT);
-    	turretHalLeft = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_LEFT_PORT);
+    	//turretHalRight = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_RIGHT_PORT);
+    	//turretHalLeft = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_LEFT_PORT);
     	turretMotor = new CANTalon(RobotMap.Turret.TURRET_MOTOR_PORT);
-    	turretABSEncoder = new Encoder(RobotMap.Turret.TURRET_ABS_ENCODER_PORT[0], RobotMap.Turret.TURRET_ABS_ENCODER_PORT[1]);
+    	//turretABSEncoder = new Encoder(RobotMap.Turret.TURRET_ABS_ENCODER_PORT[0], RobotMap.Turret.TURRET_ABS_ENCODER_PORT[1]);
         // Use these to get going:
         // setSetpoint() -  Sets where the PID controller should move the system
         //                  to

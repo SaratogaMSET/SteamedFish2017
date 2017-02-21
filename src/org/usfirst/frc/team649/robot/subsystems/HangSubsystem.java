@@ -20,9 +20,9 @@ public class HangSubsystem extends Subsystem {
 	public CANTalon hangMiniSim;
 	public static final double HANG_POWER = 1.0;
 	public HangSubsystem(){
-		hook = new Solenoid(RobotMap.Hanger.HANGER_PISTON);
+		//hook = new Solenoid(RobotMap.Hanger.HANGER_PISTON);
 		hangMiniSim = new CANTalon(RobotMap.Hanger.HANGER_MOTOR_PORT);
-		hangLimit = new DigitalInput(RobotMap.Hanger.HANGER_LIMIT_SWITCH_PORT);
+		//hangLimit = new DigitalInput(RobotMap.Hanger.HANGER_LIMIT_SWITCH_PORT);
 		
 	}
 	public void setHookSol(boolean in){

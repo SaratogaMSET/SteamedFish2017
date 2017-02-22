@@ -25,6 +25,9 @@ public class OI {
 		operator = new Operator();
 	}
 	 public class Operator {
+		 public double getSlider(){
+			return ((-operatorJoystick.getRawAxis(3))+1)/2; 
+		}
 		 public boolean getShoot(){
 			 return operatorJoystick.getRawButton(1);
 		 }

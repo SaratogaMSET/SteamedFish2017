@@ -177,10 +177,10 @@ public class Robot extends IterativeRobot {
 		new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
-		prevStateGearFlap = false;
-		new SetGearFlap(false).start();
-		prevStateIntakePistons = false;
-		new SetIntakePistons(false).start();
+//		prevStateGearFlap = false;
+//		new SetGearFlap(false).start();
+//		prevStateIntakePistons = false;
+//		new SetIntakePistons(false).start();
 		prevStateFunnelFlap = false;
 		new SetIntakeGearCommand(false).start();
 		
@@ -205,8 +205,8 @@ public class Robot extends IterativeRobot {
 			intake.setIntakeRollerMotor(0.0);
 		}
 		if(oi.operator.getShoot()){
-			Robot.shoot.setLeftFlywheel(0.4);
-			Robot.shoot.setRightFlywheel(0.4);
+			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
+			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
 		}else{
 			Robot.shoot.setLeftFlywheel(0.0);
 			Robot.shoot.setRightFlywheel(0.0);
@@ -214,19 +214,19 @@ public class Robot extends IterativeRobot {
 		if(oi.operator.setDownIntakePistons()){
 			new SetIntakePistons(true).start();
 		}
-		if(oi.operator.setUpIntakePistons()){
+		else if(oi.operator.setUpIntakePistons()){
 			new SetIntakePistons(false).start();
 		}
 		if(oi.operator.setGearFlapIn()){
 			new SetGearFlap(true).start();
 		}
-		if(oi.operator.setGearFlapOut()){
+		else if(oi.operator.setGearFlapOut()){
 			new SetGearFlap(false).start();
 		}
 		if(oi.operator.setFunnelPistonDown()){
 			new SetIntakeGearCommand(true).start();
 		}
-		if(oi.operator.setFunnelPistonUp()){
+		else if(oi.operator.setFunnelPistonUp()){
 			new SetIntakeGearCommand(false).start();
 		}
 		if(oi.operator.runFeedIn()){

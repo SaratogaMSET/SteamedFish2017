@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.intakecommands;
+package org.usfirst.frc.team649.gearcommands;
 
 import org.usfirst.frc.team649.robot.Robot;
 
@@ -7,15 +7,25 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetIntakePistons extends Command {
-	boolean setPistonsDown; 
-    public SetIntakePistons(boolean down) {
-    	setPistonsDown = down;
+public class SetFunnelFlywheels extends Command {
+	//1 = ball
+	//2 = gear
+	//3 = stop
+	int state;
+    public SetFunnelFlywheels(int state) {
+        // eg. requires(chassis);
+    	this.state = state;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.intake.setIntakeSol(setPistonsDown);
+    	if(state == 1){
+        	Robot.gear.setFunnelMotor(Robot.gear.INTAKE_BALL_SPEED);
+    	}else if(state == 2){
+    		Robot.gear.setFunnelMotor(Robot.gear.INTAKE_GEAR_SPEED);
+    	}else{
+    		Robot.gear.setFunnelMotor(0.0);
+    	}
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -24,17 +34,11 @@ public class SetIntakePistons extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-//        return Robot.intake.isIntakeDown();
-    	return true;
+        return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	if(setPistonsDown){
-    		Robot.prevStateIntakePistons = true;
-    	}else{
-    		Robot.prevStateIntakePistons = false;
-    	}
     }
 
     // Called when another command which requires one or more of the same

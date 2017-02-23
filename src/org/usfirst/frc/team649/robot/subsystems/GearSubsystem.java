@@ -43,15 +43,15 @@ public class GearSubsystem extends Subsystem {
 	public void setFunnelMotor(double speed){
 		funnelMotor.set(speed);
 	}
-	public void setIntakeFlapPistonState(boolean isGear){
+	public void setFunnelPistonState(boolean isGear){
 		if(isGear){
 			intakeFlapSol.set(DoubleSolenoid.Value.kForward);
 		}else{
 			intakeFlapSol.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
-	public void setGearSol(boolean isOut){
-		if(isOut){
+	public void setGearFlapSol(boolean isIn){
+		if(isIn){
 			gearSol.set(DoubleSolenoid.Value.kForward);
 		}else{
 			gearSol.set(DoubleSolenoid.Value.kReverse);
@@ -64,7 +64,7 @@ public class GearSubsystem extends Subsystem {
 			return false;
 		}
 	}
-	public boolean getGearSolPos(){
+	public boolean getGearFlapSolPos(){
 		if(gearSol.get() == DoubleSolenoid.Value.kForward){
 			return true;
 		}else{

@@ -8,8 +8,8 @@ import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.drivetrain.LeftDTPID;
 import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
-import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
-import org.usfirst.frc.team649.intakecommands.SetIntakePistons;
+import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
+import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
@@ -182,7 +182,7 @@ public class Robot extends IterativeRobot {
 //		prevStateIntakePistons = false;
 //		new SetIntakePistons(false).start();
 		prevStateFunnelFlap = false;
-		new SetIntakeGearCommand(false).start();
+		new SetFunnelCommand(false).start();
 		
 	
 	}
@@ -212,10 +212,10 @@ public class Robot extends IterativeRobot {
 			Robot.shoot.setRightFlywheel(0.0);
 		}
 		if(oi.operator.setDownIntakePistons()){
-			new SetIntakePistons(true).start();
+			new SetIntakeWedgePistons(true).start();
 		}
 		else if(oi.operator.setUpIntakePistons()){
-			new SetIntakePistons(false).start();
+			new SetIntakeWedgePistons(false).start();
 		}
 		if(oi.operator.setGearFlapIn()){
 			new SetGearFlap(true).start();
@@ -224,10 +224,10 @@ public class Robot extends IterativeRobot {
 			new SetGearFlap(false).start();
 		}
 		if(oi.operator.setFunnelPistonDown()){
-			new SetIntakeGearCommand(true).start();
+			new SetFunnelCommand(true).start();
 		}
 		else if(oi.operator.setFunnelPistonUp()){
-			new SetIntakeGearCommand(false).start();
+			new SetFunnelCommand(false).start();
 		}
 		if(oi.operator.runFeedIn()){
 			shoot.setFeedMotor(0.7);

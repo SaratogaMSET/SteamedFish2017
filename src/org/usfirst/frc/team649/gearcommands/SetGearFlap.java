@@ -22,9 +22,9 @@ public class SetGearFlap extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	if(isOut){
-    		Robot.gear.setIntakeFlapPistonState(false);
+    		Robot.gear.setGearFlapSol(false);
     	}else{
-    		Robot.gear.setIntakeFlapPistonState(true);
+    		Robot.gear.setGearFlapSol(true);
     	}
     }
 

@@ -46,10 +46,18 @@ public class ShooterSubsystem extends Subsystem {
     public void setRightFlywheel(double power){
     	rightFlywheel.set(power);
     }
+    public double getRightFlywheel()
+    {
+    	return rightFlywheel.get();
+    }
+    public double getLeftFlywheel()
+    {
+    	return leftFlywheel.get();
+    }
     public double getLeftFlywheelEin(){
     	return 60/leftEin.getPeriod();
     }
-    public double getRightFlyhweelEin(){
+    public double getRightFlywheelEin(){
     	return 60/rightEin.getPeriod();
     }
     public void setFeedMotor(double power){

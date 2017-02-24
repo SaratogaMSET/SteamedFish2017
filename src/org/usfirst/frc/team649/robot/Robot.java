@@ -7,25 +7,23 @@ import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.drivetrain.LeftDTPID;
 import org.usfirst.frc.team649.drivetrain.RightDTPID;
-import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
+import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
-import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
+//import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
-
-import edu.wpi.cscore.AxisCamera;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 import org.usfirst.frc.team649.util.Center;
 
+import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -59,7 +57,9 @@ public class Robot extends IterativeRobot {
 	public static HangSubsystem hang;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
-	public static HopperSubsystem hopper;
+	public static RunCommpresorCommand rcc;
+	public static AutoFullSequence afs;
+	//public static HopperSubsystem hopper;
 	
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
@@ -292,4 +292,29 @@ public class Robot extends IterativeRobot {
 			System.out.println("ERROR: passed in null center");
 		}
 	}
+	public static void doTheDash() {
+		SmartDashboard.putString("Shifting?", drive.getShift());
+		SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
+		SmartDashboard.putNumber("Auto Position Potentiometer", drive.getAutoGoal());
+		SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is red!");
+		SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
+		SmartDashboard.putBoolean("Is Compressor Running", rcc.getCompressorState());
+		SmartDashboard.putNumber("Encoder Left", drive.getCurrentDTLeft());
+		SmartDashboard.putNumber("Encoder Right", drive.getCurrentDTRight());
+		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());
+		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
+		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());
+		SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
+		SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
+		SmartDashboard.putNumber("Einstein Flywheel Count LEFT", shoot.getLeftFlywheelEin());
+		SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT", shoot.getRightFlywheelEin());
+		SmartDashboard.putNumber("Flywheel RPM LEFT", shoot.getLeftFlywheel());
+		SmartDashboard.putNumber("Flywheel RPM RIGHT", shoot.getRightFlywheel());
+		SmartDashboard.putBoolean("Is Right HAL tripped?", turret.getRightHal());
+		SmartDashboard.putBoolean("Is Left HAL tripped?", turret.getLeftHal());
+		SmartDashboard.putNumber("Distance Turret Moved", turret.getEncoderDistance());
+		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
+		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
+	}
+	
 }

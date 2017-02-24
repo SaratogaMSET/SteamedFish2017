@@ -42,11 +42,11 @@ public class OnlyBangBangNoShootCommand extends Command {
     	}else{
     		Robot.shoot.setLeftFlywheel(minLeftSpeed);
     	}
-    	if(Robot.shoot.getRightFlyhweelEin() < minRPMThresh){
+    	if(Robot.shoot.getRightFlywheelEin() < minRPMThresh){
     		Robot.shoot.setRightFlywheel(1.0);
-    	}else if(Robot.shoot.getRightFlyhweelEin() > maxRPMThresh){
+    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPMThresh){
     		Robot.shoot.setRightFlywheel(0.0);
-    	}else if(Robot.shoot.getRightFlyhweelEin() <= targetRPM){
+    	}else if(Robot.shoot.getRightFlywheelEin() <= targetRPM){
     		Robot.shoot.setRightFlywheel(maxLeftSpeed);
     	}else{
     		Robot.shoot.setRightFlywheel(minLeftSpeed);

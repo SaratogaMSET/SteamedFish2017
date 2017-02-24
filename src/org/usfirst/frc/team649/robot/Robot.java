@@ -34,8 +34,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -62,40 +60,40 @@ public class Robot extends IterativeRobot {
 	public static RunCommpresorCommand rcc;
 	public static AutoFullSequence afs;
 	public static CameraSwitcher camera;
-	//public static HopperSubsystem hopper;
-	
+	// public static HopperSubsystem hopper;
+
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
-	public static boolean isTurretPIDActive;	
+	public static boolean isTurretPIDActive;
 	public static boolean isShooterRunning;
 	public static boolean prevStateIntakePistons;
 	public static boolean prevStateGearFlap;
 	public static boolean prevStateFunnelFlap;
-	public static boolean robotEnabled = false; 
+	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
 	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 	public VideoCapture video = new VideoCapture();
 	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
-	//Vision Paths
+	// Vision Paths
 	public static String initPath = "/home/admin/initializeAdb.sh";
 	public static String pullPath = "/home/admin/pullTextFile.sh";
 	public static String endPath = "/home/admin/endApp.sh";
 	public static String visionFile = "/home/admin/vision.txt";
 	/*
-	 * Vision
-	 * Need to change the values for this years vision
+	 * Vision Need to change the values for this years vision
 	 */
 	public static String ip = "N/A";
 	public static Center currCenter;
 	public static double prevTimeCenterUpdated = 0;
 	public static double rateCenterUpdated = 0;
 	public static int PORT = 5805;
-	public static boolean isRIOServerStarted; //makes sure we are connected
+	public static boolean isRIOServerStarted; // makes sure we are connected
 	public static Timer timer;
-	public static boolean isReceivingData; //makes sure data is being sent regularly
-	public static double VISION_INIT_TIME_OUT = 6; //seconds
-	public static double MAX_PERIOD_BETWEEN_RECIEVING_DATA = 1.5; //seconds
+	public static boolean isReceivingData; // makes sure data is being sent
+											// regularly
+	public static double VISION_INIT_TIME_OUT = 6; // seconds
+	public static double MAX_PERIOD_BETWEEN_RECIEVING_DATA = 1.5; // seconds
 	public static ScheduledExecutorService adbTimer;
 	public static InitializeServerSocketThread initThread;
 	public static double SCREEN_X = 288;
@@ -104,6 +102,7 @@ public class Robot extends IterativeRobot {
 	public static double GOOD_Y = SCREEN_Y / 2.0;
 	public static double FIELD_OF_VIEW = 0.8339;
 	public static double CENTER_TOLERANCE = 8;
+
 	/**
 	 * 
 	 * This function is run when the robot is first started up and should be
@@ -117,13 +116,13 @@ public class Robot extends IterativeRobot {
 		intake = new IntakeSubsytem();
 		shoot = new ShooterSubsystem();
 		camera = new CameraSwitcher();
-		//hopper = new HopperSubsystem();
-//		prevStateShooting = false;
-//		leftDT = new LeftDTPID();
-//		rightDT = new RightDTPID();
-//		lidar = new LidarSubsystem();
+		// hopper = new HopperSubsystem();
+		// prevStateShooting = false;
+		// leftDT = new LeftDTPID();
+		// rightDT = new RightDTPID();
+		// lidar = new LidarSubsystem();
 		gear = new GearSubsystem();
-//		hang = new HangSubsystem();
+		// hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
@@ -131,10 +130,7 @@ public class Robot extends IterativeRobot {
 		timer = new Timer();
 		isShooterRunning = false;
 		isPIDTurn = false;
-//		CameraServer.getInstance().startAutomaticCapture();
-//	CameraServer.getInstance().addCamera(axiscam);
-		
-		
+		doTheDash();
 	}
 
 	/**
@@ -165,7 +161,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		//new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(), drive.getAlliance());
+		// new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
+		// drive.getAlliance());
 	}
 
 	/**
@@ -174,6 +171,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		doTheDash();
 	}
 
 	@Override
@@ -181,14 +179,13 @@ public class Robot extends IterativeRobot {
 		new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
-//		prevStateGearFlap = false;
-//		new SetGearFlap(false).start();
-//		prevStateIntakePistons = false;
-//		new SetIntakePistons(false).start();
+		// prevStateGearFlap = false;
+		// new SetGearFlap(false).start();
+		// prevStateIntakePistons = false;
+		// new SetIntakePistons(false).start();
 		prevStateFunnelFlap = false;
 		new SetFunnelCommand(false).start();
-		
-	
+
 	}
 
 	/**
@@ -196,51 +193,48 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
+
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Right Motor 1", drive.motors[0].getOutputCurrent());
 		SmartDashboard.putNumber("Right Motor 2", drive.motors[1].getOutputCurrent());
 		SmartDashboard.putNumber("Left Motor 1", drive.motors[2].getOutputCurrent());
 		SmartDashboard.putNumber("Left Motor 2", drive.motors[3].getOutputCurrent());
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
-		if(oi.operator.runFunnelMotors()){
+		if (oi.operator.runFunnelMotors()) {
 			intake.setIntakeRollerMotor(0.5);
-		}else{
+		} else {
 			intake.setIntakeRollerMotor(0.0);
 		}
-		if(oi.operator.getShoot()){
+		if (oi.operator.getShoot()) {
 			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
 			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
-		}else{
+		} else {
 			Robot.shoot.setLeftFlywheel(0.0);
 			Robot.shoot.setRightFlywheel(0.0);
 		}
-		if(oi.operator.setDownIntakePistons()){
+		if (oi.operator.setDownIntakePistons()) {
 			new SetIntakeWedgePistons(true).start();
-		}
-		else if(oi.operator.setUpIntakePistons()){
+		} else if (oi.operator.setUpIntakePistons()) {
 			new SetIntakeWedgePistons(false).start();
 		}
-		if(oi.operator.setGearFlapIn()){
+		if (oi.operator.setGearFlapIn()) {
 			new SetGearFlap(true).start();
-		}
-		else if(oi.operator.setGearFlapOut()){
+		} else if (oi.operator.setGearFlapOut()) {
 			new SetGearFlap(false).start();
 		}
-		if(oi.operator.setFunnelPistonDown()){
+		if (oi.operator.setFunnelPistonDown()) {
 			new SetFunnelCommand(true).start();
-		}
-		else if(oi.operator.setFunnelPistonUp()){
+		} else if (oi.operator.setFunnelPistonUp()) {
 			new SetFunnelCommand(false).start();
 		}
-		if(oi.operator.runFeedIn()){
+		if (oi.operator.runFeedIn()) {
 			shoot.setFeedMotor(0.7);
-		} else if (oi.operator.runFeedOut()){
+		} else if (oi.operator.runFeedOut()) {
 			shoot.setFeedMotor(-0.7);
 		} else {
 			shoot.setFeedMotor(0);
 		}
-		if(oi.operator.runAgitator()) {
+		if (oi.operator.runAgitator()) {
 			shoot.setHooperIn(1.0);
 			shoot.setHooperOutRaw(1.0);
 		} else {
@@ -253,13 +247,18 @@ public class Robot extends IterativeRobot {
 			gear.setFunnelMotor(0);
 		}
 		Robot.turret.manualSet(oi.operator.getTurret());
-//		SmartDashboard.putNumber("lidar", lidar.getDistance());
-//		SmartDashboard.putBoolean("lidar", lidar.getAderess());
-	/*	if(oi.operator.getShoot() && !prevStateShooting){
-			new BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT, shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT, shoot.MIN_RPM, shoot.MAX_RPM).start();
+		// SmartDashboard.putNumber("lidar", lidar.getDistance());
+		// SmartDashboard.putBoolean("lidar", lidar.getAderess());
+		/*
+		 * if(oi.operator.getShoot() && !prevStateShooting){ new
+		 * BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT,
+		 * shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT,
+		 * shoot.MIN_RPM, shoot.MAX_RPM).start(); } prevStateShooting =
+		 * oi.operator.getShoot();
+		 * 
+		 */
+		doTheDash();
 	}
-		prevStateShooting = oi.operator.getShoot();
-	*/ }
 
 	/**
 	 * This function is called periodically during test mode
@@ -268,34 +267,33 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 
 	}
-	public static boolean isCenterWithinTolerance(boolean x, boolean y){
+
+	public static boolean isCenterWithinTolerance(boolean x, boolean y) {
 		boolean x_inrange = Math.abs(GOOD_X - currCenter.x) < CENTER_TOLERANCE;
 		boolean y_inrange = Math.abs(GOOD_Y - currCenter.y) < CENTER_TOLERANCE;
-		
-		if (x && y){
+
+		if (x && y) {
 			return x_inrange && y_inrange;
-		}
-		else if (x){
+		} else if (x) {
 			return x_inrange;
-		}
-		else if (y){
+		} else if (y) {
 			return y_inrange;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}
-	public static synchronized void updateCenter(Center c){
-		if (c != null){
-			currCenter = new Center(c.x,c.y);
-			rateCenterUpdated = 1/(timer.get() - prevTimeCenterUpdated); //seconds
+
+	public static synchronized void updateCenter(Center c) {
+		if (c != null) {
+			currCenter = new Center(c.x, c.y);
+			rateCenterUpdated = 1 / (timer.get() - prevTimeCenterUpdated); // seconds
 			prevTimeCenterUpdated = timer.get();
-			
-		}
-		else{
+
+		} else {
 			System.out.println("ERROR: passed in null center");
 		}
 	}
+
 	public static void doTheDash() {
 		SmartDashboard.putString("Shifting?", drive.getShift());
 		SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
@@ -320,5 +318,5 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
 		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
 	}
-	
+
 }

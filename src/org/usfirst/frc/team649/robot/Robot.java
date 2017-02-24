@@ -10,8 +10,10 @@ import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
+import org.usfirst.frc.team649.robot.RobotMap.Camera;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
+import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
@@ -59,6 +61,7 @@ public class Robot extends IterativeRobot {
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
 	public static AutoFullSequence afs;
+	public static CameraSwitcher camera;
 	//public static HopperSubsystem hopper;
 	
 	public static boolean isPIDActiveLeft;
@@ -113,6 +116,7 @@ public class Robot extends IterativeRobot {
 		compressor = new Compressor();
 		intake = new IntakeSubsytem();
 		shoot = new ShooterSubsystem();
+		camera = new CameraSwitcher();
 		//hopper = new HopperSubsystem();
 //		prevStateShooting = false;
 //		leftDT = new LeftDTPID();

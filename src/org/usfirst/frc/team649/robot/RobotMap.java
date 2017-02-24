@@ -11,21 +11,22 @@ public class RobotMap {
 	public static final int DRIVE_JOYSTICK_HORIZONTAL = 2;
 	public static final int DRIVE_JOYSTICK_VERTICAL = 1;
 	public static final int AUTO_SELECTOR_POT_PORT = 0;
-	
+
 	public static class Drivetrain {
-		public static final int[] LEFT_SIDE_ENCODER = {6,7};
-		public static final int[] RIGHT_SIDE_ENCODER = {8,9};
+		public static final int[] LEFT_SIDE_ENCODER = { 6, 7 };
+		public static final int[] RIGHT_SIDE_ENCODER = { 8, 9 };
 		// FR,BR,BL,FL
 		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
-		public static final int[] RIGHT_DRIVE_SOL = {2,0,1};
-		public static final int[] LEFT_DRIVE_SOL = {2,2,3};
+		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };
+		public static final int[] LEFT_DRIVE_SOL = { 2, 2, 3 };
 	}
-	public static class Intake{
+
+	public static class Intake {
 		public static final int INTAKE_MOTOR_PORT_LEFT = 7;
 		public static final int INTAKE_MOTOR_PORT_RIGHT = 6;
-		//public static final int HOOPER_FEEDER_PORT = 6;
-		public static final int[] LEFT_INTAKE_SOL = {1,4,5};
-		public static final int[] RIGHT_INTAKE_SOL = {1,6,7};
+		// public static final int HOOPER_FEEDER_PORT = 6;
+		public static final int[] LEFT_INTAKE_SOL = { 1, 4, 5 };
+		public static final int[] RIGHT_INTAKE_SOL = { 1, 6, 7 };
 
 	}
 
@@ -38,29 +39,37 @@ public class RobotMap {
 		public static final int HOOPER_IN_PORT = 11;
 		public static final int HOOPER_OUT_PORT = 10;
 	}
+
 	public static class Hood {
 		public static final int HOOD_SERVO_PORT = 0;
 	}
+
 	public static class Turret {
 		public static final int TURRET_MOTOR_PORT = 10;
-		public static final int[] TURRET_ABS_ENCODER_PORT = {8,9};
+		public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
 		public static final int TURRET_HALL_EFFECT_RIGHT_PORT = 9;
 		public static final int TURRET_HALL_EFFECT_LEFT_PORT = 10;
 	}
+
 	public static class Gear {
 		public static final int GEAR_ROLLER_PORT = 4;
 		public static final int GEAR_IR_PORT = 11;
-		public static final int[] GEAR_SOL_PORT = {2,6,7};
-		public static final int[] GEAR_FUNNEL_PORT = {2,4,5};
+		public static final int[] GEAR_SOL_PORT = { 2, 6, 7 };
+		public static final int[] GEAR_FUNNEL_PORT = { 2, 4, 5 };
 	}
+
 	public static class Hanger {
-		public static final int[] HANGER_PISTON = {1,0,1}; 
+		public static final int[] HANGER_PISTON = { 1, 0, 1 };
 		public static final int HANGER_MOTOR_PORT = 5;
 		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
 	}
+
 	public static class Hopper {
 		public static final int RIGHT_AGITATOR = 10;
 		public static final int LEFT_AGITATOR = 11;
 	}
 
+	public static class Camera {
+		public static final String axisPort = "10.6.49.11";
+	}
 }

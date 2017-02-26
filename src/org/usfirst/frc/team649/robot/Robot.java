@@ -194,41 +194,52 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Right Motor 1", drive.motors[0].getOutputCurrent());
-		SmartDashboard.putNumber("Right Motor 2", drive.motors[1].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor 1", drive.motors[2].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor 2", drive.motors[3].getOutputCurrent());
+		
+		SmartDashboard.putNumber("Right DT Current", drive.getCurrentDTRight());
+		SmartDashboard.putNumber("Left DT Current", drive.getCurrentDTLeft());
+		SmartDashboard.putNumber("Right DT Voltage", drive.getVoltageDTRight());
+		SmartDashboard.putNumber("Left DT Voltage", drive.getVoltageDTLeft());
+		
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
+		
 		if(oi.operator.runFunnelMotors()){
 			intake.setIntakeRollerMotor(0.5);
 		}else{
 			intake.setIntakeRollerMotor(0.0);
 		}
-		if(oi.operator.getShoot()){
-			Robot.shoot.setLeftFlywheel(0.4);
-			Robot.shoot.setRightFlywheel(0.4);
-		}else{
-			Robot.shoot.setLeftFlywheel(0.0);
-			Robot.shoot.setRightFlywheel(0.0);
-		}
+		
+//		if(oi.operator.getShoot()){
+//			Robot.shoot.setLeftFlywheel(0.4);
+//			Robot.shoot.setRightFlywheel(0.4);
+//		}else{
+//			Robot.shoot.setLeftFlywheel(0.0);
+//			Robot.shoot.setRightFlywheel(0.0);
+//		}
+		
 		if(oi.operator.setDownIntakePistons()){
 			new SetIntakePistons(true).start();
 		}
+		
 		if(oi.operator.setUpIntakePistons()){
 			new SetIntakePistons(false).start();
 		}
+		
 		if(oi.operator.setGearFlapIn()){
 			new SetGearFlap(true).start();
 		}
+		
 		if(oi.operator.setGearFlapOut()){
 			new SetGearFlap(false).start();
 		}
+		
 		if(oi.operator.setFunnelPistonDown()){
 			new SetIntakeGearCommand(true).start();
 		}
+		
 		if(oi.operator.setFunnelPistonUp()){
 			new SetIntakeGearCommand(false).start();
 		}
+		
 		if(oi.operator.runFeedIn()){
 			shoot.setFeedMotor(0.7);
 		} else if (oi.operator.runFeedOut()){
@@ -236,6 +247,7 @@ public class Robot extends IterativeRobot {
 		} else {
 			shoot.setFeedMotor(0);
 		}
+		
 		if(oi.operator.runAgitator()) {
 			shoot.setHooperIn(1.0);
 			shoot.setHooperOutRaw(1.0);
@@ -243,12 +255,14 @@ public class Robot extends IterativeRobot {
 			shoot.setHooperIn(0.0);
 			shoot.setHooperOutRaw(0.0);
 		}
+		
 		if (oi.operator.runFunnelMotors()) {
 			gear.setFunnelMotor(0.5);
 		} else {
 			gear.setFunnelMotor(0);
 		}
-		Robot.turret.manualSet(oi.operator.getTurret());
+		
+		turret.manualSet(oi.operator.getTurret());
 //		SmartDashboard.putNumber("lidar", lidar.getDistance());
 //		SmartDashboard.putBoolean("lidar", lidar.getAderess());
 	/*	if(oi.operator.getShoot() && !prevStateShooting){

@@ -18,7 +18,7 @@ import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 //import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
-import org.usfirst.frc.team649.robot.subsystems.IntakeSubsytem;
+import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
@@ -45,7 +45,7 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 	public static Compressor compressor;
-	public static IntakeSubsytem intake;
+	public static IntakeSubsystem intake;
 	public static ShooterSubsystem shoot;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	public boolean prevStateShooting;
@@ -112,16 +112,16 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		drive = new DrivetrainSubsystem();
-		compressor = new Compressor();
-		intake = new IntakeSubsytem();
-		shoot = new ShooterSubsystem();
-		camera = new CameraSwitcher();
+//		compressor = new Compressor();
+//		intake = new IntakeSubsytem();
+//		shoot = new ShooterSubsystem();
+//		camera = new CameraSwitcher();
 		// hopper = new HopperSubsystem();
 		// prevStateShooting = false;
 		// leftDT = new LeftDTPID();
 		// rightDT = new RightDTPID();
 		// lidar = new LidarSubsystem();
-		gear = new GearSubsystem();
+		//gear = new GearSubsystem();
 		// hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
@@ -130,7 +130,8 @@ public class Robot extends IterativeRobot {
 		timer = new Timer();
 		isShooterRunning = false;
 		isPIDTurn = false;
-		doTheDash();
+		//doTheDash();
+		drive.resetEncoders();
 	}
 
 	/**
@@ -163,7 +164,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		// new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
 		// drive.getAlliance());
+		
 	}
+	
 
 	/**
 	 * This function is called periodically during autonomous
@@ -171,12 +174,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		doTheDash();
+//		doTheDash();
 	}
 
 	@Override
 	public void teleopInit() {
-		new RunCommpresorCommand(true).start();
+		//new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
 		// prevStateGearFlap = false;
@@ -184,7 +187,7 @@ public class Robot extends IterativeRobot {
 		// prevStateIntakePistons = false;
 		// new SetIntakePistons(false).start();
 		prevStateFunnelFlap = false;
-		new SetFunnelCommand(false).start();
+		//new SetFunnelCommand(false).start();
 
 	}
 
@@ -195,58 +198,55 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Right Motor 1", drive.motors[0].getOutputCurrent());
-		SmartDashboard.putNumber("Right Motor 2", drive.motors[1].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor 1", drive.motors[2].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor 2", drive.motors[3].getOutputCurrent());
+
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
-		if (oi.operator.runFunnelMotors()) {
-			intake.setIntakeRollerMotor(0.5);
-		} else {
-			intake.setIntakeRollerMotor(0.0);
-		}
-		if (oi.operator.getShoot()) {
-			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
-			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
-		} else {
-			Robot.shoot.setLeftFlywheel(0.0);
-			Robot.shoot.setRightFlywheel(0.0);
-		}
-		if (oi.operator.setDownIntakePistons()) {
-			new SetIntakeWedgePistons(true).start();
-		} else if (oi.operator.setUpIntakePistons()) {
-			new SetIntakeWedgePistons(false).start();
-		}
-		if (oi.operator.setGearFlapIn()) {
-			new SetGearFlap(true).start();
-		} else if (oi.operator.setGearFlapOut()) {
-			new SetGearFlap(false).start();
-		}
-		if (oi.operator.setFunnelPistonDown()) {
-			new SetFunnelCommand(true).start();
-		} else if (oi.operator.setFunnelPistonUp()) {
-			new SetFunnelCommand(false).start();
-		}
-		if (oi.operator.runFeedIn()) {
-			shoot.setFeedMotor(0.7);
-		} else if (oi.operator.runFeedOut()) {
-			shoot.setFeedMotor(-0.7);
-		} else {
-			shoot.setFeedMotor(0);
-		}
-		if (oi.operator.runAgitator()) {
-			shoot.setHooperIn(1.0);
-			shoot.setHooperOutRaw(1.0);
-		} else {
-			shoot.setHooperIn(0.0);
-			shoot.setHooperOutRaw(0.0);
-		}
-		if (oi.operator.runFunnelMotors()) {
-			gear.setFunnelMotor(0.5);
-		} else {
-			gear.setFunnelMotor(0);
-		}
-		Robot.turret.manualSet(oi.operator.getTurret());
+//		if (oi.operator.runFunnelMotors()) {
+//			intake.setIntakeRollerMotor(0.5);
+//		} else {
+//			intake.setIntakeRollerMotor(0.0);
+//		}
+//		if (oi.operator.getShoot()) {
+//			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
+//			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
+//		} else {
+//			Robot.shoot.setLeftFlywheel(0.0);
+//			Robot.shoot.setRightFlywheel(0.0);
+//		}
+//		if (oi.operator.setDownIntakePistons()) {
+//			new SetIntakeWedgePistons(true).start();
+//		} else if (oi.operator.setUpIntakePistons()) {
+//			new SetIntakeWedgePistons(false).start();
+//		}
+//		if (oi.operator.setGearFlapIn()) {
+//			new SetGearFlap(true).start();
+//		} else if (oi.operator.setGearFlapOut()) {
+//			new SetGearFlap(false).start();
+//		}
+//		if (oi.operator.setFunnelPistonDown()) {
+//			new SetFunnelCommand(true).start();
+//		} else if (oi.operator.setFunnelPistonUp()) {
+//			new SetFunnelCommand(false).start();
+//		}
+//		if (oi.operator.runFeedIn()) {
+//			shoot.setFeedMotor(0.7);
+//		} else if (oi.operator.runFeedOut()) {
+//			shoot.setFeedMotor(-0.7);
+//		} else {
+//			shoot.setFeedMotor(0);
+//		}
+//		if (oi.operator.runAgitator()) {
+//			shoot.setHooperIn(1.0);
+//			shoot.setHooperOutRaw(1.0);
+//		} else {
+//			shoot.setHooperIn(0.0);
+//			shoot.setHooperOutRaw(0.0);
+//		}
+//		if (oi.operator.runFunnelMotors()) {
+//			gear.setFunnelMotor(0.5);
+//		} else {
+//			gear.setFunnelMotor(0);
+//		}
+//		Robot.turret.manualSet(oi.operator.getTurret());
 		// SmartDashboard.putNumber("lidar", lidar.getDistance());
 		// SmartDashboard.putBoolean("lidar", lidar.getAderess());
 		/*
@@ -295,28 +295,35 @@ public class Robot extends IterativeRobot {
 	}
 
 	public static void doTheDash() {
-		SmartDashboard.putString("Shifting?", drive.getShift());
-		SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
-		SmartDashboard.putNumber("Auto Position Potentiometer", drive.getAutoGoal());
-		SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is red!");
-		SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
-		SmartDashboard.putBoolean("Is Compressor Running", rcc.getCompressorState());
-		SmartDashboard.putNumber("Encoder Left", drive.getCurrentDTLeft());
-		SmartDashboard.putNumber("Encoder Right", drive.getCurrentDTRight());
-		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());
-		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
-		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());
-		SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
-		SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
-		SmartDashboard.putNumber("Einstein Flywheel Count LEFT", shoot.getLeftFlywheelEin());
-		SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT", shoot.getRightFlywheelEin());
-		SmartDashboard.putNumber("Flywheel RPM LEFT", shoot.getLeftFlywheel());
-		SmartDashboard.putNumber("Flywheel RPM RIGHT", shoot.getRightFlywheel());
-		SmartDashboard.putBoolean("Is Right HAL tripped?", turret.getRightHal());
-		SmartDashboard.putBoolean("Is Left HAL tripped?", turret.getLeftHal());
-		SmartDashboard.putNumber("Distance Turret Moved", turret.getEncoderDistance());
-		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
-		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
+//		SmartDashboard.putString("Shifting?", drive.getShift());
+//		SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
+//		SmartDashboard.putNumber("Auto Position Potentiometer", drive.getAutoGoal());
+//		SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is red!");
+//		SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
+//		SmartDashboard.putBoolean("Is Compressor Running", rcc.getCompressorState());
+//		SmartDashboard.putNumber("Right Motor Front Current", drive.motors[0].getOutputCurrent());
+//		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
+//		SmartDashboard.putNumber("Left Motor Front Current", drive.motors[2].getOutputCurrent());
+//		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
+		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
+		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
+		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
+		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
+
+//		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());
+//		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
+//		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());
+//		SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
+//		SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
+//		SmartDashboard.putNumber("Einstein Flywheel Count LEFT", shoot.getLeftFlywheelEin());
+//		SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT", shoot.getRightFlywheelEin());
+//		SmartDashboard.putNumber("Flywheel RPM LEFT", shoot.getLeftFlywheel());
+//		SmartDashboard.putNumber("Flywheel RPM RIGHT", shoot.getRightFlywheel());
+//		SmartDashboard.putBoolean("Is Right HAL tripped?", turret.getRightHal());
+//		SmartDashboard.putBoolean("Is Left HAL tripped?", turret.getLeftHal());
+//		SmartDashboard.putNumber("Distance Turret Moved", turret.getEncoderDistance());
+//		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
+//		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
 	}
 
 }

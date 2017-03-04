@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
-public class IntakeSubsytem extends Subsystem {
+public class IntakeSubsystem extends Subsystem {
 	
 	public CANTalon rollerMotorLeft, rollerMotorRight;
 	public CANTalon wheelRoller;
 	public DoubleSolenoid leftIntakeSol;
 	public DoubleSolenoid rightIntakeSol;
-	public void IntakeSubystem(){
+	
+	public IntakeSubsystem() {
 		rollerMotorLeft = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_LEFT);
 		rollerMotorRight = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_RIGHT);
 		//wheelRoller = new CANTalon(RobotMap.Intake.HOOPER_FEEDER_PORT);

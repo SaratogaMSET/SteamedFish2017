@@ -29,12 +29,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static double k_P = .05; // 0.2
 		public static double k_I = 0;
 		public static double k_D = 0.03;
-		public static final double DISTANCE_PER_PULSE = 12.56 / 256 * 60.0 / 14.0; // assuming
-																					// cuz
-																					// 4pi
-																					// is
-																					// circumference???
-
+//		public static final double DISTANCE_PER_PULSE = 12.56 / 256 * 60.0 / 14.0; 
+		public static final double DISTANCE_PER_PULSE_LOW = 4.00 * Math.PI / 2048 * 14 / 60;	//pulse rate is 2048 this is in inches																		// cuz
+		public static final double DISTANCE_PER_PULSE_HIGH = 4.00 * Math.PI / 2048 * 30/44; 						
 	}
 
 	public static class potentiometerConstants {
@@ -91,29 +88,34 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		time = new Timer();
 		isAutoShiftTrue = false;
 
-		// leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
-		// RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
-		// false);
-		// rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
-		// RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
-		// true);
-		// leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
-		// rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+		 leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
+		 RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
+		 false);
+		 rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
+		 RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
+		 true);
+		 leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-		// encoderDrivePID = this.getPIDController();
-		// encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		// encoderDrivePID.setOutputRange(-.65, .65);
+		 encoderDrivePID = this.getPIDController();
+		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+		 encoderDrivePID.setOutputRange(-.65, .65);
 	}
 
 	public void shift(boolean highGear) {
 		driveSol.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
 		if (highGear) {
 			isHighGear = "High Gear!";
+			leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_HIGH);
+			rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_HIGH);
 		} else if (!highGear) {
 			isHighGear = "Low Gear!";
+			leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
+			rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
 		}
 	}
 

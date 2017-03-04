@@ -15,7 +15,6 @@ import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
-import org.usfirst.frc.team649.robot.subsystems.HangSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 //import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
@@ -54,7 +53,6 @@ public class Robot extends IterativeRobot {
 	public static RightDTPID rightDT;
 	public static LidarSubsystem lidar;
 	public static GearSubsystem gear;
-	public static HangSubsystem hang;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
@@ -113,7 +111,7 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 		drive = new DrivetrainSubsystem();
 //		compressor = new Compressor();
-//		intake = new IntakeSubsytem();
+		intake = new IntakeSubsystem();
 //		shoot = new ShooterSubsystem();
 //		camera = new CameraSwitcher();
 		// hopper = new HopperSubsystem();
@@ -227,13 +225,13 @@ public class Robot extends IterativeRobot {
 //		} else if (oi.operator.setFunnelPistonUp()) {
 //			new SetFunnelCommand(false).start();
 //		}
-//		if (oi.operator.runFeedIn()) {
-//			shoot.setFeedMotor(0.7);
-//		} else if (oi.operator.runFeedOut()) {
-//			shoot.setFeedMotor(-0.7);
-//		} else {
-//			shoot.setFeedMotor(0);
-//		}
+		if (oi.operator.runFeedIn()) {
+			intake.setIntakeRollerMotor(1.0);
+		} else if (oi.operator.runFeedOut()) {
+			intake.setIntakeRollerMotor(-1.0);
+		} else {
+			intake.setIntakeRollerMotor(0.0);
+		}
 //		if (oi.operator.runAgitator()) {
 //			shoot.setHooperIn(1.0);
 //			shoot.setHooperOutRaw(1.0);

@@ -44,7 +44,7 @@ public class IntakeSubsystem extends Subsystem {
 		}
 	}
 	public void setIntakeRollerMotor(double power){
-		rollerMotorRight.set(power);
+		rollerMotorRight.set(-power);
 		rollerMotorLeft.set(-power);
 	}
 	public void setWheelRollers(double power){

@@ -84,29 +84,41 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public AnalogPotentiometer pospot;
 	public AnalogPotentiometer goalpot;
 	public AnalogPotentiometer alliancepot;
+	public String isHighGear;
 
 	public DrivetrainSubsystem() {
 		super("Drivetrain PID", PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
 		isAutoShiftTrue = false;
 
-//		leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0], RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
-//				false);
-//		rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0], RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
-//				true);
-//		leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
-//		rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+		// leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
+		// RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
+		// false);
+		// rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
+		// RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
+		// true);
+		// leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
+		// rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE);
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-//		encoderDrivePID = this.getPIDController();
-//		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-//		encoderDrivePID.setOutputRange(-.65, .65);
+		// encoderDrivePID = this.getPIDController();
+		// encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+		// encoderDrivePID.setOutputRange(-.65, .65);
 	}
 
 	public void shift(boolean highGear) {
 		driveSol.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+		if (highGear) {
+			isHighGear = "High Gear!";
+		} else if (!highGear) {
+			isHighGear = "Low Gear!";
+		}
+	}
+
+	public String getShift() {
+		return isHighGear;
 	}
 
 	public void autoShift() {
@@ -166,29 +178,29 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public double getDistanceDTBoth() {
 		return rightEncoder.getDistance() / 2 + leftEncoder.getDistance() / 2;
 	}
-	
+
 	public double getDistanceDTTurn() {
-		   double distance = (Math.abs(getDistanceDTLeft()) + Math.abs(getDistanceDTRight()))/2;
-		   if (encoderDrivePID.getSetpoint() < 0) {
-			   return -distance;
-		   }
-		   return distance;
-   }
-	
+		double distance = (Math.abs(getDistanceDTLeft()) + Math.abs(getDistanceDTRight())) / 2;
+		if (encoderDrivePID.getSetpoint() < 0) {
+			return -distance;
+		}
+		return distance;
+	}
+
 	public double getVoltageDTRight() {
-		return (motors[0].getOutputVoltage() + motors[1].getOutputVoltage())/2;
+		return (motors[0].getOutputVoltage() + motors[1].getOutputVoltage()) / 2;
 	}
-		   
-    public double getVoltageDTLeft() {
-    	return (motors[2].getOutputVoltage() + motors[3].getOutputVoltage())/2;
-    }
-		   
+
+	public double getVoltageDTLeft() {
+		return (motors[2].getOutputVoltage() + motors[3].getOutputVoltage()) / 2;
+	}
+
 	public double getCurrentDTRight() {
-	    return (motors[0].getOutputCurrent() + motors[1].getOutputCurrent())/2;
+		return (motors[0].getOutputCurrent() + motors[1].getOutputCurrent()) / 2;
 	}
-		   
+
 	public double getCurrentDTLeft() {
-		return (motors[2].getOutputCurrent() + motors[3].getOutputCurrent())/2;
+		return (motors[2].getOutputCurrent() + motors[3].getOutputCurrent()) / 2;
 	}
 
 	@Override
@@ -196,7 +208,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		// TODO Auto-generated method stub
 		if (Robot.isPIDTurn == true) {
 			return getDistanceDTTurn();
-			//return getGyroValue();
+			// return getGyroValue();
 		}
 		return getDistanceDTBoth();
 	}
@@ -228,7 +240,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		if (Robot.isPIDTurn == true) {
 			rawDrive(output, -output);
 		} else {
-			rawDrive(output,output);
+			rawDrive(output, output);
 		}
 	}
 
@@ -297,4 +309,5 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			}
 		}
 	}
+
 }

@@ -7,25 +7,22 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetGearIntakeFlywheels extends Command {
-	//1 = ball
-	//2 = gear
-	//3 = stop
-	int state;
-    public SetGearIntakeFlywheels(int state) {
+public class SetFunnelCommand extends Command {
+	
+	boolean isOut;
+	/**
+	 * Used to set the intake stuffs
+	 * @param state
+	 */
+    public SetFunnelCommand(boolean state) {
+        // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	this.state = state;
+    	isOut = state;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(state == 1){
-        	Robot.gear.setFunnelMotor(Robot.gear.INTAKE_BALL_SPEED);
-    	}else if(state == 2){
-    		Robot.gear.setFunnelMotor(Robot.gear.INTAKE_GEAR_SPEED);
-    	}else{
-    		Robot.gear.setFunnelMotor(0.0);
-    	}
+    	Robot.gear.setFunnelPistonState(isOut);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -39,6 +36,11 @@ public class SetGearIntakeFlywheels extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	if(isOut){
+    		Robot.prevStateFunnelFlap = true;
+    	}else{
+    		Robot.prevStateFunnelFlap = false;
+    	}
     }
 
     // Called when another command which requires one or more of the same

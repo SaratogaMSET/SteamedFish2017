@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.gearcommands;
+package org.usfirst.frc.team649.intakecommands;
 
 import org.usfirst.frc.team649.robot.Robot;
 
@@ -7,22 +7,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetIntakeGearCommand extends Command {
-	
-	boolean isOut;
-	/**
-	 * Used to set the intake stuffs
-	 * @param state
-	 */
-    public SetIntakeGearCommand(boolean state) {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
-    	isOut = state;
+public class SetIntakeWedgePistons extends Command {
+	boolean setPistonsDown; 
+    public SetIntakeWedgePistons(boolean down) {
+    	setPistonsDown = down;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.gear.setIntakeFlapPistonState(isOut);
+    	Robot.intake.setIntakeSol(setPistonsDown);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -31,15 +24,16 @@ public class SetIntakeGearCommand extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+//        return Robot.intake.isIntakeDown();
+    	return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	if(isOut){
-    		Robot.prevStateFunnelFlap = true;
+    	if(setPistonsDown){
+    		Robot.prevStateIntakePistons = true;
     	}else{
-    		Robot.prevStateFunnelFlap = false;
+    		Robot.prevStateIntakePistons = false;
     	}
     }
 

@@ -1,7 +1,7 @@
 package org.usfirst.frc.team649.autonomousSequences;
 
-import org.usfirst.frc.team649.gearcommands.SetGearIntakeFlywheels;
-import org.usfirst.frc.team649.gearcommands.SetIntakeGearCommand;
+import org.usfirst.frc.team649.gearcommands.SetFunnelFlywheels;
+import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.BackToZeroTurretCommand;
@@ -24,8 +24,8 @@ public class RedSideHopperOnlyBoilerSide extends CommandGroup {
     	addSequential(new DrivetrainPIDCommand(92, false));
     	addParallel(new BackToZeroTurretCommand());
     	addSequential(new DrivetrainPIDCommand(-90, true));//addSequential(new TurnWithEncoders(-90));
-    	addParallel(new SetIntakeGearCommand(true));
-    	addParallel(new SetGearIntakeFlywheels(1));
+    	addParallel(new SetFunnelCommand(true));
+    	addParallel(new SetFunnelFlywheels(1));
     	addSequential(new DrivetrainPIDCommand(19.375, false));
     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
     	addParallel(new SetHoodCommand(40)); //temporary

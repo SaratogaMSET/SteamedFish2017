@@ -25,6 +25,9 @@ public class OI {
 		operator = new Operator();
 	}
 	 public class Operator {
+		 public double getSlider(){
+			return ((-operatorJoystick.getRawAxis(3))+1)/2; 
+		}
 		 public boolean getShoot(){
 			 return operatorJoystick.getRawButton(1);
 		 }
@@ -65,6 +68,10 @@ public class OI {
 				 return 0.0;
 			 }
 		 }
+		 public boolean davidSwitch()
+		 {
+			 return operatorJoystick.getRawButton(12);
+		 }
 		
 	 }
 	 public class Driver {
@@ -91,6 +98,10 @@ public class OI {
 
 			public Boolean shiftUp() {
 				return driveJoystickHorizontal.getRawButton(1);
+			}
+			public boolean kyleSwitch()
+			{
+				return driveJoystickHorizontal.getRawButton(2);
 			}
 	 }
 }

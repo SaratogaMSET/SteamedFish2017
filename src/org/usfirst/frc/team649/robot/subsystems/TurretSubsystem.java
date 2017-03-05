@@ -24,7 +24,6 @@ public class TurretSubsystem extends PIDSubsystem {
 	public static final double TURRET_CIRCUMFERENCE = 20;
 
 	public static class PIDConstantsTurret {
-		public static final double PID_ABSOLUTE_TOLERANCE =0.25;
 		public static final double ABS_TOLERANCE = 0.25;
 		public static  double k_P = .01; //0.2
 		public static double k_I = 0;
@@ -80,7 +79,7 @@ public class TurretSubsystem extends PIDSubsystem {
     }
 	public boolean isOnTarget(double distance) {
 		// TODO Auto-generated method stub
-		return Math.abs(getEncoderDistance() - distance) < DrivetrainSubsystem.PIDConstants.ABS_TOLERANCE;
+		return Math.abs(getEncoderDistance() - distance) < TurretSubsystem.PIDConstantsTurret.ABS_TOLERANCE;
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

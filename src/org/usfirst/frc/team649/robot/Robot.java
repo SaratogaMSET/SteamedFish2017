@@ -11,6 +11,7 @@ import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.RobotMap.Camera;
+import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
@@ -83,6 +84,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public static String ip = "N/A";
 	public static Center currCenter;
+	public static double visionDistance;
 	public static double prevTimeCenterUpdated = 0;
 	public static double rateCenterUpdated = 0;
 	public static int PORT = 5805;
@@ -110,9 +112,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		drive = new DrivetrainSubsystem();
-//		compressor = new Compressor();
+		compressor = new Compressor();
 		intake = new IntakeSubsystem();
-//		shoot = new ShooterSubsystem();
+		shoot = new ShooterSubsystem();
 //		camera = new CameraSwitcher();
 		// hopper = new HopperSubsystem();
 		// prevStateShooting = false;
@@ -162,6 +164,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		// new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
 		// drive.getAlliance());
+		drive.resetEncoders();
+		new DrivetrainPIDCommand(134, false).start();
 		
 	}
 	
@@ -172,18 +176,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-//		doTheDash();
+		doTheDash();
 	}
 
 	@Override
 	public void teleopInit() {
-		//new RunCommpresorCommand(true).start();
+		new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
-		// prevStateGearFlap = false;
-		// new SetGearFlap(false).start();
-		// prevStateIntakePistons = false;
-		// new SetIntakePistons(false).start();
+		drive.resetEncoders();
+		prevStateGearFlap = false;
+		//new SetGearFlap(false).start();
+		prevStateIntakePistons = false;
+		//new SetIntakeWedgePistons(false).start();
 		prevStateFunnelFlap = false;
 		//new SetFunnelCommand(false).start();
 
@@ -198,36 +203,43 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
-//		if (oi.operator.runFunnelMotors()) {
-//			intake.setIntakeRollerMotor(0.5);
-//		} else {
-//			intake.setIntakeRollerMotor(0.0);
-//		}
-//		if (oi.operator.getShoot()) {
+		if (oi.operator.runFunnelMotors()) {
+			
+		} else {
+			intake.setIntakeRollerMotor(0.0);
+		}
+		if (oi.operator.getShoot()) {
 //			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
 //			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
-//		} else {
-//			Robot.shoot.setLeftFlywheel(0.0);
-//			Robot.shoot.setRightFlywheel(0.0);
-//		}
-//		if (oi.operator.setDownIntakePistons()) {
-//			new SetIntakeWedgePistons(true).start();
-//		} else if (oi.operator.setUpIntakePistons()) {
-//			new SetIntakeWedgePistons(false).start();
-//		}
-//		if (oi.operator.setGearFlapIn()) {
-//			new SetGearFlap(true).start();
-//		} else if (oi.operator.setGearFlapOut()) {
-//			new SetGearFlap(false).start();
-//		}
-//		if (oi.operator.setFunnelPistonDown()) {
-//			new SetFunnelCommand(true).start();
-//		} else if (oi.operator.setFunnelPistonUp()) {
-//			new SetFunnelCommand(false).start();
-//		}
-		if (oi.operator.runFeedIn()) {
+			shoot.simpleBangBang(0.5, 0.65, 1600, 1900, 1300);
+		} else {
+			Robot.shoot.setLeftFlywheel(0.0);
+			Robot.shoot.setRightFlywheel(0.0);
+		}
+		if(oi.operator.runFeederWheel()){
+			shoot.setFeedMotor(1.0);
+		}else{
+			shoot.setFeedMotor(0.0);
+		}
+		if (oi.operator.setDownIntakePistons()) {
+			new SetIntakeWedgePistons(true).start();
+		} else if (oi.operator.setUpIntakePistons()) {
+			new SetIntakeWedgePistons(false).start();
+		}
+		if (oi.operator.setGearFlapIn()) {
+			new SetGearFlap(true).start();
+		} else if (oi.operator.setGearFlapOut()) {
+			new SetGearFlap(false).start();
+		
+		}
+		if (oi.operator.setFunnelPistonDown()) {
+			new SetFunnelCommand(true).start();
+		} else if (oi.operator.setFunnelPistonUp()) {
+			new SetFunnelCommand(false).start();
+		}
+		if (oi.operator.runIntakeIn()) {
 			intake.setIntakeRollerMotor(1.0);
-		} else if (oi.operator.runFeedOut()) {
+		} else if (oi.operator.runIntakeOut()) {
 			intake.setIntakeRollerMotor(-1.0);
 		} else {
 			intake.setIntakeRollerMotor(0.0);
@@ -291,6 +303,13 @@ public class Robot extends IterativeRobot {
 			System.out.println("ERROR: passed in null center");
 		}
 	}
+	public static synchronized void updateVisionDistance(double d){
+		if(d != 0.0){
+			visionDistance = d;
+		}else{
+			System.out.println("ERROR: passed in 0 distance");
+		}
+	}
 
 	public static void doTheDash() {
 //		SmartDashboard.putString("Shifting?", drive.getShift());
@@ -307,7 +326,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
 		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
 		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
-
+		SmartDashboard.putNumber("Left Ein", shoot.getLeftFlywheelEin());
+		SmartDashboard.putNumber("Right Ein", shoot.getRightFlywheelEin());
+		
 //		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());
 //		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
 //		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());

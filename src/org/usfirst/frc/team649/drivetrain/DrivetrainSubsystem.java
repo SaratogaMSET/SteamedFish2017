@@ -24,16 +24,16 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	 */
 
 	public static class PIDConstants {
-		public static final double PID_ABSOLUTE_TOLERANCE = 3.0;
-		public static final double ABS_TOLERANCE = 3.0;
-		public static double k_P = .05; // 0.2
-		public static double k_I = 0;
-		public static double k_D = 0.03;
+		public static final double PID_ABSOLUTE_TOLERANCE = .75;
+		public static double k_P = 0.03;//0.45;//0.03; // 0.01
+		public static double k_I = 0;//0.15;//0;
+		public static double k_D = 0.05;//0.35;//0.5; // 0.2
 //		public static final double DISTANCE_PER_PULSE = 12.56 / 256 * 60.0 / 14.0; 
-		public static final double DISTANCE_PER_PULSE_LOW = 4.00 * Math.PI / 2048 * 14 / 60;	//pulse rate is 2048 this is in inches																		// cuz
+		public static final double DISTANCE_PER_PULSE_LOW = 4.00 * Math.PI / 2048 * 14 / 60;	//pulse rate is 2048; this is in inches																		// cuz
 		public static final double DISTANCE_PER_PULSE_HIGH = 4.00 * Math.PI / 2048 * 30/44; 						
 	}
 
+	
 	public static class potentiometerConstants {
 		public static final double SCALE = 0;
 		public static double[] DO_NOTHING_RANGE = { -0.10, 1.175 };
@@ -94,8 +94,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		 rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
 		 RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
 		 true);
-		 leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
-		 rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
+		 rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
 		 
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
@@ -103,7 +103,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		}
 		 encoderDrivePID = this.getPIDController();
 		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		 encoderDrivePID.setOutputRange(-.65, .65);
+		 encoderDrivePID.setOutputRange(0, 0.65); // 0.65
 	}
 
 	public void shift(boolean highGear) {
@@ -140,6 +140,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		return leftEncoder.getRate();
 	}
 
+
 	public double rightEncoderSpeed() {
 		return rightEncoder.getRate();
 	}
@@ -153,8 +154,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(right);
-		motors[1].set(right);
+		motors[0].set(right * 0.915);
+		motors[1].set(right * 0.915);
 		motors[2].set(-left);
 		motors[3].set(-left);
 	}
@@ -253,7 +254,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public boolean isOnTarget(double distance) {
 		// TODO Auto-generated method stub
-		return Math.abs(getDistanceDTBoth() - distance) < DrivetrainSubsystem.PIDConstants.ABS_TOLERANCE;
+		return Math.abs(getDistanceDTBoth() - distance) < DrivetrainSubsystem.PIDConstants.PID_ABSOLUTE_TOLERANCE;
 	}
 
 	public boolean isPotWithinRange(AnalogPotentiometer pot, double[] range) {

@@ -8,6 +8,7 @@ import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -44,8 +45,9 @@ public class IntakeSubsystem extends Subsystem {
 		}
 	}
 	public void setIntakeRollerMotor(double power){
-		rollerMotorRight.set(-power);
-		rollerMotorLeft.set(-power);
+		rollerMotorRight.set(-power); //this is red
+		//rollerMotorLeft.set(-power);
+		SmartDashboard.putNumber("Intake current", rollerMotorRight.getOutputCurrent());
 	}
 	public void setWheelRollers(double power){
 		wheelRoller.set(power);

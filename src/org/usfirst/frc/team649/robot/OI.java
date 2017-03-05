@@ -52,11 +52,14 @@ public class OI {
 		 public boolean setUpIntakePistons(){
 			 return operatorJoystick.getRawButton(9);
 		 }
-		 public boolean runFeedOut() {
+		 public boolean runIntakeOut() {
 			 return operatorJoystick.getRawButton(10);
 		 }
-		 public boolean runFeedIn(){
+		 public boolean runIntakeIn(){
 			 return operatorJoystick.getRawButton(11);
+		 }
+		 public boolean runFeederWheel(){
+			 return operatorJoystick.getRawButton(12);
 		 }
 		 public boolean runAgitator() {
 			 return operatorJoystick.getRawButton(2);

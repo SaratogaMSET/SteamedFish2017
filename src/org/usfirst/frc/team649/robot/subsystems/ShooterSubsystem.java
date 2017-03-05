@@ -1,5 +1,6 @@
 package org.usfirst.frc.team649.robot.subsystems;
 
+import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.RobotMap;
 
 import com.ctre.CANTalon;
@@ -37,11 +38,11 @@ public class ShooterSubsystem extends Subsystem {
     	leftFlywheel = new CANTalon(RobotMap.Shooter.LEFT_SHOOTER_FLYWHEEL_PORT);
     	rightFlywheel = new CANTalon(RobotMap.Shooter.RIGHT_SHOOTER_FLYWHEEL_PORT);
     	feederMotor = new CANTalon(RobotMap.Shooter.SHOOTER_FEEDER_PORT);
-//    	leftEin = new Counter(RobotMap.Shooter.LEFT_SHOOTER_EIN_PORT);
-//    	rightEin = new Counter(RobotMap.Shooter.RIGHT_SHOOTER_EIN_PORT);
+    	leftEin = new Counter(RobotMap.Shooter.LEFT_SHOOTER_EIN_PORT);
+    	rightEin = new Counter(RobotMap.Shooter.RIGHT_SHOOTER_EIN_PORT);
     }
     public void setLeftFlywheel(double power){
-    	leftFlywheel.set(power);
+    	leftFlywheel.set(-power);
     }
     public void setRightFlywheel(double power){
     	rightFlywheel.set(power);
@@ -75,6 +76,26 @@ public class ShooterSubsystem extends Subsystem {
     }
     public void setHooperOutRaw(double speed){
     	hooperMotorOut.set(speed);
+    }
+    public void simpleBangBang(double minSpeed, double maxSpeed, double RPM, double maxRPMThresh, double minRPMThresh){
+    	if(Robot.shoot.getLeftFlywheelEin() < minRPMThresh){
+    		Robot.shoot.setLeftFlywheel(1.0);
+    	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPMThresh){
+    		Robot.shoot.setLeftFlywheel(0.0);
+    	}else if(Robot.shoot.getLeftFlywheelEin() <= RPM){
+    		Robot.shoot.setLeftFlywheel(maxSpeed);
+    	}else{
+    		Robot.shoot.setLeftFlywheel(minSpeed);
+    	}
+    	if(Robot.shoot.getRightFlywheelEin() < minRPMThresh){
+    		Robot.shoot.setRightFlywheel(1.0);
+    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPMThresh){
+    		Robot.shoot.setRightFlywheel(0.0);
+    	}else if(Robot.shoot.getRightFlywheelEin() <= RPM){
+    		Robot.shoot.setRightFlywheel(maxSpeed);
+    	}else{
+    		Robot.shoot.setRightFlywheel(minSpeed);
+    	}
     }
 	@Override
 	protected void initDefaultCommand() {

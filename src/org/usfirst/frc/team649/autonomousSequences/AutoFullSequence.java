@@ -2,8 +2,6 @@ package org.usfirst.frc.team649.autonomousSequences;
 
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.AllianceSelector;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.AutoConstants;
-import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.potentiometerConstants;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.hal.AllianceStationID;
@@ -15,13 +13,13 @@ public class AutoFullSequence extends CommandGroup {
 	public AutoFullSequence(int position, int goal, int alliance) {
 		System.out.println("\n");
 
-		if (position == potentiometerConstants.DO_NOTHING || goal == AutoConstants.DO_NOTHING) {
+		if (goal == AutoConstants.DO_NOTHING) {
 			System.out.println("DOING NOTHING");
 			updateAutoSDPos("NOTHING");
 			updateAutoSDGoal("No Goal!");
 			return;
 		}
-		if (position == potentiometerConstants.POS_1 && goal == AutoConstants.FUELANDGEAR) {
+		if (goal == AutoConstants.FUELANDGEAR) {
 			System.out.println("Shooting Fuel");
 			updateAutoSDPos("Position 1");
 			updateAutoSDGoal("Fuel!");
@@ -31,7 +29,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideGearShootFarSide());
 			}
 		}
-		if (position == potentiometerConstants.POS_2 && goal == AutoConstants.FUELANDGEAR) {
+		if (goal == AutoConstants.FUELANDGEAR) {
 			System.out.println("Loading gear!");
 			updateAutoSDPos("Position 2");
 			updateAutoSDGoal("Gear!");
@@ -41,7 +39,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideGearShootMiddle());
 			}
 		}
-		if (position == potentiometerConstants.POS_3 && goal == AutoConstants.HOPPER) {
+		if (goal == AutoConstants.HOPPER) {
 			System.out.println("Hopper!");
 			updateAutoSDPos("Position 3");
 			updateAutoSDGoal("Hopper!");
@@ -51,7 +49,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideHopperOnlyBoilerSide());
 			}
 		}
-		if (position == potentiometerConstants.POS_3 && goal == AutoConstants.HOPPERANDGEAR) {
+		if (goal == AutoConstants.HOPPERANDGEAR) {
 			System.out.println("Hopper and gear!");
 			updateAutoSDPos("Position 3");
 			updateAutoSDGoal("Hopper and Gear!");

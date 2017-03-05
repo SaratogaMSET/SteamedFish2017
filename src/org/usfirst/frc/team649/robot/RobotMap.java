@@ -13,8 +13,8 @@ public class RobotMap {
 	public static final int AUTO_SELECTOR_POT_PORT = 0;
 
 	public static class Drivetrain {
-		public static final int[] LEFT_SIDE_ENCODER = { 6, 7 };
-		public static final int[] RIGHT_SIDE_ENCODER = { 8, 9 };
+		public static final int[] RIGHT_SIDE_ENCODER = { 6, 7 };
+		public static final int[] LEFT_SIDE_ENCODER = { 8, 9 };
 		// FR,BR,BL,FL
 		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
 		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };

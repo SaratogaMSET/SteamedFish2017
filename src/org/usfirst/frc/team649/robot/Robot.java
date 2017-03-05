@@ -320,7 +320,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Flywheel RPM LEFT", shoot.getLeftFlywheel());
 //		SmartDashboard.putNumber("Flywheel RPM RIGHT", shoot.getRightFlywheel());
 //		SmartDashboard.putBoolean("Is Right HAL tripped?", turret.getRightHal());
-//		SmartDashboard.putBoolean("Is Left HAL tripped?", turret.getLeftHal());
+//		SmartDashboard.putBoolean("Is Left HAL tri pped?", turret.getLeftHal());
 //		SmartDashboard.putNumber("Distance Turret Moved", turret.getEncoderDistance());
 //		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
 //		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());

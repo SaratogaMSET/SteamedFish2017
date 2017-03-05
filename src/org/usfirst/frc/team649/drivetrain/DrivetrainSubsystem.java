@@ -33,21 +33,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static final double DISTANCE_PER_PULSE_HIGH = 4.00 * Math.PI / 2048 * 30/44; 						
 	}
 
-	
-	public static class potentiometerConstants {
-		public static final double SCALE = 0;
-		public static double[] DO_NOTHING_RANGE = { -0.10, 1.175 };
-		public static double[] POS_1_POT_RANGE = { 1.195, 2.47 };
-		public static double[] POS_2_POT_RANGE = { 2.49, 3.675 };
-		public static double[] POS_3_POT_RANGE = { 3.785, 5.06 };
-		public static int DO_NOTHING = -1;
-		public static int POS_1 = 1;
-		public static int POS_2 = 2;
-		public static int POS_3 = 3;
-	}
-
 	public static class AutoConstants {
-		public static final double SCALE = 0;
+		public static final double goalScale = 0;
+		public static final double allianceScale = 0;
 		public static double[] DO_NOTHING_RANGE = { -0.10, 0.85 };
 		public static double[] GO_GEAR = { 0.87, 1.72 };
 		public static double[] GO_FUEL = { 1.74, 2.59 };
@@ -87,25 +75,24 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public DrivetrainSubsystem() {
 		super("Drivetrain PID", PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
-		time.start();
 		isAutoShiftTrue = false;
 
-		leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
-		RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
-		false);
-		rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
-		RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
-		true);
-		leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
-		rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
+		 leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
+		 RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
+		 false);
+		 rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
+		 RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
+		 true);
+		 leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
+		 rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
 		 
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-		encoderDrivePID = this.getPIDController();
-		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		encoderDrivePID.setOutputRange(0, 0.65); // 0.65
+		 encoderDrivePID = this.getPIDController();
+		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+		 encoderDrivePID.setOutputRange(0, 0.65); // 0.65
 	}
 
 	public void shift(boolean highGear) {
@@ -191,7 +178,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		}
 		return distance;
 	}
-	
+
 	public void setSampleTime(double time) {
 		sampleTime = time;
 	}
@@ -248,6 +235,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		return returnCurrent;
 	}
 
+	
 	@Override
 	protected double returnPIDInput() {
 		// TODO Auto-generated method stub
@@ -299,37 +287,34 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		return Math.abs(getDistanceDTBoth() - distance) < DrivetrainSubsystem.PIDConstants.PID_ABSOLUTE_TOLERANCE;
 	}
 
-	public boolean isPotWithinRange(AnalogPotentiometer pot, double[] range) {
+	public boolean isAlliancePotWithinRange(AnalogPotentiometer pot, double[] range) {
 		if (range.length == 2) {
-			return pot.get() * potentiometerConstants.SCALE > range[0]
-					&& pot.get() * potentiometerConstants.SCALE < range[1];
+			return pot.get() * AutoConstants.allianceScale > range[0]
+					&& pot.get() * AutoConstants.allianceScale < range[1];
+		}
+		return false;
+	}
+	public boolean isGoalPotWithinRange(AnalogPotentiometer goal, double[] range)
+	{
+		if(range.length == 6)
+		{
+			return goal.get() *AutoConstants.goalScale > range[0]
+				&& goal.get() *AutoConstants.goalScale < range[5];
 		}
 		return false;
 	}
 
-	public int getPotPosition() {
-		if (isPotWithinRange(pospot, potentiometerConstants.POS_1_POT_RANGE)) {
-			return potentiometerConstants.POS_1;
-		} else if (isPotWithinRange(pospot, potentiometerConstants.POS_2_POT_RANGE)) {
-			return potentiometerConstants.POS_2;
-		} else if (isPotWithinRange(pospot, potentiometerConstants.POS_3_POT_RANGE)) {
-			return potentiometerConstants.POS_3;
-		} else {
-			// default case
-			return potentiometerConstants.DO_NOTHING;
-		}
-	}
 
 	public int getAutoGoal() {
-		if (isPotWithinRange(goalpot, AutoConstants.GO_FUEL)) {
+		if (isGoalPotWithinRange(goalpot, AutoConstants.GO_FUEL)) {
 			return AutoConstants.FUEL;
-		} else if (isPotWithinRange(goalpot, AutoConstants.GO_GEAR)) {
+		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_GEAR)) {
 			return AutoConstants.GEAR;
-		} else if (isPotWithinRange(goalpot, AutoConstants.GO_FUELANDGEAR)) {
+		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_FUELANDGEAR)) {
 			return AutoConstants.FUELANDGEAR;
-		} else if (isPotWithinRange(goalpot, AutoConstants.GO_HOPPER)) {
+		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_HOPPER)) {
 			return AutoConstants.HOPPER;
-		} else if (isPotWithinRange(goalpot, AutoConstants.GO_HOPPERANDGEAR)) {
+		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_HOPPERANDGEAR)) {
 			return AutoConstants.HOPPERANDGEAR;
 		} else {
 			// DEFAULT CASE
@@ -338,9 +323,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public int getAlliance() {
-		if (isPotWithinRange(alliancepot, AllianceSelector.BLUE_RANGE)) {
+		if (isAlliancePotWithinRange(alliancepot, AllianceSelector.BLUE_RANGE)) {
 			return AllianceSelector.BLUE;
-		} else if (isPotWithinRange(alliancepot, AllianceSelector.RED_RANGE)) {
+		} else if (isAlliancePotWithinRange(alliancepot, AllianceSelector.RED_RANGE)) {
 			return AllianceSelector.RED;
 		} else {
 			// BIG ERROR in this case pull from FMS!

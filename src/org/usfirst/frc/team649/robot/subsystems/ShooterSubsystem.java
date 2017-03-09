@@ -37,6 +37,8 @@ public class ShooterSubsystem extends Subsystem {
     	hooperMotorOut = new CANTalon(RobotMap.Shooter.HOOPER_OUT_PORT);
     	leftFlywheel = new CANTalon(RobotMap.Shooter.LEFT_SHOOTER_FLYWHEEL_PORT);
     	rightFlywheel = new CANTalon(RobotMap.Shooter.RIGHT_SHOOTER_FLYWHEEL_PORT);
+    	leftFlywheel.enableBrakeMode(false);
+    	rightFlywheel.enableBrakeMode(false);
     	feederMotor = new CANTalon(RobotMap.Shooter.SHOOTER_FEEDER_PORT);
     	leftEin = new Counter(RobotMap.Shooter.LEFT_SHOOTER_EIN_PORT);
     	rightEin = new Counter(RobotMap.Shooter.RIGHT_SHOOTER_EIN_PORT);

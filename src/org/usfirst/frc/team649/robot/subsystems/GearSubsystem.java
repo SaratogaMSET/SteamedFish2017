@@ -30,7 +30,7 @@ public class GearSubsystem extends Subsystem {
 	public static final double INTAKE_BALL_SPEED = -0.15;
 	
 	public GearSubsystem(){
-//		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
+		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
 		funnelMotor = new CANTalon(RobotMap.Gear.GEAR_ROLLER_PORT);
 		gearSol = new DoubleSolenoid(RobotMap.Gear.GEAR_SOL_PORT[0], RobotMap.Gear.GEAR_SOL_PORT[1], RobotMap.Gear.GEAR_SOL_PORT[2]);
 		intakeFlapSol = new DoubleSolenoid(RobotMap.Gear.GEAR_FUNNEL_PORT[0],RobotMap.Gear.GEAR_FUNNEL_PORT[1],RobotMap.Gear.GEAR_FUNNEL_PORT[1]);

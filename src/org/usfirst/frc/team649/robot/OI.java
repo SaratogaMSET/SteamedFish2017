@@ -68,7 +68,7 @@ public class OI {
 			 if(operatorJoystick.getX() >= 0.05||operatorJoystick.getX()<=-0.05){
 				 return operatorJoystick.getX();
 			 }else{
-				 return 0.0;
+				 return 0;
 			 }
 		 }
 		 public boolean davidSwitch()

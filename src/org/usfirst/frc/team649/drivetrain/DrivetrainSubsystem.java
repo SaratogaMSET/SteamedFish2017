@@ -73,7 +73,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public double sampleTime = 2.0;
 
 	public DrivetrainSubsystem() {
-		super("Drivetrain PID", PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
+		super(PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
 		isAutoShiftTrue = false;
 

@@ -14,8 +14,11 @@ public class RobotMap {
 
 	public static class Drivetrain {
 
-		public static final int[] RIGHT_SIDE_ENCODER = { 6, 7 };
-		public static final int[] LEFT_SIDE_ENCODER = { 8, 9 };
+//		public static final int[] RIGHT_SIDE_ENCODER = { 6, 7 };
+//		public static final int[] LEFT_SIDE_ENCODER = { 8, 9 };
+		//S&A
+		public static final int[] RIGHT_SIDE_ENCODER = { 4, 5 };
+		public static final int[] LEFT_SIDE_ENCODER = { 6, 7 };
 		// FR,BR,BL,FL
 		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
 		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };
@@ -42,19 +45,21 @@ public class RobotMap {
 	}
 
 	public static class Hood {
-		public static final int HOOD_SERVO_PORT = 0;
+		public static final int HOOD_SERVO_RIGHT_PORT = 0;
+		public static final int HOOD_SERVO_LEFT_PORT = 1;
 	}
 
 	public static class Turret {
-		public static final int TURRET_MOTOR_PORT = 10;
-		public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
+		public static final int TURRET_MOTOR_PORT = 12;
+		//public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
+		public static final int TURRET_ABS_ENCODER_PORT = 3;
 		public static final int TURRET_HALL_EFFECT_RIGHT_PORT = 9;
 		public static final int TURRET_HALL_EFFECT_LEFT_PORT = 10;
 	}
 
 	public static class Gear {
 		public static final int GEAR_ROLLER_PORT = 4;
-		public static final int GEAR_IR_PORT = 11;
+		public static final int GEAR_IR_PORT = 2;
 		public static final int[] GEAR_SOL_PORT = { 2, 6, 7 };
 		public static final int[] GEAR_FUNNEL_PORT = { 2, 4, 5 };
 	}
@@ -67,6 +72,7 @@ public class RobotMap {
 
 	public static class Hopper {
 		public static final int RIGHT_AGITATOR = 10;
+		//crack
 		public static final int LEFT_AGITATOR = 11;
 	}
 

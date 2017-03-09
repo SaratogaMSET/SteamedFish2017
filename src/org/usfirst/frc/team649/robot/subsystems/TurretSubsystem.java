@@ -87,6 +87,11 @@ public class TurretSubsystem extends PIDSubsystem {
     }
 
     
+    
+    //S&A
+    public void turn(double power){
+		turretMotor.set(power);
+	}
 
    
 }

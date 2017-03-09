@@ -17,7 +17,7 @@ public class SetHoodCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.hood.setServoWIthAngle(angle);
+    	Robot.hood.setServoWithAngle(angle);
     }
 
     // Called repeatedly when this Command is scheduled to run

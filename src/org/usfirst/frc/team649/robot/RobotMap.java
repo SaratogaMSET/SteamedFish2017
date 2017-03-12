@@ -72,7 +72,6 @@ public class RobotMap {
 
 	public static class Hopper {
 		public static final int RIGHT_AGITATOR = 10;
-		//crack
 		public static final int LEFT_AGITATOR = 11;
 	}
 

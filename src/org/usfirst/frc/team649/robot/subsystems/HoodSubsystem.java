@@ -17,12 +17,15 @@ public class HoodSubsystem extends Subsystem {
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	public static final double zeroDegreePWM = 397;
-	public static final double maxDegreeValue = 198.8696;
-	public static final double maxDegreePWM = 1427;
-	public static final double PWMPerDegree = (maxDegreePWM-zeroDegreePWM)/maxDegreeValue;
-	public static final double minActualPWM = 3.3; //temporary
-	public static final double maxActualPWM = 67.9; //temporary 
+	public static final double zeroDegreePWMRight = 1500;
+	public static final double maxDegreePWMRight = 1785;
+	public static final double anglePerPWMRight = 285/(58.3-3.4);
+	public static final double zeroDegreePWMLeft = 187;
+	public static final double maxDegreePWMLeft = 482;
+	public static final double anglePerPWMLeft = 285/(58.3-3.4);
+	public static final double minAngle = 0;
+	public static final double maxAngle = 100;
+	
 	public static Servo servoRight;
 	public static Servo servoLeft;
 	
@@ -32,11 +35,13 @@ public class HoodSubsystem extends Subsystem {
 	}
 	public void setServoRaw(double joystickVal) {
 		servoRight.setRaw((int) ((joystickVal + 1.0) / 2.0 * 285) + 1500);
-		servoLeft.setRaw((int) ((-joystickVal + 1.0) / 2.0 * 295) + 187);
+		servoLeft.setRaw((int) ((-joystickVal + 1.0) / 2.0 * 285) + 187);
 	}
 	public void setServoWithAngle(double angle) {
-		servoLeft.setRaw(getPWMValueLeft(angle));
-		servoRight.setRaw(getPWMValueRight(angle));
+		if(angle <= maxAngle && angle >= minAngle){
+			servoRight.setRaw((int)((angle-minAngle)*anglePerPWMRight+1500)); //1215
+			servoLeft.setRaw((int) ((angle-minAngle)*anglePerPWMLeft + 187));
+		}
 	}
 	public int getPWMValueRight(double degree) {
 		if (degree > 35) {

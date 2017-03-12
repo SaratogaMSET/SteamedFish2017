@@ -10,15 +10,16 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class ShooterPID extends Command {
-	double distance;
-	double tolerance = 0.2;
+	double setPoint;
 	public PIDController turretPID;
 	Timer time;
 	boolean isFinished;
     public ShooterPID(double angle) {
     	requires(Robot.turret);
     	turretPID = Robot.turret.getPIDController();
-    	distance = Robot.turret.translateAngleToInches(angle);
+    	Robot.turret.countCurrentPosition();
+    	setPoint = Robot.turret.translateAngleToABS(angle) + Robot.turret.getTotalDist();
+    	time = new Timer();
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -27,13 +28,13 @@ public class ShooterPID extends Command {
     protected void initialize() {
     	turretPID.enable();
     	Robot.isTurretPIDActive = true;
-    	double setpoint = Robot.turret.getEncoderDistance() + distance;
-    	turretPID.setSetpoint(setpoint);
+    	turretPID.setSetpoint(setPoint);
     	isFinished = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	Robot.turret.countCurrentPosition();
     	if(turretPID.onTarget() && time.get() < 0.01){
     		time.start();
     	}
@@ -49,12 +50,15 @@ public class ShooterPID extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Robot.turret.getLeftHal() || Robot.turret.getRightHal() || isFinished;
+    	return isFinished || Robot.isTurretMax || Robot.isTurretMin;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	turretPID.disable();
     	Robot.turret.manualSet(0.0);
+    	time.stop();
+    	time.reset();
     }
 
     // Called when another command which requires one or more of the same

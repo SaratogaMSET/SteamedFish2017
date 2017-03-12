@@ -3,8 +3,6 @@ package org.usfirst.frc.team649.autonomousSequences;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
-import org.usfirst.frc.team649.shootercommands.BackToZeroTurretCommand;
-import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterForTimeCommandWithDelays;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.ShooterPID;
 
@@ -18,15 +16,15 @@ public class BlueSideGearShootFarSide extends CommandGroup {
 
     public BlueSideGearShootFarSide() {
     	addSequential(new DrivetrainPIDCommand(70.565, false));
-    	addParallel(new BackToZeroTurretCommand());
+//    	addParallel(new BackToZeroTurretCommand());
     	addSequential(new DrivetrainPIDCommand(60, true));//addSequential(new TurnWithEncoders(60));
     	addSequential(new DrivetrainPIDCommand(56.535, false));
     	addParallel(new ShooterPID(180));
     	addSequential(new WaitCommand(0.25));
      	addSequential(new SetGearFlap(false));
      	addSequential(new DrivetrainPIDCommand(-56.535, false));
-     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
+//     	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
     	addSequential(new DrivetrainPIDCommand(-90, true));//addSequential(new TurnWithEncoders(-90));
-    	addSequential(new FeedBallsToShooterForTimeCommandWithDelays(15.0,0.25,0.5));
+//    	addSequential(new FeedBallsToShooterForTimeCommandWithDelays(15.0,0.25,0.5));
     }
 }

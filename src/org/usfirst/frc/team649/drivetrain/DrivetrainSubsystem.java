@@ -1,5 +1,7 @@
 package org.usfirst.frc.team649.drivetrain;
 
+import java.util.ArrayList;
+
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.PIDConstants;
 import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.RobotMap;
@@ -24,9 +26,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	 */
 
 	public static class PIDConstants {
-		public static final double PID_ABSOLUTE_TOLERANCE = .75;
+		public static final double PID_ABSOLUTE_TOLERANCE = 3; //2
 		public static double k_P = 0.03;//0.45;//0.03; // 0.01
-		public static double k_I = 0;//0.15;//0;
+		public static double k_I = 0.0;//0.15;//0;
 		public static double k_D = 0.05;//0.35;//0.5; // 0.2
 //		public static final double DISTANCE_PER_PULSE = 12.56 / 256 * 60.0 / 14.0; 
 		public static final double DISTANCE_PER_PULSE_LOW = 4.00 * Math.PI / 2048 * 14 / 60;	//pulse rate is 2048; this is in inches																		// cuz
@@ -62,7 +64,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public Encoder leftEncoder, rightEncoder;
 	public CANTalon[] motors;
-	public DoubleSolenoid driveSol;
+	public DoubleSolenoid driveSolLeft, driveSolRight;
 	public PIDController encoderDrivePID;
 	public boolean isAutoShiftTrue;
 	Timer time;
@@ -71,40 +73,45 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public AnalogPotentiometer alliancepot;
 	public String isHighGear;
 	public double sampleTime = 2.0;
+	public ArrayList<Double> PIDValues;
 
 	public DrivetrainSubsystem() {
 		super(PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
 		isAutoShiftTrue = false;
-
+		
 		 leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
 		 RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
 		 false);
 		 rightEncoder = new Encoder(RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[0],
 		 RobotMap.Drivetrain.RIGHT_SIDE_ENCODER[1],
 		 true);
-		 leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
-		 rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
-		 
+		 leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 driveSolLeft = new DoubleSolenoid(RobotMap.Drivetrain.LEFT_DRIVE_SOL[0],RobotMap.Drivetrain.LEFT_DRIVE_SOL[1],RobotMap.Drivetrain.LEFT_DRIVE_SOL[2]);
+		 driveSolRight = new DoubleSolenoid(RobotMap.Drivetrain.RIGHT_DRIVE_SOL[0],RobotMap.Drivetrain.RIGHT_DRIVE_SOL[1],RobotMap.Drivetrain.RIGHT_DRIVE_SOL[2]);
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
 		 encoderDrivePID = this.getPIDController();
 		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		 encoderDrivePID.setOutputRange(0, 0.65); // 0.65
+		 encoderDrivePID.setOutputRange(-0.65, 0.65); // 0.65
+		 PIDValues = new ArrayList<Double>(0);
 	}
 
 	public void shift(boolean highGear) {
-		driveSol.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+		driveSolLeft.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+		driveSolRight.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+
 		if (highGear) {
 			isHighGear = "High Gear!";
-			leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_HIGH);
-			rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_HIGH);
+			leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
+			rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_HIGH);
 		} else if (!highGear) {
 			isHighGear = "Low Gear!";
-			leftEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
-			rightEncoder.setDistancePerPulse(-PIDConstants.DISTANCE_PER_PULSE_LOW);
+			leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
+			rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
 		}
 	}
 
@@ -143,10 +150,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(right * 0.915);
-		motors[1].set(right * 0.915);
-		motors[2].set(-left);
-		motors[3].set(-left);
+		motors[0].set(left * 0.955);
+		motors[1].set(left * 0.955);
+		motors[2].set(-right);
+		motors[3].set(-right);
 	}
 
 	public void resetEncoders() {
@@ -270,10 +277,22 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	@Override
 	protected void usePIDOutput(double output) {
 		// TODO Auto-generated method stub
+		PIDValues.add(output);
+//		if (output > 0.65) {
+//			output = 0.65;
+//		} else if(output < -0.65) {
+//			output = -0.65;
+//		}
 		if (Robot.isPIDTurn == true) {
 			rawDrive(output, -output);
 		} else {
 			rawDrive(output, output);
+		}
+	}
+	
+	public void printPIDValues() {
+		for(int i = 0; i < PIDValues.size(); i++) {
+			System.out.println(PIDValues.get(i));
 		}
 	}
 

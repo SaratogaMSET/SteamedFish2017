@@ -66,8 +66,8 @@ public class OI {
 		 }
 		 public double getTurret(){
 			 if(operatorJoystick.getX() >= 0.05||operatorJoystick.getX()<=-0.05){
-				 return operatorJoystick.getX();
-			 }else{
+				 return operatorJoystick.getX()/2;
+			 } else {
 				 return 0;
 			 }
 		 }
@@ -76,6 +76,7 @@ public class OI {
 			 return operatorJoystick.getRawButton(12);
 		 }
 		
+		 
 	 }
 	 public class Driver {
 		 public double getForward() {
@@ -100,7 +101,7 @@ public class OI {
 			}
 
 			public Boolean shiftUp() {
-				return driveJoystickHorizontal.getRawButton(1);
+				return driveJoystickHorizontal.getRawButton(1) || driveJoystickVertical.getRawButton(1);
 			}
 			public boolean kyleSwitch()
 			{

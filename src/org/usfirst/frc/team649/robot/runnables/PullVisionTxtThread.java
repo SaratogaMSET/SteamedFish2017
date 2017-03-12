@@ -45,11 +45,15 @@ public class PullVisionTxtThread implements Runnable {
 //            System.out.println("FIRST LINE: " + str1);
             String[] line1 = str1.split(",");
             
-            if (line1.length >= 3){
+            if (line1.length >= 2){
             	Robot.updateCenter(new Center(Double.parseDouble(line1[0]), Double.parseDouble(line1[1])));
 //            	Robot.updateVisionDistance(Double.parseDouble(line);
             }
-            
+            String str2 = in.readLine();
+            String[] line2 = str2.split(",");
+            if(line2.length>=2){
+            	Robot.updateVisionDistance(Double.parseDouble(line2[1]));
+            }
             updateLEDs();
         }
         catch (Exception e){

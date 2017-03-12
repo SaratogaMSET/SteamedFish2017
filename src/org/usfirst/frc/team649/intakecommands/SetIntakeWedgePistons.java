@@ -25,7 +25,11 @@ public class SetIntakeWedgePistons extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
 //        return Robot.intake.isIntakeDown();
-    	return true;
+    	if(setPistonsDown){
+    		return Robot.intake.isIntakeDown();
+    	}else{
+    		return !Robot.intake.isIntakeDown();
+    	}
     }
 
     // Called once after isFinished returns true

@@ -9,21 +9,17 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class OnlyBangBangNoShootCommand extends Command {
 	int targetRPM;
-	double maxLeftSpeed;
-	double minLeftSpeed;
-	double minRightSpeed;
-	double maxRightSpeed;
-	boolean isAtSpeed;
-	double minRPMThresh;
-	double maxRPMThresh;
-    public OnlyBangBangNoShootCommand(int targetRPM, double minSpeedRight, double maxSpeedRight, double maxSpeedLeft, double minSpeedLeft, int minRPMThresh, int maxRPMThresh) {
+	int maxRPM;
+	int minRPM;
+	double maxSpeed;
+	double minSpeed;
+    public OnlyBangBangNoShootCommand(int targetRPM, int maxRPM, int minRPM, double maxSpeed, double minSpeed) {
     	this.targetRPM = targetRPM;
-    	maxLeftSpeed = maxSpeedLeft;
-    	minLeftSpeed = minSpeedLeft;
-    	maxRightSpeed = maxSpeedRight;
-    	minRightSpeed = minSpeedRight;
-    	this.minRPMThresh = minRPMThresh;
-    	this.maxRPMThresh = maxRPMThresh;
+    	this.maxRPM = maxRPM;
+    	this.minRPM = minRPM;
+    	this.maxSpeed = maxSpeed;
+    	this.minSpeed = minSpeed;
+    
     }
 
     // Called just before this Command runs the first time
@@ -33,24 +29,27 @@ public class OnlyBangBangNoShootCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(Robot.shoot.getLeftFlywheelEin() < minRPMThresh){
+
+    	if(Robot.shoot.getLeftFlywheelEin() < minRPM){
     		Robot.shoot.setLeftFlywheel(1.0);
-    	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPMThresh){
+    	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPM){
     		Robot.shoot.setLeftFlywheel(0.0);
     	}else if(Robot.shoot.getLeftFlywheelEin() <= targetRPM){
-    		Robot.shoot.setLeftFlywheel(maxLeftSpeed);
+    		Robot.shoot.setLeftFlywheel(maxSpeed);
     	}else{
-    		Robot.shoot.setLeftFlywheel(minLeftSpeed);
+    		Robot.shoot.setLeftFlywheel(minSpeed);
+
     	}
-    	if(Robot.shoot.getRightFlywheelEin() < minRPMThresh){
+    	if(Robot.shoot.getRightFlywheelEin() < minRPM){
     		Robot.shoot.setRightFlywheel(1.0);
-    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPMThresh){
+    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPM){
     		Robot.shoot.setRightFlywheel(0.0);
     	}else if(Robot.shoot.getRightFlywheelEin() <= targetRPM){
-    		Robot.shoot.setRightFlywheel(maxLeftSpeed);
+    		Robot.shoot.setRightFlywheel(maxSpeed);
     	}else{
-    		Robot.shoot.setRightFlywheel(minLeftSpeed);
+    		Robot.shoot.setRightFlywheel(minSpeed);
     	}
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()

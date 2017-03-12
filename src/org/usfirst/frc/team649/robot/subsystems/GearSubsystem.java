@@ -33,13 +33,12 @@ public class GearSubsystem extends Subsystem {
 		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
 		funnelMotor = new CANTalon(RobotMap.Gear.GEAR_ROLLER_PORT);
 		gearSol = new DoubleSolenoid(RobotMap.Gear.GEAR_SOL_PORT[0], RobotMap.Gear.GEAR_SOL_PORT[1], RobotMap.Gear.GEAR_SOL_PORT[2]);
-		intakeFlapSol = new DoubleSolenoid(RobotMap.Gear.GEAR_FUNNEL_PORT[0],RobotMap.Gear.GEAR_FUNNEL_PORT[1],RobotMap.Gear.GEAR_FUNNEL_PORT[1]);
+		intakeFlapSol = new DoubleSolenoid(RobotMap.Gear.GEAR_FUNNEL_PORT[0],RobotMap.Gear.GEAR_FUNNEL_PORT[1],RobotMap.Gear.GEAR_FUNNEL_PORT[2]);
 	}
 	
 	public boolean isGearLoaded(){
 		return gearIRBreaker.get();
 	}
-	
 	public void setFunnelMotor(double speed){
 		funnelMotor.set(speed);
 	}
@@ -66,9 +65,9 @@ public class GearSubsystem extends Subsystem {
 	}
 	public boolean getGearFlapSolPos(){
 		if(gearSol.get() == DoubleSolenoid.Value.kForward){
-			return true;
-		}else{
 			return false;
+		}else{
+			return true;
 		}
 	}
 	

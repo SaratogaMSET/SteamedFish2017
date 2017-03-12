@@ -7,6 +7,7 @@ import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -31,8 +32,11 @@ public class ShooterSubsystem extends Subsystem {
 	public static final double MIN_SPEED_RIGHT = 0.3;
 	public static final double MIN_SPEED_LEFT = 0.4;
 	public static final double MAX_SPEED_RIGHT = 0.5;
-	
+	double currentAverageLeft, currentAverageRight;
+
     public ShooterSubsystem(){
+    	currentAverageLeft = 0.5;
+    	currentAverageRight = 0.5;
     	hooperMotorIn = new CANTalon(RobotMap.Shooter.HOOPER_IN_PORT);
     	hooperMotorOut = new CANTalon(RobotMap.Shooter.HOOPER_OUT_PORT);
     	leftFlywheel = new CANTalon(RobotMap.Shooter.LEFT_SHOOTER_FLYWHEEL_PORT);
@@ -80,6 +84,7 @@ public class ShooterSubsystem extends Subsystem {
     	hooperMotorOut.set(speed);
     }
     public void simpleBangBang(double minSpeed, double maxSpeed, double RPM, double maxRPMThresh, double minRPMThresh){
+    	
     	if(Robot.shoot.getLeftFlywheelEin() < minRPMThresh){
     		Robot.shoot.setLeftFlywheel(1.0);
     	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPMThresh){
@@ -88,6 +93,7 @@ public class ShooterSubsystem extends Subsystem {
     		Robot.shoot.setLeftFlywheel(maxSpeed);
     	}else{
     		Robot.shoot.setLeftFlywheel(minSpeed);
+
     	}
     	if(Robot.shoot.getRightFlywheelEin() < minRPMThresh){
     		Robot.shoot.setRightFlywheel(1.0);
@@ -98,6 +104,8 @@ public class ShooterSubsystem extends Subsystem {
     	}else{
     		Robot.shoot.setRightFlywheel(minSpeed);
     	}
+    	
+
     }
 	@Override
 	protected void initDefaultCommand() {

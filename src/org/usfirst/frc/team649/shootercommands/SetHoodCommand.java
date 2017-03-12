@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class SetHoodCommand extends Command {
-	double angle;
-    public SetHoodCommand(double angle) {
+	double percent;
+    public SetHoodCommand(double percent) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	this.angle = angle;
+    	this.percent = percent;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.hood.setServoWithAngle(angle);
+    	Robot.hood.setServoRaw(1.0);
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -37,7 +37,7 @@ public class TurretSubsystem extends PIDSubsystem {
 
 	public static class PIDConstantsTurret {
 		public static final double ABS_TOLERANCE = 0.02; //1.2 degrees
-		public static  double k_P = .01; //0.2
+		public static  double k_P = 0.6; //0.2, 1.0
 		public static double k_I = 0;
 		public static double k_D = 0.02;
 
@@ -50,12 +50,14 @@ public class TurretSubsystem extends PIDSubsystem {
     	//turretHalLeft = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_LEFT_PORT);
     	turretMotor = new CANTalon(RobotMap.Turret.TURRET_MOTOR_PORT);
     	turretABSEncoder = new AnalogPotentiometer(RobotMap.Turret.TURRET_ABS_ENCODER_PORT);
+    	
     	currentEncoderValue = 0;
     	prevEncoderValue = getTurretEncoderValue();
     	currentEncoderTick = 0;
     	turretTurnPID = this.getPIDController();
     	turretTurnPID.setAbsoluteTolerance(PIDConstantsTurret.ABS_TOLERANCE);
     	turretTurnPID.setOutputRange(-0.25, 0.25);
+    	
     }
     public void manualSet(double speed){
     	turretMotor.set(speed);
@@ -90,7 +92,8 @@ public class TurretSubsystem extends PIDSubsystem {
    	}
 	@Override
     protected void usePIDOutput(double output) {
-    	turretMotor.set(output);
+		SmartDashboard.putNumber("output of turret pid", -output);
+    	turretMotor.set(-output);
     }
 //	public boolean isOnTarget(double distance) {
 //		// TODO Auto-generated method stub

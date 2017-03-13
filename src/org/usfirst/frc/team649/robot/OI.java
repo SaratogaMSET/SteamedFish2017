@@ -46,15 +46,14 @@ public class OI {
 		 public boolean runFunnelMotors(){
 			 return operatorJoystick.getRawButton(7);
 		 }
+		 
 		 public boolean setDownIntakePistons(){
 			 return operatorJoystick.getRawButton(8);
 		 }
 		 public boolean setUpIntakePistons(){
 			 return operatorJoystick.getRawButton(9);
 		 }
-		 public boolean runIntakeOut() {
-			 return operatorJoystick.getRawButton(10);
-		 }
+	
 		 public boolean runIntakeIn(){
 			 return operatorJoystick.getRawButton(11);
 		 }

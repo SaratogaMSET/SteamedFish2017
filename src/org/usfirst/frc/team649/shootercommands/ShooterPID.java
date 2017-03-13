@@ -5,6 +5,7 @@ import org.usfirst.frc.team649.robot.Robot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -16,6 +17,7 @@ public class ShooterPID extends Command {
 	boolean isFinished;
     public ShooterPID(double angle) {
     	requires(Robot.turret);
+    	Robot.turret.countCurrentPosition();
     	turretPID = Robot.turret.getPIDController();
     	Robot.turret.countCurrentPosition();
     	setPoint = Robot.turret.translateAngleToABS(angle) + Robot.turret.getTotalDist();
@@ -46,16 +48,25 @@ public class ShooterPID extends Command {
     			time.reset();
     		}
     	}
+    	SmartDashboard.putBoolean("is On target", turretPID.onTarget());
+    	SmartDashboard.putNumber("setpoint turret PID", setPoint);
+    	SmartDashboard.putNumber("distance",Robot.turret.getTotalDist());
+    	SmartDashboard.putBoolean("is Turret Max", Robot.isTurretMax);
+    	SmartDashboard.putBoolean("is Turret Min", Robot.isTurretMin);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return isFinished || Robot.isTurretMax || Robot.isTurretMin;
+//    	return isFinished || Robot.isTurretMax || Robot.isTurretMin;
+    	return isFinished;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	SmartDashboard.putBoolean("is turret Finished", false);
     	turretPID.disable();
+    	SmartDashboard.putBoolean("isTurretPID enabled", turretPID.isEnabled());
+
     	Robot.turret.manualSet(0.0);
     	time.stop();
     	time.reset();

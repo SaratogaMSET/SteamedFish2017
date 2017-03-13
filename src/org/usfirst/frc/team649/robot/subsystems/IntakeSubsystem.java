@@ -20,8 +20,8 @@ public class IntakeSubsystem extends Subsystem {
 	public DoubleSolenoid rightIntakeSol;
 	
 	public IntakeSubsystem() {
-		blackRollerMotor = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_LEFT);
-		redWheelRoller = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_RIGHT);
+		blackRollerMotor = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_RIGHT);
+		redWheelRoller = new CANTalon(RobotMap.Intake.INTAKE_MOTOR_PORT_LEFT);
 		leftIntakeSol = new DoubleSolenoid(RobotMap.Intake.LEFT_INTAKE_SOL[0], RobotMap.Intake.LEFT_INTAKE_SOL[1],RobotMap.Intake.LEFT_INTAKE_SOL[2]);
 		rightIntakeSol = new DoubleSolenoid(RobotMap.Intake.RIGHT_INTAKE_SOL[0], RobotMap.Intake.RIGHT_INTAKE_SOL[1],RobotMap.Intake.RIGHT_INTAKE_SOL[2]);
 		
@@ -43,7 +43,7 @@ public class IntakeSubsystem extends Subsystem {
 		}
 	}
 	public void setIntakeRollerMotor(double power){
-		blackRollerMotor.set(-power); //this is red
+		blackRollerMotor.set(-power); 
 		//rollerMotorLeft.set(-power);
 		SmartDashboard.putNumber("Intake current", blackRollerMotor.getOutputCurrent());
 	}
@@ -56,6 +56,10 @@ public class IntakeSubsystem extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+    
+    public double currentMonitoring() {
+    	return blackRollerMotor.getOutputCurrent();
     }
 }
 

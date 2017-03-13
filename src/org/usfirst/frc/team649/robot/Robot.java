@@ -23,6 +23,7 @@ import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
+import org.usfirst.frc.team649.shootercommands.ShooterPID;
 import org.usfirst.frc.team649.util.Center;
 
 import edu.wpi.cscore.AxisCamera;
@@ -174,8 +175,8 @@ public class Robot extends IterativeRobot {
 		//drive.resetEncoders();
 		//new DrivetrainPIDCommand(-90, true).start();
 		//new RedSideGearShootMiddle().start();
-		//new ShooterPID(3.0).start();
-		new DriveForwardTurn().start();
+		new ShooterPID(90.0).start();
+//		new DriveForwardTurn().start();
 		
 	}
 	
@@ -213,7 +214,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-
+		SmartDashboard.putNumber("absolute encoders for 90", turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
 		hood.setServoRaw(Robot.oi.operatorJoystick.getY());
@@ -265,8 +266,6 @@ public class Robot extends IterativeRobot {
 		}
 		if (oi.operator.runIntakeIn()) {
 			intake.setIntakeRollerMotor(1.0);
-		} else if (oi.operator.runIntakeOut()) {
-			intake.setIntakeRollerMotor(-1.0);
 		} else {
 			intake.setIntakeRollerMotor(0.0);
 		}
@@ -282,7 +281,7 @@ public class Robot extends IterativeRobot {
 		} else {
 			gear.setFunnelMotor(0);
 		}
-//		Robot.turret.manualSet(oi.operator.getTurret());
+		Robot.turret.manualSet(oi.operator.getTurret());
 		turret.countCurrentPosition();
 //		// SmartDashboard.putNumber("lidar", lidar.getDistance());
 //		// SmartDashboard.putBoolean("lidar", lidar.getAderess());
@@ -363,10 +362,12 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
 		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
+		SmartDashboard.putNumber("Hang Current", intake.currentMonitoring());
+		
 //		SmartDashboard.putBoolean("is Close To Low", turret.is)
 //		SmartDashboard.putNumber("Turret Encoder Value", turret.getTurretEncoderValue());
 //		SmartDashboard.putNumber("Current Turret Position", turret.getCurrentPosition());
-//		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());
+//		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());H
 //		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
 //		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());
 //		SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());

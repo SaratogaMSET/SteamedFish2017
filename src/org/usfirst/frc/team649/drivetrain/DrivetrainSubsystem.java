@@ -150,8 +150,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(left * 0.955);
-		motors[1].set(left * 0.955);
+		motors[0].set(left * 0.945);
+		motors[1].set(left * 0.945);
 		motors[2].set(-right);
 		motors[3].set(-right);
 	}

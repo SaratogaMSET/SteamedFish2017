@@ -40,8 +40,7 @@ public class RobotMap {
 		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 9;
 		public static final int LEFT_SHOOTER_EIN_PORT = 9;
 		public static final int RIGHT_SHOOTER_EIN_PORT = 8;
-		public static final int HOOPER_IN_PORT = 11;
-		public static final int HOOPER_OUT_PORT = 10;
+		public static final int HOOPER_PORT = 10;
 	}
 
 	public static class Hood {
@@ -70,10 +69,6 @@ public class RobotMap {
 		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
 	}
 
-	public static class Hopper {
-		public static final int RIGHT_AGITATOR = 10;
-		public static final int LEFT_AGITATOR = 11;
-	}
 
 	public static class Camera {
 		public static final String axisPort = "10.6.49.11";

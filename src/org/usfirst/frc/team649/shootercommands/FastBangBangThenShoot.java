@@ -35,37 +35,35 @@ public class FastBangBangThenShoot extends Command {
     	isAtSpeed = false;
     	hooperTimer.start();
     	Robot.shoot.feederMotor.set(0.0);
-    	Robot.shoot.setHooperIn(0.0);
-    	Robot.shoot.setHooperOutRaw(0.0);
+    	
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(Robot.shoot.getLeftFlywheelEin() < minRPMThresh){
-    		Robot.shoot.setLeftFlywheel(1.0);
-    	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPMThresh){
-    		Robot.shoot.setLeftFlywheel(0.0);
-    	}else if(Robot.shoot.getLeftFlywheelEin() <= targetRPM){
-    		Robot.shoot.setLeftFlywheel(maxLeftSpeed);
+    	if(Robot.shootLeft.getLeftFlywheelEin() < minRPMThresh){
+    		Robot.shootLeft.setLeftFlywheel(1.0);
+    	}else if(Robot.shootLeft.getLeftFlywheelEin() > maxRPMThresh){
+    		Robot.shootLeft.setLeftFlywheel(0.0);
+    	}else if(Robot.shootLeft.getLeftFlywheelEin() <= targetRPM){
+    		Robot.shootLeft.setLeftFlywheel(maxLeftSpeed);
     	}else{
-    		Robot.shoot.setLeftFlywheel(minLeftSpeed);
+    		Robot.shootLeft.setLeftFlywheel(minLeftSpeed);
     	}
-    	if(Robot.shoot.getRightFlywheelEin() < minRPMThresh){
-    		Robot.shoot.setRightFlywheel(1.0);
-    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPMThresh){
-    		Robot.shoot.setRightFlywheel(0.0);
-    	}else if(Robot.shoot.getRightFlywheelEin() <= targetRPM){
-    		Robot.shoot.setRightFlywheel(maxLeftSpeed);
+    	if(Robot.shootRight.getRightFlywheelEin() < minRPMThresh){
+    		Robot.shootRight.setRightFlywheel(1.0);
+    	}else if(Robot.shootRight.getRightFlywheelEin() > maxRPMThresh){
+    		Robot.shootRight.setRightFlywheel(0.0);
+    	}else if(Robot.shootRight.getRightFlywheelEin() <= targetRPM){
+    		Robot.shootRight.setRightFlywheel(maxLeftSpeed);
     	}else{
-    		Robot.shoot.setRightFlywheel(minLeftSpeed);
+    		Robot.shootRight.setRightFlywheel(minLeftSpeed);
     	}
-    	if(Robot.shoot.getLeftFlywheelEin() > minRPMThresh){
+    	if(Robot.shootLeft.getLeftFlywheelEin() > minRPMThresh){
     		isAtSpeed = true;
     	}
     	if(isAtSpeed){
-    		Robot.shoot.setFeedMotor(Robot.shoot.FEEDER_SPEED);
-    		Robot.shoot.setHooperIn(1.0);
-    		Robot.shoot.setHooperOut(0.2, 0.8, 1, hooperTimer.get());
+    		Robot.shoot.setFeedMotor(1.0);
+    		
     	}
     }
 
@@ -77,10 +75,9 @@ public class FastBangBangThenShoot extends Command {
     // Called once after isFinished returns true
     protected void end() {
     	Robot.shoot.feederMotor.set(0.0);
-    	Robot.shoot.setHooperIn(0.0);
-    	Robot.shoot.setHooperOutRaw(0.0);
-    	Robot.shoot.setLeftFlywheel(0.0);
-    	Robot.shoot.setRightFlywheel(0.0);
+    
+    	Robot.shootLeft.setLeftFlywheel(0.0);
+    	Robot.shootRight.setRightFlywheel(0.0);
     }
 
     // Called when another command which requires one or more of the same

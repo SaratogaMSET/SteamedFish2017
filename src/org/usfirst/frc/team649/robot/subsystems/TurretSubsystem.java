@@ -37,9 +37,9 @@ public class TurretSubsystem extends PIDSubsystem {
 
 	public static class PIDConstantsTurret {
 		public static final double ABS_TOLERANCE = 0.02; //1.2 degrees
-		public static  double k_P = 0.6; //0.2, 1.0
-		public static double k_I = 0;
-		public static double k_D = 0.02;
+		public static  double k_P = 1.85; //0.2, 1.0
+		public static double k_I = 0.0;
+		public static double k_D = 0.01;
 
 	}
     public TurretSubsystem() {
@@ -56,7 +56,7 @@ public class TurretSubsystem extends PIDSubsystem {
     	currentEncoderTick = 0;
     	turretTurnPID = this.getPIDController();
     	turretTurnPID.setAbsoluteTolerance(PIDConstantsTurret.ABS_TOLERANCE);
-    	turretTurnPID.setOutputRange(-0.25, 0.25);
+    	turretTurnPID.setOutputRange(-1.0,1.0);
     	
     }
     public void manualSet(double speed){

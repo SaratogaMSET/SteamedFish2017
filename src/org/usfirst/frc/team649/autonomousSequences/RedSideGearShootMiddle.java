@@ -23,10 +23,9 @@ public class RedSideGearShootMiddle extends CommandGroup {
     	addSequential(new SetIntakeWedgePistons(false));
     	addSequential(new SetFunnelCommand(false));
         addSequential(new DrivetrainPIDCommand(70, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
-//      addParallel(new BackToZeroTurretCommand());
         addSequential(new SetGearFlap(false));
         addSequential(new WaitCommand(0.5));
-//      addParallel(new ShooterPID(42));
+        addParallel(new ShooterPID(42));
     	addParallel(new SetHoodCommand(60)); //temporary
         addParallel(new OnlyBangBangNoShootCommand(1450,1750,1150,0.58,0.5));
     	addSequential(new DrivetrainPIDCommand(-30, false));

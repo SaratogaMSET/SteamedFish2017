@@ -4,6 +4,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.DriveForwardTurn;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
@@ -20,7 +21,9 @@ import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 //import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.LeftShooter;
 import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.RightShooter;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 import org.usfirst.frc.team649.shootercommands.ShooterPID;
@@ -48,6 +51,8 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	public static Compressor compressor;
 	public static IntakeSubsystem intake;
+	public static LeftShooter shootLeft;
+	public static RightShooter shootRight;
 	public static ShooterSubsystem shoot;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	public boolean prevStateShooting;
@@ -119,6 +124,8 @@ public class Robot extends IterativeRobot {
 		compressor = new Compressor();
 		intake = new IntakeSubsystem();
 		shoot = new ShooterSubsystem();
+		shootLeft = new LeftShooter();
+		shootRight = new RightShooter();
 		//camera = new CameraSwitcher();
 		//hopper = new HopperSubsystem();
 		// prevStateShooting = false;
@@ -174,8 +181,8 @@ public class Robot extends IterativeRobot {
 		// drive.getAlliance());
 		//drive.resetEncoders();
 		//new DrivetrainPIDCommand(-90, true).start();
-		//new RedSideGearShootMiddle().start();
-		new ShooterPID(90.0).start();
+		new BlueSideGearShootMiddle().start();
+//		new ShooterPID(160.0).start();
 //		new DriveForwardTurn().start();
 		
 	}
@@ -217,8 +224,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("absolute encoders for 90", turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
-		hood.setServoRaw(Robot.oi.operatorJoystick.getY());
-//		hood.setServoRaw(.7);
+		//hood.setServoRaw(Robot.oi.operatorJoystick.getY());
+		hood.setServoRaw(0.45);
 ////		turret.turn(Robot.oi.operator.getTurret());
 ////		if (oi.operator.runFunnelMotors()) {
 ////			
@@ -226,17 +233,19 @@ public class Robot extends IterativeRobot {
 ////			intake.setIntakeRollerMotor(0.0);
 ////		}
 		if (oi.operator.getShoot()) {
-//			Robot.shoot.setLeftFlywheel(oi.operator.getSlider());
-//			Robot.shoot.setRightFlywheel(oi.operator.getSlider());
-//			shoot.simpleBangBang(0.53, 0.58, 1500, 1800, 1200);
+//			Robot.shootLeft.setLeftFlywheel(oi.operator.getSlider());
+//			Robot.shootRight.setRightFlywheel(oi.operator.getSlider());
+			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
+			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
 //			shoot.simpleBangBang(0.515, 0.575, 500, 1000, 0);
-			shoot.simpleBangBang(0.7, 0.8, 2000, 2200, 1800);
+//			shoot.simpleBangBang(0.7, 0.8, 2000, 2200, 1800);
+//			shoot.simpleBangBang(0.5, 0.52, 1350, 1600, 1350);
 
 //			shoot.setLeftFlywheel(.575);
 //			shoot.setRightFlywheel(.575);
 		} else {
-			Robot.shoot.setLeftFlywheel(0.0);
-			Robot.shoot.setRightFlywheel(0.0);
+			Robot.shootLeft.setLeftFlywheel(0.0);
+			Robot.shootRight.setRightFlywheel(0.0);
 		}
 		if(oi.operator.runFeederWheel()){
 			shoot.setFeedMotor(1.0);
@@ -269,19 +278,13 @@ public class Robot extends IterativeRobot {
 		} else {
 			intake.setIntakeRollerMotor(0.0);
 		}
-		if (oi.operator.runAgitator()) {
-			shoot.setHooperIn(1.0);
-			shoot.setHooperOutRaw(1.0);
-		} else {
-			shoot.setHooperIn(0.0);
-			shoot.setHooperOutRaw(0.0);
-		}
+	
 		if (oi.operator.runFunnelMotors()) {
 			gear.setFunnelMotor(-1.0);
 		} else {
 			gear.setFunnelMotor(0);
 		}
-		Robot.turret.manualSet(oi.operator.getTurret());
+//		Robot.turret.manualSet(oi.operator.getTurret());
 		turret.countCurrentPosition();
 //		// SmartDashboard.putNumber("lidar", lidar.getDistance());
 //		// SmartDashboard.putBoolean("lidar", lidar.getAderess());
@@ -354,8 +357,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
 		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
 		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
-		SmartDashboard.putNumber("Left Ein", shoot.getLeftFlywheelEin());
-		SmartDashboard.putNumber("Right Ein", shoot.getRightFlywheelEin());
+		SmartDashboard.putNumber("Left Ein", shootLeft.getLeftFlywheelEin());
+		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
 		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
 		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
 		SmartDashboard.putNumber("Slider", oi.operator.getSlider());

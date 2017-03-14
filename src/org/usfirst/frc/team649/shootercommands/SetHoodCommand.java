@@ -17,7 +17,7 @@ public class SetHoodCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.hood.setServoRaw(1.0);
+    	Robot.hood.setServoRaw(percent/100);
     }
 
     // Called repeatedly when this Command is scheduled to run

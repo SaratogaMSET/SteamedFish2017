@@ -30,24 +30,23 @@ public class OnlyBangBangNoShootCommand extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 
-    	if(Robot.shoot.getLeftFlywheelEin() < minRPM){
-    		Robot.shoot.setLeftFlywheel(1.0);
-    	}else if(Robot.shoot.getLeftFlywheelEin() > maxRPM){
-    		Robot.shoot.setLeftFlywheel(0.0);
-    	}else if(Robot.shoot.getLeftFlywheelEin() <= targetRPM){
-    		Robot.shoot.setLeftFlywheel(maxSpeed);
+    	if(Robot.shootLeft.getLeftFlywheelEin() < minRPM){
+    		Robot.shootLeft.setLeftFlywheel(1.0);
+    	}else if(Robot.shootLeft.getLeftFlywheelEin() > maxRPM){
+    		Robot.shootLeft.setLeftFlywheel(0.0);
+    	}else if(Robot.shootLeft.getLeftFlywheelEin() <= targetRPM){
+    		Robot.shootLeft.setLeftFlywheel(maxSpeed);
     	}else{
-    		Robot.shoot.setLeftFlywheel(minSpeed);
-
+    		Robot.shootLeft.setLeftFlywheel(minSpeed);
     	}
-    	if(Robot.shoot.getRightFlywheelEin() < minRPM){
-    		Robot.shoot.setRightFlywheel(1.0);
-    	}else if(Robot.shoot.getRightFlywheelEin() > maxRPM){
-    		Robot.shoot.setRightFlywheel(0.0);
-    	}else if(Robot.shoot.getRightFlywheelEin() <= targetRPM){
-    		Robot.shoot.setRightFlywheel(maxSpeed);
+    	if(Robot.shootRight.getRightFlywheelEin() < minRPM){
+    		Robot.shootRight.setRightFlywheel(1.0);
+    	}else if(Robot.shootRight.getRightFlywheelEin() > maxRPM){
+    		Robot.shootRight.setRightFlywheel(0.0);
+    	}else if(Robot.shootRight.getRightFlywheelEin() <= targetRPM){
+    		Robot.shootRight.setRightFlywheel(maxSpeed);
     	}else{
-    		Robot.shoot.setRightFlywheel(minSpeed);
+    		Robot.shootRight.setRightFlywheel(minSpeed);
     	}
     	
     }
@@ -59,8 +58,8 @@ public class OnlyBangBangNoShootCommand extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.shoot.setLeftFlywheel(0.0);
-    	Robot.shoot.setRightFlywheel(0.0);
+    	Robot.shootLeft.setLeftFlywheel(0.0);
+    	Robot.shootRight.setRightFlywheel(0.0);
     }
 
     // Called when another command which requires one or more of the same

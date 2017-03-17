@@ -82,10 +82,9 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDActiveLeft;
 	public static boolean isPIDActiveRight;
 	public static boolean isPIDActive;
-	public static boolean isTurretPIDActive;
-	public static boolean isShooterRunning;
-	public static boolean prevStateIntakePistons;
-	public static boolean prevStateGearFlap;
+	public static boolean isIntakeFlapDown;
+	public static boolean isGearFlickOut;
+	public static boolean isIntakeRunning;
 	public static boolean prevStateFunnelFlap;
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
@@ -159,23 +158,17 @@ public class Robot extends IterativeRobot {
 		shootLeft = new LeftShooter();
 		shootRight = new RightShooter();
 		camera = new CameraSwitcher();
-		// hopper = new HopperSubsystem();
-		// prevStateShooting = false;
-		// leftDT = new LeftDTPID();
-		// rightDT = new RightDTPID();
-		// lidar = new LidarSubsystem();
 		gear = new GearSubsystem();
-		// hang = new HangSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
-		isTurretPIDActive = false;
 		timer = new Timer();
-		isShooterRunning = false;
 		isPIDTurn = false;
 		isTurretMax = false;
 		isTurretMin = false;
-		// doTheDash();
+		isIntakeRunning = false;
+		isGearFlickOut = gear.getGearFlapSolPos();
+		isIntakeFlapDown = intake.isIntakeDown();
 		drive.resetEncoders();
 		turret = new TurretSubsystem();
 		turret.startingPos = turret.getTurretEncoderValue();
@@ -344,9 +337,7 @@ public class Robot extends IterativeRobot {
 		timer.reset();
 		timer.start();
 		drive.resetEncoders();
-		prevStateGearFlap = false;
 		// new SetGearFlap(false).start();
-		prevStateIntakePistons = false;
 		// new SetIntakeWedgePistons(false).start();
 		prevStateFunnelFlap = false;
 		new SetFunnelCommand(false).start();
@@ -361,97 +352,106 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber("absolute encoders for 90", turret.translateAngleToABS(90));
+//		SmartDashboard.putNumber("absolute encoders for 90", turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
-		// hood.setServoRaw(Robot.oi.operatorJoystick.getY());
-		hood.setServoRaw(0.45);
-		//// turret.turn(Robot.oi.operator.getTurret());
-		//// if (oi.operator.runFunnelMotors()) {
-		////
-		//// } else {
-		//// intake.setIntakeRollerMotor(0.0);
-		//// }
-		if (oi.operator.getShoot()) {
-			// Robot.shootLeft.setLeftFlywheel(oi.operator.getSlider());
-			// Robot.shootRight.setRightFlywheel(oi.operator.getSlider());
-			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-//			new ShooterPIDLeft(1600).start();
-			// shoot.simpleBangBang(0.515, 0.575, 500, 1000, 0);
-			// shoot.simpleBangBang(0.7, 0.8, 2000, 2200, 1800);
-			// shoot.simpleBangBang(0.5, 0.52, 1350, 1600, 1350);
-
-			// shoot.setLeftFlywheel(.575);
-			// shoot.setRightFlywheel(.575);
-		} else {
-			Robot.shootLeft.setLeftFlywheel(0.0);
-			Robot.shootRight.setRightFlywheel(0.0);
-		}
-		if (oi.operator.runFeederWheel()) {
-			shoot.setFeedMotor(1.0);
-		} else {
-			shoot.setFeedMotor(0.0);
-		}
-		if (oi.operator.setDownIntakePistons()) {
+	
+		if(oi.operator.intakeFlapUp()){
+			if(isIntakeRunning){
+				isIntakeFlapDown = false;
+			}
 			new SetIntakeWedgePistons(true).start();
-		} else if (oi.operator.setUpIntakePistons()) {
+		}else if(oi.operator.intakeFlapDown()){
 			new SetIntakeWedgePistons(false).start();
-		}
-		if (oi.operator.setGearFlapIn()) {
-			new SetGearFlap(true).start();
-		} else if (oi.operator.setGearFlapOut()) {
-			new SetGearFlap(false).start();
 
 		}
-		if (oi.driver.shiftUp()) {
-			drive.shift(true);
-		} else {
-			drive.shift(false);
-		}
-		if (oi.operator.setFunnelPistonDown()) {
-			new SetFunnelCommand(true).start();
-		} else if  (oi.operator.setFunnelPistonUp()) {
-			new SetFunnelCommand(false).start();
-		}
-		if (oi.operator.runIntakeIn()) {
+		if(oi.operator.runIntake()){
+			if(!isIntakeRunning){
+				isIntakeFlapDown = true;
+			}
 			intake.setIntakeRollerMotor(1.0);
-		} else {
+			if(isIntakeFlapDown = false){
+				new SetIntakeWedgePistons(false).start();
+
+			}else{
+				new SetIntakeWedgePistons(true).start();
+			}
+		}else{
 			intake.setIntakeRollerMotor(0.0);
 		}
-		
-		if (oi.operator.runFunnelMotors()) {
-			gear.setFunnelMotor(-1.0);
-		} else {
-			gear.setFunnelMotor(0);
+		if(oi.operator.getGearFlap()){
+			
+				new SetGearFlap(false).start();
+			
+			
+		}else{
+			new SetGearFlap(true).start();
+
 		}
-		 Robot.turret.manualSet(oi.operator.getTurret()/2);
-		turret.countCurrentPosition();
-		// // SmartDashboard.putNumber("lidar", lidar.getDistance());
-		// // SmartDashboard.putBoolean("lidar", lidar.getAderess());
-		// /*
-		// * if(oi.operator.getShoot() && !prevStateShooting){ new
-		// * BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT,
-		// * shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT,
-		// * shoot.MIN_RPM, shoot.MAX_RPM).start(); } prevStateShooting =
-		// * oi.operator.getShoot();
-		// *
-		// */
-		
-		//Camera Tele-Operated Periodic Stuff goes here, dont touch below this line!!
-		if(oi.driver.kyleSwitch() && !previousCameraTrigger)
-		{
-			DriverStation.getInstance().reportError("Running Camera 2!(Axis)",true);
-			NetworkTable.getTable("").putString("CameraSelection", axis.getName());
-			server.setSource(axis);
-		}
-		else if(oi.driver.kyleSwitch() && previousCameraTrigger)
-		{
-			DriverStation.getInstance().reportError("Running Camera 1!(USB)",true);
-			NetworkTable.getTable("").putString("CameraSelection", usb.getName());
-			server.setSource(usb);
-		}
-		previousCameraTrigger = oi.driver.kyleSwitch() && oi.driver.kyleSwitch();
+//		if (oi.operator.getShoot()) {
+//			
+//			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
+//			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
+////			new ShooterPIDLeft(1600).start();
+//			
+//		} else {
+//			Robot.shootLeft.setLeftFlywheel(0.0);
+//			Robot.shootRight.setRightFlywheel(0.0);
+//		}
+//		if (oi.operator.runFeederWheel()) {
+//			shoot.setFeedMotor(1.0);
+//		} else {
+//			shoot.setFeedMotor(0.0);
+//		}
+//		if (oi.operator.setDownIntakePistons()) {
+//			new SetIntakeWedgePistons(true).start();
+//		} else if (oi.operator.setUpIntakePistons()) {
+//			new SetIntakeWedgePistons(false).start();
+//		}
+//		if (oi.operator.setGearFlapIn()) {
+//			new SetGearFlap(true).start();
+//		} else if (oi.operator.setGearFlapOut()) {
+//			new SetGearFlap(false).start();
+//
+//		}
+//		if (oi.driver.shiftUp()) {
+//			drive.shift(true);
+//		} else {
+//			drive.shift(false);
+//		}
+//		if (oi.operator.setFunnelPistonDown()) {
+//			new SetFunnelCommand(true).start();
+//		} else if  (oi.operator.setFunnelPistonUp()) {
+//			new SetFunnelCommand(false).start();
+//		}
+//		if (oi.operator.runIntakeIn()) {
+//			intake.setIntakeRollerMotor(1.0);
+//		} else {
+//			intake.setIntakeRollerMotor(0.0);
+//		}
+//		
+//		if (oi.operator.runFunnelMotors()) {
+//			gear.setFunnelMotor(-1.0);
+//		} else {
+//			gear.setFunnelMotor(0);
+//		}
+//		Robot.turret.manualSet(oi.operator.getTurret()/2);
+//		turret.countCurrentPosition();
+//		
+//		//Camera Tele-Operated Periodic Stuff goes here, dont touch below this line!!
+//		if(oi.driver.kyleSwitch() && !previousCameraTrigger)
+//		{
+//			DriverStation.getInstance().reportError("Running Camera 2!(Axis)",true);
+//			NetworkTable.getTable("").putString("CameraSelection", axis.getName());
+//			server.setSource(axis);
+//		}
+//		else if(oi.driver.kyleSwitch() && previousCameraTrigger)
+//		{
+//			DriverStation.getInstance().reportError("Running Camera 1!(USB)",true);
+//			NetworkTable.getTable("").putString("CameraSelection", usb.getName());
+//			server.setSource(usb);
+//		}
+//		previousCameraTrigger = oi.driver.kyleSwitch() && oi.driver.kyleSwitch();
 		doTheDash();
 		//ok you can touch from here on out, not recommended tho plz dont touch actually :)
 	}

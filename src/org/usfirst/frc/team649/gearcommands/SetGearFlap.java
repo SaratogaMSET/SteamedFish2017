@@ -44,10 +44,10 @@ public class SetGearFlap extends Command {
     // Called once after isFinished returns true
     protected void end() {
     	if(isOut){
-    		Robot.prevStateGearFlap = true;
-    	}else{
-    		Robot.prevStateGearFlap = false;
+    		Robot.isGearFlickOut = true;
     	}
+    	Robot.isGearFlickOut = false;
+    	
     	
     }
 

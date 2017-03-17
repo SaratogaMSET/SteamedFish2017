@@ -27,7 +27,7 @@ public class TurretPIDABS extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	turretPID.enable();
-    	Robot.isTurretPIDActive = true;
+//    	Robot.isTurretPIDActive = true;
     	turretPID.setSetpoint(setPoint);
     	isFinished = false;
     }

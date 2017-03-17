@@ -51,6 +51,9 @@ public class IntakeSubsystem extends Subsystem {
 		redWheelRoller.set(-power);
 		SmartDashboard.putNumber("Intake current", blackRollerMotor.getOutputCurrent());
 	}
+	public void setHangMotor(double power){
+		blackRollerMotor.set(-1.0);
+	}
 	public void setWheelRollers(double power){
 		redWheelRoller.set(power);
 	}

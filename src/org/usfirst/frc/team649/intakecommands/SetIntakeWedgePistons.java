@@ -35,10 +35,11 @@ public class SetIntakeWedgePistons extends Command {
     // Called once after isFinished returns true
     protected void end() {
     	if(setPistonsDown){
-    		Robot.prevStateIntakePistons = true;
+    		Robot.isIntakeFlapDown = true;
     	}else{
-    		Robot.prevStateIntakePistons = false;
+    		Robot.isIntakeFlapDown = false;
     	}
+    	
     }
 
     // Called when another command which requires one or more of the same

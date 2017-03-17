@@ -1,7 +1,17 @@
 package org.usfirst.frc.team649.robot;
 
+//**************************************************************************
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+// for logging to file and reading parameters from file ********************
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
@@ -23,30 +33,21 @@ import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightShooter;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
-import org.usfirst.frc.team649.shootercommands.ShooterPIDLeft;
-import org.usfirst.frc.team649.shootercommands.TurretPID;
-import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 import org.usfirst.frc.team649.util.Center;
 
 import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-// for logging to file and reading parameters from file ********************
-import java.util.*;
-import java.io.*;
-//**************************************************************************
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -173,17 +174,6 @@ public class Robot extends IterativeRobot {
 		turret = new TurretSubsystem();
 		turret.startingPos = turret.getTurretEncoderValue();
 		hood = new HoodSubsystem();
-		//begin camera init stuff plz dont touch it messes everything up
-		axis = CameraServer.getInstance().addAxisCamera(RobotMap.Camera.axisName, RobotMap.Camera.axisPort);
-		usb = CameraServer.getInstance().startAutomaticCapture();
-		server = CameraServer.getInstance().getVideo();
-		cvsink1 = new CvSink("axis");
-		cvsink2 = new CvSink("usb");
-		cvsink1.setSource(axis);
-		cvsink1.setEnabled(true);
-		cvsink2.setSource(usb);
-		cvsink2.setEnabled(true);
-		//end camera init here, theres still a third section!!!
 
 		// for logging to file and reading parameters from file ********************
 		if (debugMode) {	
@@ -200,7 +190,64 @@ public class Robot extends IterativeRobot {
 			//logLidarDist=new double[maxTick];	
 		} //end debugMode
 		//*******************************************************************************
+		//FUN CAMERA STUFF IM GOING CRAZY FROM CAMERAS HAHAHAHAHAHHAHA
+		// Begin Camera Init Code! Cannot go in Method or Class! MUST BE IN
+				// ROBOTINIT BY ITSELF!
+				Thread t = new Thread(() -> {
 
+					boolean allowCam1 = false;
+
+					AxisCamera camera1 = CameraServer.getInstance().addAxisCamera(RobotMap.Camera.axisPort);
+					camera1.setResolution(RobotMap.Camera.axisResWidth, RobotMap.Camera.axisResWidth);
+					camera1.setFPS(RobotMap.Camera.axisFPS);
+					UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(RobotMap.Camera.usbPort);
+					camera2.setResolution(RobotMap.Camera.usbResWidth, RobotMap.Camera.usbResHeight);
+					camera2.setFPS(RobotMap.Camera.usbFPS);
+					// camera3 is the backup axis camera, to use it, enable the
+					// useBackupCamera variable in RobotMap.
+					AxisCamera camera3 = CameraServer.getInstance().addAxisCamera(RobotMap.Camera.backupAxisPort);
+					camera3.setResolution(RobotMap.Camera.backupAxisResWidth, RobotMap.Camera.backupAxisResHeight);
+					camera3.setFPS(RobotMap.Camera.backupAxisFPS);
+					CvSink cvSink1 = CameraServer.getInstance().getVideo(camera1);
+					CvSink cvSink2 = CameraServer.getInstance().getVideo(camera2);
+					CvSink cvSink3 = CameraServer.getInstance().getVideo(camera3);
+					CvSource outputStream = CameraServer.getInstance().putVideo("Switcher", 320, 240);
+
+					Mat image = new Mat();
+
+					while (!Thread.interrupted()) {
+
+						if (oi.operator.isDavidCamera() || oi.driver.kyleCamera()) {
+							allowCam1 = !allowCam1;
+						}
+						if (RobotMap.Camera.useSecondAxisCamera = true) {
+							if (allowCam1) {
+								cvSink1.setEnabled(false);
+								cvSink3.setEnabled(true);
+								cvSink3.grabFrame(image);
+							} else {
+								cvSink3.setEnabled(false);
+								cvSink1.setEnabled(true);
+								cvSink1.grabFrame(image);
+							}
+
+						} else {
+							if (allowCam1) {
+								cvSink2.setEnabled(false);
+								cvSink1.setEnabled(true);
+								cvSink1.grabFrame(image);
+							} else {
+								cvSink1.setEnabled(false);
+								cvSink2.setEnabled(true);
+								cvSink2.grabFrame(image);
+							}
+						}
+
+						outputStream.putFrame(image);
+					}
+
+				});
+				t.start();
 	}
 
 	/**
@@ -437,23 +484,7 @@ public class Robot extends IterativeRobot {
 //		}
 //		Robot.turret.manualSet(oi.operator.getTurret()/2);
 //		turret.countCurrentPosition();
-//		
-//		//Camera Tele-Operated Periodic Stuff goes here, dont touch below this line!!
-//		if(oi.driver.kyleSwitch() && !previousCameraTrigger)
-//		{
-//			DriverStation.getInstance().reportError("Running Camera 2!(Axis)",true);
-//			NetworkTable.getTable("").putString("CameraSelection", axis.getName());
-//			server.setSource(axis);
-//		}
-//		else if(oi.driver.kyleSwitch() && previousCameraTrigger)
-//		{
-//			DriverStation.getInstance().reportError("Running Camera 1!(USB)",true);
-//			NetworkTable.getTable("").putString("CameraSelection", usb.getName());
-//			server.setSource(usb);
-//		}
-//		previousCameraTrigger = oi.driver.kyleSwitch() && oi.driver.kyleSwitch();
 		doTheDash();
-		//ok you can touch from here on out, not recommended tho plz dont touch actually :)
 	}
 
 	/**

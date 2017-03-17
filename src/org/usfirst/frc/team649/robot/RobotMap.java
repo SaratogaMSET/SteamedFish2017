@@ -72,6 +72,18 @@ public class RobotMap {
 
 	public static class Camera {
 		public static final String axisPort = "10.6.49.35";
-		public static String axisName = "axis0";
+		public static final String axisName = "axis0";
+		public static final int axisResWidth = 320;
+		public static final int axisResHeight = 480;
+		public static final int axisFPS = 30;
+		public static final int usbResWidth = 320;
+		public static final int usbResHeight = 480;
+		public static final int usbFPS = 30;
+		public static final int usbPort = 0;
+		public static final String backupAxisPort = "";
+		public static final int backupAxisResWidth = 320;
+		public static final int backupAxisResHeight = 480;
+		public static final int backupAxisFPS = 30;
+		public static boolean useSecondAxisCamera = false; 
 	}
 }

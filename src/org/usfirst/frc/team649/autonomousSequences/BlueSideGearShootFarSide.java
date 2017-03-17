@@ -4,7 +4,7 @@ import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
-import org.usfirst.frc.team649.shootercommands.ShooterPID;
+import org.usfirst.frc.team649.shootercommands.TurretPID;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -19,7 +19,7 @@ public class BlueSideGearShootFarSide extends CommandGroup {
 //    	addParallel(new BackToZeroTurretCommand());
     	addSequential(new DrivetrainPIDCommand(60, true));//addSequential(new TurnWithEncoders(60));
     	addSequential(new DrivetrainPIDCommand(56.535, false));
-    	addParallel(new ShooterPID(180));
+//    	addParallel(new TurretPID(180));
     	addSequential(new WaitCommand(0.25));
      	addSequential(new SetGearFlap(false));
      	addSequential(new DrivetrainPIDCommand(-56.535, false));

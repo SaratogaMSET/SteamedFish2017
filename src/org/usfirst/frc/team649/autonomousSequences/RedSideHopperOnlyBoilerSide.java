@@ -6,7 +6,7 @@ import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
-import org.usfirst.frc.team649.shootercommands.ShooterPID;
+import org.usfirst.frc.team649.shootercommands.TurretPID;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 

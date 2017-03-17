@@ -9,51 +9,29 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class CameraSwitcher {
 	Thread cameraThread;
 	OI oi;
-
-	public CameraSwitcher() {
-		oi = new OI();
-		cameraThread = new Thread(() -> {
-
-			AxisCamera axis = new AxisCamera("axis", RobotMap.Camera.axisPort);
-			UsbCamera usb = new UsbCamera("cam1", 0);
-
-			axis.setResolution(640, 480);
-			usb.setResolution(640, 480);
-
-			// Get a CvSink. This will capture Mats from the camera
-			CvSink cvSink = CameraServer.getInstance().getVideo(axis);
-			// Setup a CvSource. This will send images back to the Dashboard
-			CvSource outputStream = CameraServer.getInstance().putVideo("Rectangle", 640, 480);
-
-			// Mats are very memory expensive. Lets reuse this Mat.
-			Mat mat = new Mat();
-
-			// This cannot be 'true'. The program will never exit if it is. This
-			// lets the robot stop this thread when restarting robot code or
-			// deploying.
-			while (!Thread.interrupted()) {
-				// Tell the CvSink to grab a frame from a camera and put it in
-				// the source mat.
-				// If there is an error notify the output.
-				if (oi.operator.davidSwitch())
-					cvSink = CameraServer.getInstance().getVideo(axis);
-				if (oi.driver.kyleSwitch())
-					cvSink = CameraServer.getInstance().getVideo(usb);
-
-				if (cvSink.grabFrame(mat) == 0) {
-					// Send the output the error.
-					outputStream.notifyError(cvSink.getError());
-					// skip the rest of the current iteration
-					continue;
-				}
-
-				// Give the output stream a new image to display
-				outputStream.putFrame(mat);
-			}
-		});
-	}
+	AxisCamera axis; 
+	UsbCamera usb;
+	public boolean isCam1;
+//	public CameraSwitcher() {
+//		oi = new OI();
+//		axis = CameraServer.getInstance().addAxisCamera(RobotMap.Camera.axisName,RobotMap.Camera.axisPort);
+//		usb = CameraServer.getInstance().startAutomaticCapture();
+//		isCam1 = true;
+//	}
+//	public void SteamyCameraSwitcher()
+//	{
+//		if(isCam1)
+//		{
+//			NetworkTable.getTable("").putString("CameraSelection", axis.getName());
+//		}
+//		else if(!isCam1)
+//		{
+//			NetworkTable.getTable("").putString("CameraSelection", usb.getName());
+//		}
+//	}
 }

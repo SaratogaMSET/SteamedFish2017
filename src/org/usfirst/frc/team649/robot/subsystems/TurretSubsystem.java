@@ -34,7 +34,7 @@ public class TurretSubsystem extends PIDSubsystem {
 	public PIDController turretTurnPID;
 	public static double maxRotationValue = 6.2;
 	public static double minRotationValue = -6.2;
-
+	public static double startingPos;
 	public static class PIDConstantsTurret {
 		public static final double ABS_TOLERANCE = 0.02; //1.2 degrees
 		public static  double k_P = 1.85; //0.2, 1.0
@@ -131,7 +131,7 @@ public class TurretSubsystem extends PIDSubsystem {
     	
     	if(Robot.turret.getTotalDist() > Robot.turret.maxRotationValue){
     		Robot.isTurretMax = true;
-    	}else if(Robot.turret.minRotationValue < Robot.turret.getTotalDist()){
+    	}else if(Robot.turret.minRotationValue > Robot.turret.getTotalDist()){
     		Robot.isTurretMin = true;
     	}else{
     		Robot.isTurretMin = false;

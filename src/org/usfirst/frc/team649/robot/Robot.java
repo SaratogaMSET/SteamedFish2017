@@ -5,15 +5,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
-import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
-import org.usfirst.frc.team649.commandgroups.DriveForwardTurn;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.drivetrain.LeftDTPID;
 import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
-import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
@@ -26,18 +23,30 @@ import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightShooter;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
-import org.usfirst.frc.team649.shootercommands.ShooterPID;
+import org.usfirst.frc.team649.shootercommands.ShooterPIDLeft;
+import org.usfirst.frc.team649.shootercommands.TurretPID;
+import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 import org.usfirst.frc.team649.util.Center;
 
 import edu.wpi.cscore.AxisCamera;
+import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+// for logging to file and reading parameters from file ********************
+import java.util.*;
+import java.io.*;
+//**************************************************************************
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -61,6 +70,8 @@ public class Robot extends IterativeRobot {
 	public static RightDTPID rightDT;
 	public static LidarSubsystem lidar;
 	public static GearSubsystem gear;
+
+	
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
@@ -109,9 +120,30 @@ public class Robot extends IterativeRobot {
 	public static double GOOD_Y = SCREEN_Y / 2.0;
 	public static double FIELD_OF_VIEW = 0.8339;
 	public static double CENTER_TOLERANCE = 8;
-	
-	public static boolean isTurretMax,isTurretMin;
 
+	public static boolean isTurretMax, isTurretMin;
+
+	//more cam stuff still dont touch
+	AxisCamera axis;
+	UsbCamera usb;
+	VideoSink server;
+	boolean previousCameraTrigger = false;
+	CvSink cvsink1;
+	CvSink cvsink2;
+
+	// for logging to file and reading parameters from file ********************
+	public static final boolean debugMode=true;  // set this to true to enable
+	public static final int maxTick=3000;   // at 50 samples/s need 3000 for 1 minute
+	public static int tick;
+	public static int value;
+	public static double[] logTimer, logDtLftSpd, logDtRtSpd, logDtLftDist, logDtRtDist, logLftFly, logRtFly;
+	public static double[] logHoodLft, logHoodRt, logHangI, logLidarDist;
+	Map<String, Float> mapRobotParams = new HashMap<String, Float>();
+	String inputLine;
+	String[] inputWords = new String[100];
+	public static String inFileRobotParam="/home/admin/param.txt", outFileLog="/home/admin/logfile.csv";
+	//*********************************************************************************
+	
 	/**
 	 * 
 	 * This function is run when the robot is first started up and should be
@@ -126,8 +158,8 @@ public class Robot extends IterativeRobot {
 		shoot = new ShooterSubsystem();
 		shootLeft = new LeftShooter();
 		shootRight = new RightShooter();
-		//camera = new CameraSwitcher();
-		//hopper = new HopperSubsystem();
+		camera = new CameraSwitcher();
+		// hopper = new HopperSubsystem();
 		// prevStateShooting = false;
 		// leftDT = new LeftDTPID();
 		// rightDT = new RightDTPID();
@@ -143,10 +175,39 @@ public class Robot extends IterativeRobot {
 		isPIDTurn = false;
 		isTurretMax = false;
 		isTurretMin = false;
-		//doTheDash();
+		// doTheDash();
 		drive.resetEncoders();
 		turret = new TurretSubsystem();
+		turret.startingPos = turret.getTurretEncoderValue();
 		hood = new HoodSubsystem();
+		//begin camera init stuff plz dont touch it messes everything up
+		axis = CameraServer.getInstance().addAxisCamera(RobotMap.Camera.axisName, RobotMap.Camera.axisPort);
+		usb = CameraServer.getInstance().startAutomaticCapture();
+		server = CameraServer.getInstance().getVideo();
+		cvsink1 = new CvSink("axis");
+		cvsink2 = new CvSink("usb");
+		cvsink1.setSource(axis);
+		cvsink1.setEnabled(true);
+		cvsink2.setSource(usb);
+		cvsink2.setEnabled(true);
+		//end camera init here, theres still a third section!!!
+
+		// for logging to file and reading parameters from file ********************
+		if (debugMode) {	
+			logTimer = new double[maxTick];
+			logDtLftSpd=new double[maxTick];
+			logDtRtSpd=new double[maxTick];
+			//logDtLftDist=new double[maxTick];
+			//logDtRtDist=new double[maxTick];
+			//logLftFly=new double[maxTick];
+			//logRtFly=new double[maxTick];
+			//logHoodLft=new double[maxTick];
+			//logHoodRt=new double[maxTick]; 
+			logHangI=new double[maxTick];
+			//logLidarDist=new double[maxTick];	
+		} //end debugMode
+		//*******************************************************************************
+
 	}
 
 	/**
@@ -156,6 +217,78 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		// for logging to file and reading parameters from file ********************
+		if (debugMode){
+		
+			System.out.printf("In disabledInit, tick: %d\n",tick);
+
+			//Output to log file
+			if( tick > 10) {
+				for( int i=0; i<tick; i++) {
+					System.out.printf("timer %d %f\n", i, logTimer[i]);
+				}
+				try {
+					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
+					
+				    if (mapRobotParams.containsKey("varDrvTrnP")) writer.printf("varDrvTrnP, %f\r\n", mapRobotParams.get("varDrvTrnP"));
+				    if (mapRobotParams.containsKey("varDrvTrnI")) writer.printf("varDrvTrnI, %f\r\n", mapRobotParams.get("varDrvTrnI"));
+				    if (mapRobotParams.containsKey("varDrvTrnD")) writer.printf("varDrvTrnD, %f\r\n", mapRobotParams.get("varDrvTrnD"));
+				    if (mapRobotParams.containsKey("varDrvTrnTol")) writer.printf("varDrvTrnTol, %f\r\n", mapRobotParams.get("varDrvTrnTol"));
+				    if (mapRobotParams.containsKey("varDrvTrnDrift")) writer.printf("varDrvTrnDrift, %f\r\n", mapRobotParams.get("varDrvTrnDrift"));
+				    if (mapRobotParams.containsKey("varDrvTrnMaxP")) writer.printf("varDrvTrnMaxP, %f\r\n", mapRobotParams.get("varDrvTrnMaxP"));
+	
+					for( int i=0; i<tick; i++) {
+						writer.printf("%d, %f", i, logTimer[i]);
+						writer.printf(", %f, %f", logDtLftSpd[i], logDtRtSpd[i]);
+						//writer.printf(", %f, %f", logDtLftDist[i], logDtRtDist[i]);
+						//writer.printf(", %f, %f", logLftFly[i],logRtFly[i]);
+						writer.printf(", %f", logHangI[i]);
+						writer.printf("\r\n");
+					}
+					writer.close();
+									
+				} catch (FileNotFoundException | UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	
+			//input from param file
+			float value;
+			System.out.printf("Reading in parameter values\n");
+			try 
+			{
+				BufferedReader inputFile = new BufferedReader(new FileReader(inFileRobotParam)); //open file
+				while ((inputLine = inputFile.readLine()) != null) { 
+					if (!inputLine.isEmpty()) { // process non-empty lines
+						inputWords=inputLine.split("\\s+"); //break one line into 2 words
+		                if (!inputWords[1].isEmpty()) {
+		                	value=Float.parseFloat(inputWords[1]); //convert 2nd word into float
+		                	mapRobotParams.put(inputWords[0], value);//add parameter and value to map
+		                	System.out.format("%s, %s\n",inputWords[0], inputWords[1]);
+		                }  
+					} 
+		        } //end while
+				inputFile.close(); //close file
+		    } 
+		    catch (Exception e) 
+		    {   
+		         e.printStackTrace();
+		         System.exit(1);
+		    } 
+	
+			// Read in parameters from file
+		    System.out.format("Reading parameters from file\r\n");
+			if (mapRobotParams.containsKey("varDrvTrnP")) System.out.printf("varDrvTrnP, %f\r\n", mapRobotParams.get("varDrvTrnP"));
+			if (mapRobotParams.containsKey("varDrvTrnI")) System.out.printf("varDrvTrnI, %f\r\n", mapRobotParams.get("varDrvTrnI"));
+			if (mapRobotParams.containsKey("varDrvTrnD")) System.out.printf("varDrvTrnD, %f\r\n", mapRobotParams.get("varDrvTrnD"));
+			if (mapRobotParams.containsKey("varDrvTrnTol")) System.out.printf("varDrvTrnTol, %f\r\n", mapRobotParams.get("varDrvTrnTol"));
+			if (mapRobotParams.containsKey("varDrvTrnDrift")) System.out.printf("varDrvTrnDrift, %f\r\n", mapRobotParams.get("varDrvTrnDrift"));
+			if (mapRobotParams.containsKey("varDrvTrnMaxP")) System.out.printf("varDrvTrnMaxP, %f\r\n", mapRobotParams.get("varDrvTrnMaxP"));
+	      
+		} //end debug mode
+		
+		//********************************************************************************************
 
 	}
 
@@ -177,16 +310,20 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		// for logging to file and reading parameters from file ********************
+		tick=0;
+		//*********************************************************************************
 		// new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
 		// drive.getAlliance());
-		//drive.resetEncoders();
-		//new DrivetrainPIDCommand(-90, true).start();
+		// drive.resetEncoders();
+		// new DrivetrainPIDCommand(-90, true).start();
 		new BlueSideGearShootMiddle().start();
-//		new ShooterPID(160.0).start();
-//		new DriveForwardTurn().start();
+		 //new TurretPIDABS(90.0).start();
+		// new DriveForwardTurn().start();
 		
+		
+
 	}
-	
 
 	/**
 	 * This function is called periodically during autonomous
@@ -203,16 +340,19 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		new RunCommpresorCommand(true).start();
+		//new RunCommpresorCommand(true).start();
 		timer.reset();
 		timer.start();
 		drive.resetEncoders();
 		prevStateGearFlap = false;
-		//new SetGearFlap(false).start();
+		// new SetGearFlap(false).start();
 		prevStateIntakePistons = false;
-		//new SetIntakeWedgePistons(false).start();
+		// new SetIntakeWedgePistons(false).start();
 		prevStateFunnelFlap = false;
 		new SetFunnelCommand(false).start();
+		// for logging to file and reading parameters from file ********************
+		tick=0;
+		//*********************************************************************************
 
 	}
 
@@ -223,33 +363,34 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		SmartDashboard.putNumber("absolute encoders for 90", turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
-		drive.driveFwdRot(Robot.oi.driver.getForward(), Robot.oi.driver.getRotation());
-		//hood.setServoRaw(Robot.oi.operatorJoystick.getY());
+		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
+		// hood.setServoRaw(Robot.oi.operatorJoystick.getY());
 		hood.setServoRaw(0.45);
-////		turret.turn(Robot.oi.operator.getTurret());
-////		if (oi.operator.runFunnelMotors()) {
-////			
-////		} else {
-////			intake.setIntakeRollerMotor(0.0);
-////		}
+		//// turret.turn(Robot.oi.operator.getTurret());
+		//// if (oi.operator.runFunnelMotors()) {
+		////
+		//// } else {
+		//// intake.setIntakeRollerMotor(0.0);
+		//// }
 		if (oi.operator.getShoot()) {
-//			Robot.shootLeft.setLeftFlywheel(oi.operator.getSlider());
-//			Robot.shootRight.setRightFlywheel(oi.operator.getSlider());
+			// Robot.shootLeft.setLeftFlywheel(oi.operator.getSlider());
+			// Robot.shootRight.setRightFlywheel(oi.operator.getSlider());
 			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
 			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-//			shoot.simpleBangBang(0.515, 0.575, 500, 1000, 0);
-//			shoot.simpleBangBang(0.7, 0.8, 2000, 2200, 1800);
-//			shoot.simpleBangBang(0.5, 0.52, 1350, 1600, 1350);
+//			new ShooterPIDLeft(1600).start();
+			// shoot.simpleBangBang(0.515, 0.575, 500, 1000, 0);
+			// shoot.simpleBangBang(0.7, 0.8, 2000, 2200, 1800);
+			// shoot.simpleBangBang(0.5, 0.52, 1350, 1600, 1350);
 
-//			shoot.setLeftFlywheel(.575);
-//			shoot.setRightFlywheel(.575);
+			// shoot.setLeftFlywheel(.575);
+			// shoot.setRightFlywheel(.575);
 		} else {
 			Robot.shootLeft.setLeftFlywheel(0.0);
 			Robot.shootRight.setRightFlywheel(0.0);
 		}
-		if(oi.operator.runFeederWheel()){
+		if (oi.operator.runFeederWheel()) {
 			shoot.setFeedMotor(1.0);
-		}else{
+		} else {
 			shoot.setFeedMotor(0.0);
 		}
 		if (oi.operator.setDownIntakePistons()) {
@@ -261,16 +402,16 @@ public class Robot extends IterativeRobot {
 			new SetGearFlap(true).start();
 		} else if (oi.operator.setGearFlapOut()) {
 			new SetGearFlap(false).start();
-		
+
 		}
-		if(oi.driver.shiftUp()){
+		if (oi.driver.shiftUp()) {
 			drive.shift(true);
-		}else{
+		} else {
 			drive.shift(false);
 		}
 		if (oi.operator.setFunnelPistonDown()) {
 			new SetFunnelCommand(true).start();
-		} else if (oi.operator.setFunnelPistonUp()) {
+		} else if  (oi.operator.setFunnelPistonUp()) {
 			new SetFunnelCommand(false).start();
 		}
 		if (oi.operator.runIntakeIn()) {
@@ -278,26 +419,41 @@ public class Robot extends IterativeRobot {
 		} else {
 			intake.setIntakeRollerMotor(0.0);
 		}
-	
+		
 		if (oi.operator.runFunnelMotors()) {
 			gear.setFunnelMotor(-1.0);
 		} else {
 			gear.setFunnelMotor(0);
 		}
-//		Robot.turret.manualSet(oi.operator.getTurret());
+		 Robot.turret.manualSet(oi.operator.getTurret()/2);
 		turret.countCurrentPosition();
-//		// SmartDashboard.putNumber("lidar", lidar.getDistance());
-//		// SmartDashboard.putBoolean("lidar", lidar.getAderess());
-//		/*
-//		 * if(oi.operator.getShoot() && !prevStateShooting){ new
-//		 * BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT,
-//		 * shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT,
-//		 * shoot.MIN_RPM, shoot.MAX_RPM).start(); } prevStateShooting =
-//		 * oi.operator.getShoot();
-//		 * 
-//		 */
+		// // SmartDashboard.putNumber("lidar", lidar.getDistance());
+		// // SmartDashboard.putBoolean("lidar", lidar.getAderess());
+		// /*
+		// * if(oi.operator.getShoot() && !prevStateShooting){ new
+		// * BangBangThenShootCommand(shoot.TARGET_RPM, shoot.MIN_SPEED_RIGHT,
+		// * shoot.MAX_SPEED_RIGHT, shoot.MAX_SPEED_LEFT, shoot.MIN_SPEED_LEFT,
+		// * shoot.MIN_RPM, shoot.MAX_RPM).start(); } prevStateShooting =
+		// * oi.operator.getShoot();
+		// *
+		// */
 		
+		//Camera Tele-Operated Periodic Stuff goes here, dont touch below this line!!
+		if(oi.driver.kyleSwitch() && !previousCameraTrigger)
+		{
+			DriverStation.getInstance().reportError("Running Camera 2!(Axis)",true);
+			NetworkTable.getTable("").putString("CameraSelection", axis.getName());
+			server.setSource(axis);
+		}
+		else if(oi.driver.kyleSwitch() && previousCameraTrigger)
+		{
+			DriverStation.getInstance().reportError("Running Camera 1!(USB)",true);
+			NetworkTable.getTable("").putString("CameraSelection", usb.getName());
+			server.setSource(usb);
+		}
+		previousCameraTrigger = oi.driver.kyleSwitch() && oi.driver.kyleSwitch();
 		doTheDash();
+		//ok you can touch from here on out, not recommended tho plz dont touch actually :)
 	}
 
 	/**
@@ -333,26 +489,35 @@ public class Robot extends IterativeRobot {
 			System.out.println("ERROR: passed in null center");
 		}
 	}
-	public static synchronized void updateVisionDistance(double d){
-		if(d > 10.0){
+
+	public static synchronized void updateVisionDistance(double d) {
+		if (d > 10.0) {
 			visionDistance = d;
-		}else{
+		} else {
 			System.out.println("Target Not in View");
 			visionDistance = 0.0;
 		}
 	}
 
 	public static void doTheDash() {
-//		SmartDashboard.putString("Shifting?", drive.getShift());
-//		SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
-//		SmartDashboard.putNumber("Auto Position Potentiometer", drive.getAutoGoal());
-//		SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is red!");
-//		SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
-//		SmartDashboard.putBoolean("Is Compressor Running", rcc.getCompressorState());
-//		SmartDashboard.putNumber("Right Motor Front Current", drive.motors[0].getOutputCurrent());
-//		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
-//		SmartDashboard.putNumber("Left Motor Front Current", drive.motors[2].getOutputCurrent());
-//		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
+		// SmartDashboard.putString("Shifting?", drive.getShift());
+		// SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
+		// SmartDashboard.putNumber("Auto Position Potentiometer",
+		// drive.getAutoGoal());
+		// SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is
+		// red!");
+		// SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
+		// SmartDashboard.putBoolean("Is Compressor Running",
+		// rcc.getCompressorState());
+		SmartDashboard.putNumber("Agitator Curret", Robot.shoot.hooperMotor.getOutputCurrent());
+		 SmartDashboard.putNumber("Right Motor Front Current",
+		 drive.motors[0].getOutputCurrent());
+		 SmartDashboard.putNumber("Right Motor Back Current",
+		 drive.motors[1].getOutputCurrent());
+		 SmartDashboard.putNumber("Left Motor Front Current",
+		 drive.motors[2].getOutputCurrent());
+		 SmartDashboard.putNumber("Left Motor Back Current",
+		 drive.motors[3].getOutputCurrent());
 		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
 		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
 		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
@@ -366,25 +531,59 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
 		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
 		SmartDashboard.putNumber("Hang Current", intake.currentMonitoring());
-		
-//		SmartDashboard.putBoolean("is Close To Low", turret.is)
-//		SmartDashboard.putNumber("Turret Encoder Value", turret.getTurretEncoderValue());
-//		SmartDashboard.putNumber("Current Turret Position", turret.getCurrentPosition());
-//		SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());H
-//		SmartDashboard.putBoolean("Intake flap Solenoid Open?", gear.getIntakeFlapPos());
-//		SmartDashboard.putBoolean("Gear Solenoid Position", gear.getGearFlapSolPos());
-//		SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
-//		SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
-//		SmartDashboard.putNumber("Einstein Flywheel Count LEFT", shoot.getLeftFlywheelEin());
-//		SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT", shoot.getRightFlywheelEin());
-//		SmartDashboard.putNumber("Flywheel RPM LEFT", shoot.getLeftFlywheel());
-//		SmartDashboard.putNumber("Flywheel RPM RIGHT", shoot.getRightFlywheel());
-//		SmartDashboard.putBoolean("Is Right HAL tripped?", turret.getRightHal());
-//		SmartDashboard.putBoolean("Is Left HAL tri pped?", turret.getLeftHal());
-//		SmartDashboard.putNumber("Distance Turret Moved", turret.getEncoderDistance());
-//		SmartDashboard.putString("Current Autonomous Position", afs.getPos());
-//		SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
+//		SmartDashboard.putNumber("Left DT Current", drive.getCurrentDTLeft()); 
+//		SmartDashboard.putNumber("Right DT Current", drive.getCurrentDTRight());
+
+		// SmartDashboard.putBoolean("is Close To Low", turret.is)
+		// SmartDashboard.putNumber("Turret Encoder Value",
+		// turret.getTurretEncoderValue());
+		// SmartDashboard.putNumber("Current Turret Position",
+		// turret.getCurrentPosition());
+		// SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());H
+		// SmartDashboard.putBoolean("Intake flap Solenoid Open?",
+		// gear.getIntakeFlapPos());
+		// SmartDashboard.putBoolean("Gear Solenoid Position",
+		// gear.getGearFlapSolPos());
+		// SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
+		// SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
+		// SmartDashboard.putNumber("Einstein Flywheel Count LEFT",
+		// shoot.getLeftFlywheelEin());
+		// SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT",
+		// shoot.getRightFlywheelEin());
+		// SmartDashboard.putNumber("Flywheel RPM LEFT",
+		// shoot.getLeftFlywheel());
+		// SmartDashboard.putNumber("Flywheel RPM RIGHT",
+		// shoot.getRightFlywheel());
+		// SmartDashboard.putBoolean("Is Right HAL tripped?",
+		// turret.getRightHal());
+		// SmartDashboard.putBoolean("Is Left HAL tripped?",
+		// turret.getLeftHal());
+		// SmartDashboard.putNumber("Distance Turret Moved",
+		// turret.getEncoderDistance());
+		// SmartDashboard.putString("Current Autonomous Position",
+		// afs.getPos());
+		// SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
+
+		// for logging to file and reading parameters from file ********************
+		if (debugMode) {	
+			if (tick<maxTick) 
+			{
+				logTimer[tick]=timer.get();
+				logDtLftSpd[tick]=drive.leftEncoderSpeed();
+				logDtRtSpd[tick]=drive.rightEncoderSpeed();
+				//logDtLftDist[tick]=drive.getDistanceDTLeft();
+				//logDtRtDist[tick]=drive.getDistanceDTRight();
+				//logLftFly[tick]=shoot.getLeftFlywheelEin();
+				//logRtFly[tick]=shoot.getRightFlywheelEin();
+				//logHoodLft[tick]=hood.servoRight.getRaw();
+				//logHoodRt[tick]=hood.servoLeft.getRaw();
+				logHangI[tick]=intake.currentMonitoring();
+				//logLidarDist[tick]=	lidar.getDistance();	
+			
+				tick++;
+			} // end maxTick check
+		} //end debugMode
+		//**************************************************************************************
 	}
 
 }
-

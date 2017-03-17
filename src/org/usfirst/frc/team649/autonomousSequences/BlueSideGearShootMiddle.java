@@ -7,7 +7,8 @@ import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
-import org.usfirst.frc.team649.shootercommands.ShooterPID;
+import org.usfirst.frc.team649.shootercommands.TurretPID;
+import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -24,11 +25,11 @@ public class BlueSideGearShootMiddle extends CommandGroup {
     	    addSequential(new DrivetrainPIDCommand(72, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
     	    addSequential(new SetGearFlap(false));
     	    addSequential(new WaitCommand(1));
-    	    addParallel(new ShooterPID(155.5));
+    	    addParallel(new TurretPIDABS(24.5));
     		addParallel(new SetHoodCommand(40)); //temporary
-    	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
+//    	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
     		addSequential(new DrivetrainPIDCommand(-30, false));
-    		addSequential(new FeedBallsToShooterCommand(1.0));
+//    		addSequential(new FeedBallsToShooterCommand(1.0));
     }
  
 }

@@ -6,7 +6,7 @@ import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
-import org.usfirst.frc.team649.shootercommands.ShooterPID;
+import org.usfirst.frc.team649.shootercommands.TurretPID;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -18,7 +18,7 @@ public class BlueSideHopperOnlyBoilerSide extends CommandGroup {
     public BlueSideHopperOnlyBoilerSide() {
     	addSequential(new DrivetrainPIDCommand(92, false));
     	addSequential(new DrivetrainPIDCommand(90, true));//addSequential(new TurnWithEncoders(90));
-    	addParallel(new ShooterPID(180));
+    	addParallel(new TurretPID(180));
     	addParallel(new SetFunnelCommand(true));
     	addParallel(new SetFunnelFlywheels(1));
     	addSequential(new DrivetrainPIDCommand(19.375, false));

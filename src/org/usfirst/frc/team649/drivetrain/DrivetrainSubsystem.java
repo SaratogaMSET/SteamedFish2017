@@ -189,6 +189,14 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public void setSampleTime(double time) {
 		sampleTime = time;
 	}
+	
+	public double getLeftSpeed() {
+		return (motors[0].getSpeed() + motors[1].getSpeed()) / 2.0;
+	}
+	
+	public double getRightSpeed() {
+		return (motors[2].getSpeed() + motors[3].getSpeed()) / 2.0;
+	}
 	public double getVoltageDTRight() {
 		double voltage = 0;
 		double returnVoltage = 0;

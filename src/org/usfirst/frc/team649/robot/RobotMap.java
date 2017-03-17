@@ -71,6 +71,7 @@ public class RobotMap {
 
 
 	public static class Camera {
-		public static final String axisPort = "10.6.49.11";
+		public static final String axisPort = "10.6.49.35";
+		public static String axisName = "axis0";
 	}
 }

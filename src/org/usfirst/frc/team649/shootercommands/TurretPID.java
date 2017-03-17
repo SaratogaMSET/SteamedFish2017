@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class ShooterPID extends Command {
+public class TurretPID extends Command {
 	double setPoint;
 	public PIDController turretPID;
 	Timer time;
 	boolean isFinished;
-    public ShooterPID(double angle) {
+    public TurretPID(double angle) {
     	requires(Robot.turret);
     	Robot.turret.countCurrentPosition();
     	turretPID = Robot.turret.getPIDController();

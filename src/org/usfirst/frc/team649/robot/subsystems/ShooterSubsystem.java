@@ -33,6 +33,8 @@ public class ShooterSubsystem extends Subsystem {
    
     public void setFeedMotor(double power){
     	feederMotor.set(power);
+    }
+    public void setHooperMotor(double power){
     	hooperMotor.set(-power);
     }
 //    public void setHooperIn(double speed){

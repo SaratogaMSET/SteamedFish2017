@@ -52,8 +52,7 @@ public class RobotMap {
 		public static final int TURRET_MOTOR_PORT = 12;
 		//public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
 		public static final int TURRET_ABS_ENCODER_PORT = 3;
-		public static final int TURRET_HALL_EFFECT_RIGHT_PORT = 9;
-		public static final int TURRET_HALL_EFFECT_LEFT_PORT = 10;
+		public static final int TURRET_HALL = 1;
 	}
 
 	public static class Gear {
@@ -79,7 +78,7 @@ public class RobotMap {
 		public static final int usbResWidth = 320;
 		public static final int usbResHeight = 480;
 		public static final int usbFPS = 30;
-		public static final int usbPort = 0;
+		public static final int usbPort = 1;
 		public static final String backupAxisPort = "";
 		public static final int backupAxisResWidth = 320;
 		public static final int backupAxisResHeight = 480;
@@ -87,3 +86,4 @@ public class RobotMap {
 		public static boolean useSecondAxisCamera = false; 
 	}
 }
+

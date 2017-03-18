@@ -16,7 +16,6 @@ public class TurretPIDABS extends Command {
 	Timer time;
 	boolean isFinished;
     public TurretPIDABS(double angle) {
-    	requires(Robot.turret);
     	Robot.turret.countCurrentPosition();
     	turretPID = Robot.turret.getPIDController();
     	Robot.turret.countCurrentPosition();
@@ -26,6 +25,7 @@ public class TurretPIDABS extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.isTurretPIDActive = true;
     	turretPID.enable();
 //    	Robot.isTurretPIDActive = true;
     	turretPID.setSetpoint(setPoint);
@@ -63,7 +63,7 @@ public class TurretPIDABS extends Command {
     	SmartDashboard.putBoolean("is turret Finished", false);
     	turretPID.disable();
     	SmartDashboard.putBoolean("isTurretPID enabled", turretPID.isEnabled());
-
+    	Robot.isTurretPIDActive = false;
     	Robot.turret.manualSet(0.0);
     	time.stop();
     	time.reset();

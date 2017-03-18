@@ -55,7 +55,7 @@ public class IntakeSubsystem extends Subsystem {
 		blackRollerMotor.set(-1.0);
 	}
 	public void setWheelRollers(double power){
-		redWheelRoller.set(power);
+		redWheelRoller.set(-power);
 	}
     // Put methods for controlling this subsystem
     // here. Call these from Commands.

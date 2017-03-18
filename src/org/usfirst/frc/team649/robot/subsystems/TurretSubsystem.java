@@ -21,8 +21,7 @@ public class TurretSubsystem extends PIDSubsystem {
 
     // Initialize your subsystem here
 	public CANTalon turretMotor;
-	public DigitalInput turretHalRight;
-	public DigitalInput turretHalLeft;
+	public DigitalInput turretHal;
 	public AnalogPotentiometer turretABSEncoder;
 	public static final double TURRET_CIRCUMFERENCE = 20;
 	public static int jumps = 0;
@@ -50,7 +49,7 @@ public class TurretSubsystem extends PIDSubsystem {
     	//turretHalLeft = new DigitalInput(RobotMap.Turret.TURRET_HALL_EFFECT_LEFT_PORT);
     	turretMotor = new CANTalon(RobotMap.Turret.TURRET_MOTOR_PORT);
     	turretABSEncoder = new AnalogPotentiometer(RobotMap.Turret.TURRET_ABS_ENCODER_PORT);
-    	
+    	turretHal = new DigitalInput(RobotMap.Turret.TURRET_HALL);
     	currentEncoderValue = 0;
     	prevEncoderValue = getTurretEncoderValue();
     	currentEncoderTick = 0;
@@ -61,6 +60,9 @@ public class TurretSubsystem extends PIDSubsystem {
     }
     public void manualSet(double speed){
     	turretMotor.set(speed);
+    }
+    public boolean getTurretHal(){
+    	return !turretHal.get();
     }
 //    public double getEncoderDistance(){
 //    	return turretABSEncoder.getDistance();

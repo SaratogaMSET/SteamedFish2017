@@ -19,6 +19,7 @@ public class FeedBallsToShooterCommand extends Command {
     protected void initialize() {
     	Robot.shoot.setFeedMotor(speed);
     	Robot.intake.redWheelRoller.set(-1.0);
+    	Robot.shoot.setHooperMotor(speed/2);
     }
 
     // Called repeatedly when this Command is scheduled to run

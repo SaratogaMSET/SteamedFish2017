@@ -9,6 +9,7 @@ import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
 import org.usfirst.frc.team649.shootercommands.TurretPID;
+import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -19,19 +20,18 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class RedSideGearShootMiddle extends CommandGroup {
 
     public RedSideGearShootMiddle() {
-        addSequential(new SetGearFlap(true));
-    	addSequential(new SetIntakeWedgePistons(false));
-    	addSequential(new SetFunnelCommand(false));
-        addSequential(new DrivetrainPIDCommand(70, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
-        addSequential(new SetGearFlap(false));
-        addSequential(new WaitCommand(0.5));
-        addParallel(new TurretPID(42));
-    	addParallel(new SetHoodCommand(60)); //temporary
-        addParallel(new OnlyBangBangNoShootCommand(1450,1750,1150,0.58,0.5));
-    	addSequential(new DrivetrainPIDCommand(-30, false));
-    	addSequential(new FeedBallsToShooterCommand(1.0));
-    	  
-//    	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
+         
+    	addSequential(new SetGearFlap(true));
+		addSequential(new SetIntakeWedgePistons(false));
+		addSequential(new SetFunnelCommand(false));
+	    addSequential(new DrivetrainPIDCommand(72, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
+	    addSequential(new SetGearFlap(false));
+	    addSequential(new WaitCommand(1));
+	    addParallel(new TurretPIDABS(155.5));
+		addParallel(new SetHoodCommand(40)); //temporary
+	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
+		addSequential(new DrivetrainPIDCommand(-30, false));
+		addSequential(new FeedBallsToShooterCommand(1.0));
 
     }
 }

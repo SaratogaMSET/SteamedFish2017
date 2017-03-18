@@ -54,9 +54,9 @@ public class AutoFullSequence extends CommandGroup {
 			updateAutoSDPos("Position 3");
 			updateAutoSDGoal("Hopper and Gear!");
 			if (alliance == AllianceSelector.BLUE) {
-				addSequential(new BlueSideHopperGearBoilerSide());
+//				addSequential(new BlueSideHopperGearBoilerSide());
 			} else if (alliance == AllianceSelector.RED) {
-				addSequential(new RedSideHopperGearBoilerSide());
+//				addSequential(new RedSideHopperGearBoilerSide());
 			}
 		}
 

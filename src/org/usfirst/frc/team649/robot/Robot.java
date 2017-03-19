@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
@@ -36,6 +37,7 @@ import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 import org.usfirst.frc.team649.util.Center;
+import org.usfirst.frc.team649.util.GetShooterValues;
 
 import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
@@ -87,9 +89,12 @@ public class Robot extends IterativeRobot {
 	public static boolean isTurretPIDActive;
 	public static boolean isIntakeFlapDown;
 	public static boolean isGearFlickOut;
+	public static boolean isShooterRunning;
 	public static boolean isIntakeRunning;
 	public static boolean prevStateFunnelFlap;
 	public static String gearRollerState;
+	public static boolean leftPOVPrevState;
+	public static boolean rightPOVPrevState;
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
 //	public UsbCamera lifecam = new UsbCamera("cam2", 1);
@@ -125,7 +130,7 @@ public class Robot extends IterativeRobot {
 	public static double CENTER_TOLERANCE = 8;
 
 	public static boolean isTurretMax, isTurretMin;
-
+	public static int currentManualShootRPM;
 	// more cam stuff still dont touch
 //	AxisCamera axis;
 //	UsbCamera usb;
@@ -135,7 +140,7 @@ public class Robot extends IterativeRobot {
 //	CvSink cvsink2;
 
 	// for logging to file and reading parameters from file ********************
-	public static final boolean debugMode = true; // set this to true to enable
+	public static boolean debugMode = false; // set this to true to enable
 	public static final int maxTick = 3000; // at 50 samples/s need 3000 for 1
 											// minute
 	public static int tick;
@@ -173,6 +178,7 @@ public class Robot extends IterativeRobot {
 		isTurretMin = false;
 		isIntakeRunning = false;
 		isTurretPIDActive = false;
+		isShooterRunning = false;
 		gearRollerState = "off";
 		isGearFlickOut = gear.getGearFlapSolPos();
 		isIntakeFlapDown = intake.isIntakeDown();
@@ -215,24 +221,13 @@ public class Robot extends IterativeRobot {
 
 			// Output to log file
 			if (tick > 10) {
-				for (int i = 0; i < tick; i++) {
-					System.out.printf("timer %d %f\n", i, logTimer[i]);
-				}
 				try {
 					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
 
-					if (mapRobotParams.containsKey("varDrvTrnP"))
-						writer.printf("varDrvTrnP, %f\r\n", mapRobotParams.get("varDrvTrnP"));
-					if (mapRobotParams.containsKey("varDrvTrnI"))
-						writer.printf("varDrvTrnI, %f\r\n", mapRobotParams.get("varDrvTrnI"));
-					if (mapRobotParams.containsKey("varDrvTrnD"))
-						writer.printf("varDrvTrnD, %f\r\n", mapRobotParams.get("varDrvTrnD"));
-					if (mapRobotParams.containsKey("varDrvTrnTol"))
-						writer.printf("varDrvTrnTol, %f\r\n", mapRobotParams.get("varDrvTrnTol"));
-					if (mapRobotParams.containsKey("varDrvTrnDrift"))
-						writer.printf("varDrvTrnDrift, %f\r\n", mapRobotParams.get("varDrvTrnDrift"));
-					if (mapRobotParams.containsKey("varDrvTrnMaxP"))
-						writer.printf("varDrvTrnMaxP, %f\r\n", mapRobotParams.get("varDrvTrnMaxP"));
+					for( String name: mapRobotParams.keySet() ) {
+			            double value = mapRobotParams.get(name);    
+						writer.printf("%s, %f\n", name, value );
+					}
 
 					for (int i = 0; i < tick; i++) {
 						writer.printf("%d, %f", i, logTimer[i]);
@@ -246,8 +241,7 @@ public class Robot extends IterativeRobot {
 					writer.close();
 
 				} catch (FileNotFoundException | UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					debugMode = false;
 				}
 			}
 
@@ -279,24 +273,8 @@ public class Robot extends IterativeRobot {
 				} // end while
 				inputFile.close(); // close file
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
+				debugMode = false;
 			}
-
-			// Read in parameters from file
-			System.out.format("Reading parameters from file\r\n");
-			if (mapRobotParams.containsKey("varDrvTrnP"))
-				System.out.printf("varDrvTrnP, %f\r\n", mapRobotParams.get("varDrvTrnP"));
-			if (mapRobotParams.containsKey("varDrvTrnI"))
-				System.out.printf("varDrvTrnI, %f\r\n", mapRobotParams.get("varDrvTrnI"));
-			if (mapRobotParams.containsKey("varDrvTrnD"))
-				System.out.printf("varDrvTrnD, %f\r\n", mapRobotParams.get("varDrvTrnD"));
-			if (mapRobotParams.containsKey("varDrvTrnTol"))
-				System.out.printf("varDrvTrnTol, %f\r\n", mapRobotParams.get("varDrvTrnTol"));
-			if (mapRobotParams.containsKey("varDrvTrnDrift"))
-				System.out.printf("varDrvTrnDrift, %f\r\n", mapRobotParams.get("varDrvTrnDrift"));
-			if (mapRobotParams.containsKey("varDrvTrnMaxP"))
-				System.out.printf("varDrvTrnMaxP, %f\r\n", mapRobotParams.get("varDrvTrnMaxP"));
 
 		} // end debug mode
 
@@ -330,9 +308,17 @@ public class Robot extends IterativeRobot {
 		// drive.getAlliance());
 		// drive.resetEncoders();
 		// new DrivetrainPIDCommand(-90, true).start();
-		new BlueSideGearShootMiddle().start();
+		isShooterRunning = true;
+//		new BlueSideGearShootMiddle().start();
+		Robot.drive.motors[0].enableBrakeMode(true);
+		Robot.drive.motors[1].enableBrakeMode(true);
+		Robot.drive.motors[2].enableBrakeMode(true);
+		Robot.drive.motors[3].enableBrakeMode(true);
+		new BlueSideBoilerGearShoot().start();
+		
+
 //		new ResetTurretSequence().start();
-		// new TurretPIDABS(90.0).start();
+//		new TurretPIDABS(15.0).start();
 		// new DriveForwardTurn().start();
 
 	}
@@ -343,6 +329,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		Robot.drive.motors[0].enableBrakeMode(true);
+		Robot.drive.motors[1].enableBrakeMode(true);
+		Robot.drive.motors[2].enableBrakeMode(true);
+		Robot.drive.motors[3].enableBrakeMode(true);
 		SmartDashboard.putNumber("P", drive.encoderDrivePID.getP());
 		SmartDashboard.putNumber("I", drive.encoderDrivePID.getI());
 		SmartDashboard.putNumber("D", drive.encoderDrivePID.getD());
@@ -353,16 +343,21 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		// new RunCommpresorCommand(true).start();
+		isShooterRunning = false;
+
 		timer.reset();
 		timer.start();
 		drive.resetEncoders();
 		// new SetGearFlap(false).start();
 		// new SetIntakeWedgePistons(false).start();
 		prevStateFunnelFlap = false;
+		leftPOVPrevState = oi.operator.isLeftPOV();
+		rightPOVPrevState = oi.operator.isRightPOV();
 		new SetFunnelCommand(false).start();
 		// for logging to file and reading parameters from file
 		// ********************
 		tick = 0;
+		currentManualShootRPM = 1100;
 		// *********************************************************************************
 
 	}
@@ -435,11 +430,36 @@ public class Robot extends IterativeRobot {
 //		t.start();
 		// SmartDashboard.putNumber("absolute encoders for 90",
 		// turret.translateAngleToABS(90));
+		Robot.drive.motors[0].enableBrakeMode(false);
+		Robot.drive.motors[1].enableBrakeMode(false);
+		Robot.drive.motors[2].enableBrakeMode(false);
+		Robot.drive.motors[3].enableBrakeMode(false);
 		Scheduler.getInstance().run();
+		turret.countCurrentPosition();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
+		if(oi.operator.isLeftPOV() && !leftPOVPrevState){
+			if(currentManualShootRPM > 1100){
+				currentManualShootRPM -= 25;
+			}
+		}else if(oi.operator.isRightPOV() && !rightPOVPrevState){
+			if(currentManualShootRPM < 2000){
+				currentManualShootRPM += 25;
+			}
+		}
+		if(oi.operator.isLeftPOV()){
+			leftPOVPrevState = true;
+		}else{
+			leftPOVPrevState = false;
+		}
+		if(oi.operator.isRightPOV()){
+			rightPOVPrevState = true;
+		}else{
+			rightPOVPrevState = false;
+		}
 		if(oi.operator.isManualTurret()){
 			turret.turn(oi.operator.getX()/2);
 			hood.setServoRaw(-oi.operator.getSlider());
+			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
 		}else{
 			turret.turn(0.0);
 		}
@@ -494,29 +514,34 @@ public class Robot extends IterativeRobot {
 		}
 		if(oi.operator.getHang()){
 			if(!isTurretPIDActive){
-				new TurretPIDABS(180).start();
+//				new TurretPIDABS(180).start();
 			}
 			intake.setHangMotor(1.0);
 		}
 		
 		if(oi.operator.slowShoot()){
-			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-			if(shootLeft.getLeftFlywheelEin() > 1500 && shootRight.getRightFlywheelEin() > 1500){
-				shoot.setFeedMotor(1.0);
-				shoot.setHooperMotor(1.0);
-				intake.setWheelRollers(0.5);
-			}
-			
-		}else if(oi.operator.fastShoot()){
-			shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-			shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-			if(shootLeft.getLeftFlywheelEin() > 1500 && shootRight.getRightFlywheelEin() > 1500){
+//		
+			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+//			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
+//			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
+
+			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(0.5);
 				intake.setWheelRollers(0.5);
 			}
+//			
+		}else if(oi.operator.fastShoot()){
+			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+
 			
+			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
+				shoot.setFeedMotor(1.0);
+				shoot.setHooperMotor(1.0);
+				intake.setWheelRollers(0.5);
+			}
 
 		}else{
 			shootLeft.setLeftFlywheel(0.0);
@@ -647,12 +672,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
 		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
 		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
-		SmartDashboard.putNumber("Slider", oi.operator.getSlider());
+		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
 		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
 		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
 		SmartDashboard.putNumber("Hang Current", intake.currentMonitoring());
 		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
+		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
+		SmartDashboard.putNumber("Pot value", drive.programSelectorPot.get());
 		// SmartDashboard.putNumber("Left DT Current",
 		// drive.getCurrentDTLeft());
 		// SmartDashboard.putNumber("Right DT Current",

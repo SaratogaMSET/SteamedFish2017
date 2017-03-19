@@ -68,9 +68,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public PIDController encoderDrivePID;
 	public boolean isAutoShiftTrue;
 	Timer time;
-	public AnalogPotentiometer pospot;
-	public AnalogPotentiometer goalpot;
-	public AnalogPotentiometer alliancepot;
+	public AnalogPotentiometer programSelectorPot;
+	public AnalogPotentiometer alliancePot;
 	public String isHighGear;
 	public double sampleTime = 2.0;
 	public ArrayList<Double> PIDValues;
@@ -98,6 +97,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
 		 encoderDrivePID.setOutputRange(-0.65, 0.65); // 0.65
 		 PIDValues = new ArrayList<Double>(0);
+		 programSelectorPot = new AnalogPotentiometer(RobotMap.Drivetrain.SELECTOR_POT); 
+		 alliancePot = new AnalogPotentiometer(RobotMap.Drivetrain.ALLIANCE_POT);
 	}
 
 	public void shift(boolean highGear) {
@@ -150,8 +151,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(left * 0.945);
-		motors[1].set(left * 0.945);
+		motors[0].set(left * 0.915); //0.945
+		motors[1].set(left * 0.915); //0.945
 		motors[2].set(-right);
 		motors[3].set(-right);
 	}
@@ -321,7 +322,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		}
 		return false;
 	}
-	public boolean isGoalPotWithinRange(AnalogPotentiometer goal, double[] range)
+	public boolean isProgramPotWithinRange(AnalogPotentiometer goal, double[] range)
 	{
 		if(range.length == 6)
 		{
@@ -333,15 +334,15 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 
 	public int getAutoGoal() {
-		if (isGoalPotWithinRange(goalpot, AutoConstants.GO_FUEL)) {
+		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUEL)) {
 			return AutoConstants.FUEL;
-		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_GEAR)) {
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_GEAR)) {
 			return AutoConstants.GEAR;
-		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_FUELANDGEAR)) {
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUELANDGEAR)) {
 			return AutoConstants.FUELANDGEAR;
-		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_HOPPER)) {
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPER)) {
 			return AutoConstants.HOPPER;
-		} else if (isGoalPotWithinRange(goalpot, AutoConstants.GO_HOPPERANDGEAR)) {
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPERANDGEAR)) {
 			return AutoConstants.HOPPERANDGEAR;
 		} else {
 			// DEFAULT CASE
@@ -350,9 +351,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public int getAlliance() {
-		if (isAlliancePotWithinRange(alliancepot, AllianceSelector.BLUE_RANGE)) {
+		if (isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_RANGE)) {
 			return AllianceSelector.BLUE;
-		} else if (isAlliancePotWithinRange(alliancepot, AllianceSelector.RED_RANGE)) {
+		} else if (isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_RANGE)) {
 			return AllianceSelector.RED;
 		} else {
 			// BIG ERROR in this case pull from FMS!

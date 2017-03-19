@@ -78,7 +78,9 @@ public class OI {
 		public boolean intakeFlapUp() {
 			return operatorJoystick.getRawButton(8);
 		}
-
+		public double getSliderShoot(){
+			return ((-operatorJoystick.getRawAxis(3))+1)/2;
+		}
 		public boolean intakeFlapDown() {
 			return operatorJoystick.getRawButton(7);
 		}
@@ -88,7 +90,7 @@ public class OI {
 		}
 
 		public boolean slowShoot() {
-			return operatorJoystick.getRawButton(1) && !operatorJoystick.getRawButton(2);
+			return operatorJoystick.getRawButton(2) && !operatorJoystick.getRawButton(1);
 		}
 
 		public boolean fastShoot() {
@@ -100,6 +102,12 @@ public class OI {
 				return true;
 			}
 			return false;
+		}
+		public boolean isRightPOV(){
+			return operatorJoystick.getPOV()==90;
+		}
+		public boolean isLeftPOV(){
+			return operatorJoystick.getPOV() == 270;
 		}
 
 		public double getX() {

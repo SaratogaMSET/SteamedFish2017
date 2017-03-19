@@ -53,8 +53,7 @@ public class OnlyBangBangNoShootCommand extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-//        return !Robot.isShooterRunning;
-    	return true;
+        return !Robot.isShooterRunning;
     }
 
     // Called once after isFinished returns true

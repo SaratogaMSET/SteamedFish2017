@@ -10,16 +10,16 @@ public class AutoFullSequence extends CommandGroup {
 	public String pos;
 	public String goal;
 
-	public AutoFullSequence(int position, int goal, int alliance) {
+	public AutoFullSequence(int position, int program, int alliance) {
 		System.out.println("\n");
 
-		if (goal == AutoConstants.DO_NOTHING) {
+		if (program == AutoConstants.DO_NOTHING) {
 			System.out.println("DOING NOTHING");
 			updateAutoSDPos("NOTHING");
 			updateAutoSDGoal("No Goal!");
 			return;
 		}
-		if (goal == AutoConstants.FUELANDGEAR) {
+		if (program == AutoConstants.FUELANDGEAR) {
 			System.out.println("Shooting Fuel");
 			updateAutoSDPos("Position 1");
 			updateAutoSDGoal("Fuel!");
@@ -29,7 +29,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideGearShootFarSide());
 			}
 		}
-		if (goal == AutoConstants.FUELANDGEAR) {
+		if (program == AutoConstants.FUELANDGEAR) {
 			System.out.println("Loading gear!");
 			updateAutoSDPos("Position 2");
 			updateAutoSDGoal("Gear!");
@@ -39,7 +39,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideGearShootMiddle());
 			}
 		}
-		if (goal == AutoConstants.HOPPER) {
+		if (program == AutoConstants.HOPPER) {
 			System.out.println("Hopper!");
 			updateAutoSDPos("Position 3");
 			updateAutoSDGoal("Hopper!");
@@ -49,7 +49,7 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new RedSideHopperOnlyBoilerSide());
 			}
 		}
-		if (goal == AutoConstants.HOPPERANDGEAR) {
+		if (program == AutoConstants.HOPPERANDGEAR) {
 			System.out.println("Hopper and gear!");
 			updateAutoSDPos("Position 3");
 			updateAutoSDGoal("Hopper and Gear!");

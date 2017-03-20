@@ -5,6 +5,8 @@ import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
+import org.usfirst.frc.team649.robot.commands.ShiftDT;
+import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
@@ -20,7 +22,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class RedSideGearShootMiddle extends CommandGroup {
 
     public RedSideGearShootMiddle() {
-         
+    	addSequential(new SwitchDTMode(true));
+    	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetIntakeWedgePistons(false));
 		addSequential(new SetFunnelCommand(false));

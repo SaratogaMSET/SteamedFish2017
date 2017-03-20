@@ -15,6 +15,7 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootFarSide;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
@@ -24,6 +25,7 @@ import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
+import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
@@ -97,6 +99,7 @@ public class Robot extends IterativeRobot {
 	public static boolean rightPOVPrevState;
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
+	public static boolean prevStateHang;
 //	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 //	public VideoCapture video = new VideoCapture();
 //	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
@@ -179,6 +182,7 @@ public class Robot extends IterativeRobot {
 		isIntakeRunning = false;
 		isTurretPIDActive = false;
 		isShooterRunning = false;
+		prevStateHang = false;
 		gearRollerState = "off";
 		isGearFlickOut = gear.getGearFlapSolPos();
 		isIntakeFlapDown = intake.isIntakeDown();
@@ -310,13 +314,10 @@ public class Robot extends IterativeRobot {
 		// new DrivetrainPIDCommand(-90, true).start();
 		isShooterRunning = true;
 //		new BlueSideGearShootMiddle().start();
-		Robot.drive.motors[0].enableBrakeMode(true);
-		Robot.drive.motors[1].enableBrakeMode(true);
-		Robot.drive.motors[2].enableBrakeMode(true);
-		Robot.drive.motors[3].enableBrakeMode(true);
-		new BlueSideBoilerGearShoot().start();
 		
-
+//		new BlueSideBoilerGearShoot().start();
+		
+		new BlueSideGearShootFarSide().start();
 //		new ResetTurretSequence().start();
 //		new TurretPIDABS(15.0).start();
 		// new DriveForwardTurn().start();
@@ -329,10 +330,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		Robot.drive.motors[0].enableBrakeMode(true);
-		Robot.drive.motors[1].enableBrakeMode(true);
-		Robot.drive.motors[2].enableBrakeMode(true);
-		Robot.drive.motors[3].enableBrakeMode(true);
+		
 		SmartDashboard.putNumber("P", drive.encoderDrivePID.getP());
 		SmartDashboard.putNumber("I", drive.encoderDrivePID.getI());
 		SmartDashboard.putNumber("D", drive.encoderDrivePID.getD());
@@ -353,7 +351,7 @@ public class Robot extends IterativeRobot {
 		prevStateFunnelFlap = false;
 		leftPOVPrevState = oi.operator.isLeftPOV();
 		rightPOVPrevState = oi.operator.isRightPOV();
-		new SetFunnelCommand(false).start();
+		new SwitchDTMode(false).start();
 		// for logging to file and reading parameters from file
 		// ********************
 		tick = 0;
@@ -430,10 +428,6 @@ public class Robot extends IterativeRobot {
 //		t.start();
 		// SmartDashboard.putNumber("absolute encoders for 90",
 		// turret.translateAngleToABS(90));
-		Robot.drive.motors[0].enableBrakeMode(false);
-		Robot.drive.motors[1].enableBrakeMode(false);
-		Robot.drive.motors[2].enableBrakeMode(false);
-		Robot.drive.motors[3].enableBrakeMode(false);
 		Scheduler.getInstance().run();
 		turret.countCurrentPosition();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
@@ -513,10 +507,13 @@ public class Robot extends IterativeRobot {
 			new SetFunnelCommand(false).start();
 		}
 		if(oi.operator.getHang()){
-			if(!isTurretPIDActive){
+			prevStateHang = true;
+			if(!isTurretPIDActive && !prevStateHang){
 //				new TurretPIDABS(180).start();
 			}
 			intake.setHangMotor(1.0);
+		}else{
+			prevStateHang = false;
 		}
 		
 		if(oi.operator.slowShoot()){

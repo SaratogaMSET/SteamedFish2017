@@ -4,6 +4,8 @@ import javax.sound.midi.Sequence;
 
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
+import org.usfirst.frc.team649.robot.commands.ShiftDT;
+import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.TurretPID;
@@ -17,6 +19,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class RedSideGearShootFarSide extends CommandGroup {
 
     public RedSideGearShootFarSide() {
+    	addSequential(new SwitchDTMode(true));
+    	addSequential(new ShiftDT(false));
     	addSequential(new DrivetrainPIDCommand(70.565, false));
     	addSequential(new DrivetrainPIDCommand(-60, true));//addSequential(new TurnWithEncoders(-60));
     	addSequential(new DrivetrainPIDCommand(56.535, false));

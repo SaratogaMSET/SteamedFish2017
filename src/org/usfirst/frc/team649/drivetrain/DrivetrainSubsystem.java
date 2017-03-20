@@ -39,15 +39,15 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static final double goalScale = 0;
 		public static final double allianceScale = 0;
 		public static double[] DO_NOTHING_RANGE = { -0.10, 0.85 };
-		public static double[] GO_GEAR = { 0.87, 1.72 };
-		public static double[] GO_FUEL = { 1.74, 2.59 };
-		public static double[] GO_FUELANDGEAR = { 2.61, 3.46 };
+		public static double[] GO_BOILER = { 0.87, 1.72 };
+		public static double[] GO_MIDDLE = { 1.74, 2.59 };
+		public static double[] GO_FAR = { 2.61, 3.46 };
 		public static double[] GO_HOPPER = { 3.48, 4.33 };
 		public static double[] GO_HOPPERANDGEAR = { 4.35, 5.10 };
 		public static final int DO_NOTHING = -1;
-		public static final int FUEL = 1;
-		public static final int GEAR = 2;
-		public static final int FUELANDGEAR = 3;
+		public static final int BOILER = 1;
+		public static final int MIDDLE = 2;
+		public static final int FAR = 3;
 		public static final int HOPPER = 4;
 		public static final int HOPPERANDGEAR = 5;
 	}
@@ -334,12 +334,12 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 
 	public int getAutoGoal() {
-		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUEL)) {
-			return AutoConstants.FUEL;
-		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_GEAR)) {
-			return AutoConstants.GEAR;
-		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUELANDGEAR)) {
-			return AutoConstants.FUELANDGEAR;
+		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_BOILER)) {
+			return AutoConstants.BOILER;
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_MIDDLE)) {
+			return AutoConstants.MIDDLE;
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FAR)) {
+			return AutoConstants.FAR;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPER)) {
 			return AutoConstants.HOPPER;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPERANDGEAR)) {

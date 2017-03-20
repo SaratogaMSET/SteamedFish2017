@@ -2,10 +2,13 @@ package org.usfirst.frc.team649.robot;
 
 //**************************************************************************
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 // for logging to file and reading parameters from file ********************
 import java.util.HashMap;
 import java.util.Map;
@@ -222,6 +225,10 @@ public class Robot extends IterativeRobot {
 			// Output to log file
 			if (tick > 10) {
 				try {
+					outFileLog = new SimpleDateFormat("'/home/lvuser/logfile'.MMddhhmm'.csv'").format(new Date());
+					System.out.printf("outputfile is: %s\n",  outFileLog);
+					
+					File file = new File(outFileLog);
 					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
 
 					for( String name: mapRobotParams.keySet() ) {

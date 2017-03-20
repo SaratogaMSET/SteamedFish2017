@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.hal.AllianceStationID;
 public class AutoFullSequence extends CommandGroup {
 	public String pos;
 	public String goal;
+	public String alliance;
 
 	public AutoFullSequence(int position, int program, int alliance) {
 		System.out.println("\n");
@@ -19,29 +20,39 @@ public class AutoFullSequence extends CommandGroup {
 			updateAutoSDGoal("No Goal!");
 			return;
 		}
-		if (program == AutoConstants.FUELANDGEAR) {
-			System.out.println("Shooting Fuel");
-			updateAutoSDPos("Position 1");
-			updateAutoSDGoal("Fuel!");
+		
+		if (program == AutoConstants.FAR) {
+			updateAutoSDPos("Far Side");
+			updateAutoSDGoal("Far Side Gear and Shooting!");
 			if (alliance == AllianceSelector.BLUE) {
 				addSequential(new BlueSideGearShootFarSide());
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideGearShootFarSide());
 			}
 		}
-		if (program == AutoConstants.FUELANDGEAR) {
-			System.out.println("Loading gear!");
+		
+		if (program == AutoConstants.MIDDLE) {
 			updateAutoSDPos("Position 2");
-			updateAutoSDGoal("Gear!");
+			updateAutoSDGoal("Middle Gear and Shooting!");
 			if (alliance == AllianceSelector.BLUE) {
 				addSequential(new BlueSideGearShootMiddle());
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideGearShootMiddle());
 			}
 		}
+		
+		if (program == AutoConstants.BOILER) {
+			updateAutoSDPos("Boiler Side");
+			updateAutoSDGoal("Boiler Side Gear and Shooting!");
+			if (alliance == AllianceSelector.BLUE) {
+				addSequential(new BlueSideGearShootFarSide());
+			} else if(alliance == AllianceSelector.RED) {
+				addSequential(new RedSideGearShootFarSide());
+			}
+		}
+		
 		if (program == AutoConstants.HOPPER) {
-			System.out.println("Hopper!");
-			updateAutoSDPos("Position 3");
+			updateAutoSDPos("Boiler Side");
 			updateAutoSDGoal("Hopper!");
 			if (alliance == AllianceSelector.BLUE) {
 				addSequential(new BlueSideHopperOnlyBoilerSide());
@@ -50,8 +61,7 @@ public class AutoFullSequence extends CommandGroup {
 			}
 		}
 		if (program == AutoConstants.HOPPERANDGEAR) {
-			System.out.println("Hopper and gear!");
-			updateAutoSDPos("Position 3");
+			updateAutoSDPos("Boiler Side");
 			updateAutoSDGoal("Hopper and Gear!");
 			if (alliance == AllianceSelector.BLUE) {
 //				addSequential(new BlueSideHopperGearBoilerSide());
@@ -68,6 +78,10 @@ public class AutoFullSequence extends CommandGroup {
 
 	public void updateAutoSDGoal(String state) {
 		goal = state;
+	}
+	
+	public void updateAutoAlliance(String state) {
+		alliance = state;
 	}
 
 	public String getPos() {

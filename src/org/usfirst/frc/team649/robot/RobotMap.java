@@ -66,11 +66,7 @@ public class RobotMap {
 		public static final int[] GEAR_FUNNEL_PORT = { 2, 4, 5 };
 	}
 
-	public static class Hanger {
-		public static final int[] HANGER_PISTON = { 1, 0, 1 };
-		public static final int HANGER_MOTOR_PORT = 5;
-		public static final int HANGER_LIMIT_SWITCH_PORT = 13;
-	}
+	
 
 
 	public static class Camera {

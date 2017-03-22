@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class SetHoodCommand extends Command {
-	double percent;
-    public SetHoodCommand(double percent) {
+	double raw;
+    public SetHoodCommand(double raw) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	this.percent = percent;
+    	this.raw = raw;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.hood.setServoRaw(percent/100);
+    	Robot.hood.setServoRaw(raw);
     }
 
     // Called repeatedly when this Command is scheduled to run

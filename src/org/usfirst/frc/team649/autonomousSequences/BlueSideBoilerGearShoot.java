@@ -10,6 +10,7 @@ import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
 import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
+import org.usfirst.frc.team649.util.GetShooterValues;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -30,11 +31,11 @@ public class BlueSideBoilerGearShoot extends CommandGroup {
 	    addSequential(new DrivetrainPIDCommand(58.5,false));  
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(0.5));
-	    addParallel(new TurretPIDABS(162));
-		addParallel(new SetHoodCommand(40)); //temporary
-//	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
-		addSequential(new DrivetrainPIDCommand(-20, false));
-//		addSequential(new FeedBallsToShooterCommand(1.0));
+	    addParallel(new TurretPIDABS(60*2.17));
+	    addParallel(new SetHoodCommand(0.1406)); //temporary
+	    addParallel(new OnlyBangBangNoShootCommand(1425,1625,1225,GetShooterValues.returnShooterMaxPower(1425),GetShooterValues.returnShooterMinPower(1425))); //1425 hood:0.1406 turret: 2.17
+		addSequential(new DrivetrainPIDCommand(-50, false));
+		addSequential(new FeedBallsToShooterCommand(1.0));
 
     }
 }

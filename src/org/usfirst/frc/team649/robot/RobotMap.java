@@ -24,6 +24,7 @@ public class RobotMap {
 		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };
 		public static final int[] LEFT_DRIVE_SOL = { 2, 2, 3 };
 		public static final int GYRO_PORT = 2;
+		
 		public static final int SELECTOR_POT = 0;
 		public static final int ALLIANCE_POT = 1;
 	}
@@ -52,7 +53,7 @@ public class RobotMap {
 	}
 
 	public static class Turret {
-		public static final int TURRET_MOTOR_PORT = 12;
+		public static final int TURRET_MOTOR_PORT = 11;
 		//public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
 		public static final int TURRET_ABS_ENCODER_PORT = 3;
 		public static final int TURRET_HALL = 1;

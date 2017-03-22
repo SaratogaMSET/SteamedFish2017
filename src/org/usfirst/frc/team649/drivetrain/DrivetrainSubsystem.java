@@ -38,28 +38,29 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public static class AutoConstants {
 		public static final double goalScale = 0;
 		public static final double allianceScale = 0;
-		public static double[] DO_NOTHING_RANGE = { -0.10, 0.85 };
-		public static double[] GO_GEAR = { 0.87, 1.72 };
-		public static double[] GO_FUEL = { 1.74, 2.59 };
-		public static double[] GO_FUELANDGEAR = { 2.61, 3.46 };
-		public static double[] GO_HOPPER = { 3.48, 4.33 };
+		//public static double[] DO_NOTHING_RANGE = { 0.0, 1.25 };
+		//public static double[] NO_SHOOT = {1.26, 2.50};
+		public static double[] GO_BOILER = { 0.0, 0.125 };
+		public static double[] GO_MIDDLE = { 0.126, 0.250 };
+		public static double[] GO_FAR = { 0.251, 0.375 };
+		public static double[] GO_HOPPER = { 0.376, 0.50 };
 		public static double[] GO_HOPPERANDGEAR = { 4.35, 5.10 };
 		public static final int DO_NOTHING = -1;
-		public static final int FUEL = 1;
-		public static final int GEAR = 2;
-		public static final int FUELANDGEAR = 3;
+		public static final int BOILER = 1;
+		public static final int MIDDLE = 2;
+		public static final int FAR = 3;
 		public static final int HOPPER = 4;
 		public static final int HOPPERANDGEAR = 5;
 	}
 
 	public static class AllianceSelector {
-		public static double[] RED_RANGE = { -0.10, 2.6 };
-		public static double[] BLUE_RANGE = { 2.7, 5.0 };
+		public static double[] RED_RANGE = { 0.234, 0.375 };
+		public static double[] BLUE_RANGE = { 0.235, 0.50 };
 		public static final int RED = 1;
 		public static final int BLUE = 2;
 	}
 
-	public static final double MAX_SPEED = 1500.0;
+	public static final double MAX_SPEED = 1500.0;	
 	public static final double MAX_LOW_SPEED = 700.0;
 
 	public Encoder leftEncoder, rightEncoder;
@@ -151,8 +152,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(left); //0.915
-		motors[1].set(left); //0.915
+		motors[0].set(left*.98); //0.915
+		motors[1].set(left*.98); //0.915
 		motors[2].set(-right);
 		motors[3].set(-right);
 	}
@@ -317,29 +318,29 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public boolean isAlliancePotWithinRange(AnalogPotentiometer pot, double[] range) {
 		if (range.length == 2) {
-			return pot.get() * AutoConstants.allianceScale > range[0]
-					&& pot.get() * AutoConstants.allianceScale < range[1];
+			return pot.get() > range[0]
+					&& pot.get() < range[1];
 		}
 		return false;
 	}
 	public boolean isProgramPotWithinRange(AnalogPotentiometer goal, double[] range)
 	{
-		if(range.length == 6)
+		if(range.length == 2)
 		{
-			return goal.get() *AutoConstants.goalScale > range[0]
-				&& goal.get() *AutoConstants.goalScale < range[5];
+			return goal.get() > range[0]
+				&& goal.get()  < range[1];
 		}
 		return false;
 	}
 
 
 	public int getAutoGoal() {
-		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUEL)) {
-			return AutoConstants.FUEL;
-		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_GEAR)) {
-			return AutoConstants.GEAR;
-		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FUELANDGEAR)) {
-			return AutoConstants.FUELANDGEAR;
+		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_BOILER)) {
+			return AutoConstants.BOILER;
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_MIDDLE)) {
+			return AutoConstants.MIDDLE;
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FAR)) {
+			return AutoConstants.FAR;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPER)) {
 			return AutoConstants.HOPPER;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPERANDGEAR)) {
@@ -363,7 +364,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 				return AllianceSelector.RED;
 			} else {
 				DriverStation.reportError("NO ALLIANCE FOUND THROUGH POTENTIOMETER OR FMS!!!", true);
-				return 0;
+				return AutoConstants.DO_NOTHING;
 			}
 		}
 	}

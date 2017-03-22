@@ -2,10 +2,13 @@ package org.usfirst.frc.team649.robot;
 
 //**************************************************************************
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 // for logging to file and reading parameters from file ********************
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +20,9 @@ import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootFarSide;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
+import org.usfirst.frc.team649.autonomousSequences.RedSideBoilerGearShoot;
+import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootFarSide;
+import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
 import org.usfirst.frc.team649.drivetrain.LeftDTPID;
@@ -24,6 +30,7 @@ import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
+import org.usfirst.frc.team649.robot.commands.DriveForTime;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
@@ -226,6 +233,10 @@ public class Robot extends IterativeRobot {
 			// Output to log file
 			if (tick > 10) {
 				try {
+					outFileLog = new SimpleDateFormat("'/home/lvuser/logfile'.MMddhhmm'.csv'").format(new Date());
+					System.out.printf("outputfile is: %s\n",  outFileLog);
+					
+					File file = new File(outFileLog);
 					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
 
 					for( String name: mapRobotParams.keySet() ) {
@@ -236,8 +247,7 @@ public class Robot extends IterativeRobot {
 					for (int i = 0; i < tick; i++) {
 						writer.printf("%d, %f", i, logTimer[i]);
 						writer.printf(", %f, %f", logDtLftSpd[i], logDtRtSpd[i]);
-						// writer.printf(", %f, %f", logDtLftDist[i],
-						// logDtRtDist[i]);
+						writer.printf(", %f, %f", logDtLftDist[i], logDtRtDist[i]);
 						// writer.printf(", %f, %f", logLftFly[i],logRtFly[i]);
 						writer.printf(", %f", logHangI[i]);
 						writer.printf("\r\n");
@@ -313,11 +323,15 @@ public class Robot extends IterativeRobot {
 		// drive.resetEncoders();
 		// new DrivetrainPIDCommand(-90, true).start();
 		isShooterRunning = true;
-//		new BlueSideGearShootMiddle().start();
+		new BlueSideGearShootMiddle().start();
 		
 //		new BlueSideBoilerGearShoot().start();
-		
-		new BlueSideGearShootFarSide().start();
+//		new RedSideGearShootMiddle().start();
+//		new RedSideGearShootFarSide().start();
+//		new RedSideBoilerGearShoot().start();
+//		new BlueSideGearShootFarSide().start();
+//		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
+		//new DriveForTime(0.9).start();
 //		new ResetTurretSequence().start();
 //		new TurretPIDABS(15.0).start();
 		// new DriveForwardTurn().start();
@@ -676,7 +690,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Hang Current", intake.currentMonitoring());
 		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
 		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
-		SmartDashboard.putNumber("Pot value", drive.programSelectorPot.get());
+		SmartDashboard.putNumber("Program Pot value", drive.programSelectorPot.get());
+		SmartDashboard.putNumber("Pot", drive.alliancePot.get());
+		SmartDashboard.putNumber("Alliance Selection", drive.getAlliance());
+		SmartDashboard.putNumber("Get Goal", drive.getAutoGoal());
 		// SmartDashboard.putNumber("Left DT Current",
 		// drive.getCurrentDTLeft());
 		// SmartDashboard.putNumber("Right DT Current",

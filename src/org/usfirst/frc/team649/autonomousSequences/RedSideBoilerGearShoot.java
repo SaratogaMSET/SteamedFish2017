@@ -1,6 +1,18 @@
 package org.usfirst.frc.team649.autonomousSequences;
+import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
+import org.usfirst.frc.team649.gearcommands.SetGearFlap;
+import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
+import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
+import org.usfirst.frc.team649.robot.commands.ShiftDT;
+import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
+import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
+import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
+import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
+import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
+
 
 /**
  *
@@ -8,21 +20,24 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class RedSideBoilerGearShoot extends CommandGroup {
 
     public RedSideBoilerGearShoot() {
-        // Add Commands here:
-        // e.g. addSequential(new Command1());
-        //      addSequential(new Command2());
-        // these will run in order.
 
-        // To run multiple commands at the same time,
-        // use addParallel()
-        // e.g. addParallel(new Command1());
-        //      addSequential(new Command2());
-        // Command1 and Command2 will run in parallel.
+    	addSequential(new SwitchDTMode(true));
+    	addSequential(new ShiftDT(false));
+    	addSequential(new SetGearFlap(true));
+		addSequential(new SetIntakeWedgePistons(false));
+		addSequential(new SetFunnelCommand(false));
+	    addSequential(new DrivetrainPIDCommand(72, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
+	    addSequential(new DrivetrainPIDCommand(-65.5, true));
+	    addSequential(new DrivetrainPIDCommand(66,false));  
+	    addSequential(new SetGearFlap(false));
+	    addSequential(new WaitCommand(0.5));
+	    addParallel(new TurretPIDABS(162));
+		addParallel(new SetHoodCommand(40)); //temporary
+//	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
+		addSequential(new DrivetrainPIDCommand(-20, false));
+//		addSequential(new FeedBallsToShooterCommand(1.0));
+		
+		
 
-        // A command group will require all of the subsystems that each member
-        // would require.
-        // e.g. if Command1 requires chassis, and Command2 requires arm,
-        // a CommandGroup containing them would require both the chassis and the
-        // arm.
     }
 }

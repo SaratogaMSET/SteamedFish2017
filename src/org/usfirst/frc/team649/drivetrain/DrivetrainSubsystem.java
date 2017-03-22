@@ -44,20 +44,24 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static double[] GO_MIDDLE = { 0.126, 0.250 };
 		public static double[] GO_FAR = { 0.251, 0.375 };
 		public static double[] GO_HOPPER = { 0.376, 0.50 };
-		public static double[] GO_HOPPERANDGEAR = { 4.35, 5.10 };
+		public static double[] GO_FORWARD = { 4.35, 5.10 };
 		public static final int DO_NOTHING = -1;
 		public static final int BOILER = 1;
 		public static final int MIDDLE = 2;
 		public static final int FAR = 3;
 		public static final int HOPPER = 4;
-		public static final int HOPPERANDGEAR = 5;
+		public static final int FOWARD = 5;
 	}
 
 	public static class AllianceSelector {
-		public static double[] RED_RANGE = { 0.234, 0.375 };
-		public static double[] BLUE_RANGE = { 0.235, 0.50 };
+		public static double[] RED_NO_SHOOT_RANGE = {0.168,0.335};
+		public static double[] BLUE_NO_SHOOT_RANGE = {0.336,0.5};
+		public static double[] RED_RANGE = {0,0.167};
+		public static double[] BLUE_RANGE = {0.51, 7.8};
 		public static final int RED = 1;
 		public static final int BLUE = 2;
+		public static final int BLUE_NO_SHOOT = 3;
+		public static final int RED_NO_SHOOT = 4;
 	}
 
 	public static final double MAX_SPEED = 1500.0;	
@@ -343,8 +347,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			return AutoConstants.FAR;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPER)) {
 			return AutoConstants.HOPPER;
-		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPERANDGEAR)) {
-			return AutoConstants.HOPPERANDGEAR;
+		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FORWARD)) {
+			return AutoConstants.FOWARD;
 		} else {
 			// DEFAULT CASE
 			return AutoConstants.DO_NOTHING;
@@ -356,13 +360,17 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			return AllianceSelector.BLUE;
 		} else if (isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_RANGE)) {
 			return AllianceSelector.RED;
-		} else {
+		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_NO_SHOOT_RANGE)){
+			return AllianceSelector.RED_NO_SHOOT;
+		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_NO_SHOOT_RANGE)){
+			return AllianceSelector.BLUE_NO_SHOOT;
+		}else{
 			// BIG ERROR in this case pull from FMS!
 			if (DriverStation.getInstance().getAlliance().Blue == DriverStation.getInstance().getAlliance()) {
 				return AllianceSelector.BLUE;
 			} else if (DriverStation.getInstance().getAlliance().Red == DriverStation.getInstance().getAlliance()) {
 				return AllianceSelector.RED;
-			} else {
+			}else {
 				DriverStation.reportError("NO ALLIANCE FOUND THROUGH POTENTIOMETER OR FMS!!!", true);
 				return AutoConstants.DO_NOTHING;
 			}

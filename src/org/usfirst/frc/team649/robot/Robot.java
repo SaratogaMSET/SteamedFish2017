@@ -18,10 +18,10 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
-import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootFarSide;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideGearFarSide;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideBoilerGearShoot;
-import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootFarSide;
+import org.usfirst.frc.team649.autonomousSequences.RedSideGearFarSide;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
@@ -29,7 +29,6 @@ import org.usfirst.frc.team649.drivetrain.LeftDTPID;
 import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
-import org.usfirst.frc.team649.intakecommands.SetIntakeWedgePistons;
 import org.usfirst.frc.team649.robot.commands.DriveForTime;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
@@ -192,7 +191,7 @@ public class Robot extends IterativeRobot {
 		prevStateHang = false;
 		gearRollerState = "off";
 		isGearFlickOut = gear.getGearFlapSolPos();
-		isIntakeFlapDown = intake.isIntakeDown();
+//		isIntakeFlapDown = intake.isIntakeDown();
 		drive.resetEncoders();
 		turret = new TurretSubsystem();
 		turret.startingPos = turret.getTurretEncoderValue();
@@ -471,20 +470,17 @@ public class Robot extends IterativeRobot {
 		}else{
 			turret.turn(0.0);
 		}
-		if (oi.operator.intakeFlapUp()) {
-			new SetIntakeWedgePistons(false).start();
-		} else if (oi.operator.intakeFlapDown()) {
-			new SetIntakeWedgePistons(true).start();
-
-		}
+//		if (oi.operator.intakeFlapUp()) {
+//			new SetIntakeWedgePistons(false).start();
+//		} else if (oi.operator.intakeFlapDown()) {
+//			new SetIntakeWedgePistons(true).start();
+//
+//		}
 		if (oi.operator.runIntake()) {
 			
 			intake.setIntakeRollerMotor(1.0);
 			intake.setWheelRollers(1.0);
-			if(!isIntakeRunning){
-				new SetIntakeWedgePistons(true).start();
-
-			}
+//			 
 			isIntakeRunning = true;
 		} else {
 			isIntakeRunning = false;
@@ -565,55 +561,6 @@ public class Robot extends IterativeRobot {
 		 } else {
 			 drive.shift(false);
 		 }
-		// if (oi.operator.getShoot()) {
-		//
-		// shootLeft.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-		// shootRight.simpleBangBang(0.58, 0.62, 1600, 1800, 1500);
-		//// new ShooterPIDLeft(1600).start();
-		//
-		// } else {
-		// Robot.shootLeft.setLeftFlywheel(0.0);
-		// Robot.shootRight.setRightFlywheel(0.0);
-		// }
-		// if (oi.operator.runFeederWheel()) {
-		// shoot.setFeedMotor(1.0);
-		// } else {
-		// shoot.setFeedMotor(0.0);
-		// }
-		// if (oi.operator.setDownIntakePistons()) {
-		// new SetIntakeWedgePistons(true).start();
-		// } else if (oi.operator.setUpIntakePistons()) {
-		// new SetIntakeWedgePistons(false).start();
-		// }
-		// if (oi.operator.setGearFlapIn()) {
-		// new SetGearFlap(true).start();
-		// } else if (oi.operator.setGearFlapOut()) {
-		// new SetGearFlap(false).start();
-		//
-		// }
-		// if (oi.driver.shiftUp()) {
-		// drive.shift(true);
-		// } else {
-		// drive.shift(false);
-		// }
-		// if (oi.operator.setFunnelPistonDown()) {
-		// new SetFunnelCommand(true).start();
-		// } else if (oi.operator.setFunnelPistonUp()) {
-		// new SetFunnelCommand(false).start();
-		// }
-		// if (oi.operator.runIntakeIn()) {
-		// intake.setIntakeRollerMotor(1.0);
-		// } else {
-		// intake.setIntakeRollerMotor(0.0);
-		// }
-		//
-		// if (oi.operator.runFunnelMotors()) {
-		// gear.setFunnelMotor(-1.0);
-		// } else {
-		// gear.setFunnelMotor(0);
-		// }
-		// Robot.turret.manualSet(oi.operator.getTurret()/2);
-		// turret.countCurrentPosition();
 		doTheDash();
 	}
 

@@ -10,6 +10,7 @@ import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
 import org.usfirst.frc.team649.shootercommands.TurretPID;
+import org.usfirst.frc.team649.util.GetShooterValues;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -23,13 +24,11 @@ public class BlueSideHopperOnlyBoilerSide extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new DrivetrainPIDCommand(80, false));
     	addSequential(new DrivetrainPIDCommand(-94.5, true));//addSequential(new TurnWithEncoders(90));
-    	//addParallel(new TurretPID(180));
     	addParallel(new SetFunnelCommand(true));
     	addParallel(new SetFunnelFlywheels(1));
-    	//addSequential(new DrivetrainPIDCommand(19.375, false));
+    	addSequential(new DrivetrainPIDCommand(54, false));
     	addSequential(new DriveForTime(0.1));
-//    	addParallel(new OnlyBangBangNoShootCommand(1600,0.3,0.4,0.4,0.3,1500,1700));
-	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
+	    addParallel(new OnlyBangBangNoShootCommand(1450,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450)));
     	addParallel(new SetHoodCommand(40)); //temporary
 //    	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
     }

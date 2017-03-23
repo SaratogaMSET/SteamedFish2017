@@ -444,7 +444,9 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		turret.countCurrentPosition();
 		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
-		if(oi.operator.isLeftPOV() && !leftPOVPrevState){
+		if(oi.operator.getTeleopShot()){
+			currentManualShootRPM = 1450;
+		}else if(oi.operator.isLeftPOV() && !leftPOVPrevState){
 			if(currentManualShootRPM > 1100){
 				currentManualShootRPM -= 25;
 			}
@@ -465,10 +467,14 @@ public class Robot extends IterativeRobot {
 		}
 		if(oi.operator.isManualTurret()){
 			turret.turn(oi.operator.getX()/2);
-			hood.setServoRaw(-oi.operator.getSlider());
 			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
 		}else{
 			turret.turn(0.0);
+		}
+		if(oi.operator.getTeleopShot()){
+			hood.setServoRaw(.1875);
+		}else if(oi.operator.isManualHood()){
+			hood.setServoRaw(-oi.operator.getSlider());
 		}
 //		if (oi.operator.intakeFlapUp()) {
 //			new SetIntakeWedgePistons(false).start();

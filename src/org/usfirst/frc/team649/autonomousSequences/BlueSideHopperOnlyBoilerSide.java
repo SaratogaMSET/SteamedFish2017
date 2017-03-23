@@ -7,6 +7,7 @@ import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
+import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
 import org.usfirst.frc.team649.shootercommands.OnlyBangBangNoShootCommand;
 import org.usfirst.frc.team649.shootercommands.SetHoodCommand;
 import org.usfirst.frc.team649.shootercommands.TurretPID;
@@ -29,7 +30,7 @@ public class BlueSideHopperOnlyBoilerSide extends CommandGroup {
     	addSequential(new DrivetrainPIDCommand(54, false));
     	addSequential(new DriveForTime(0.1));
 	    addParallel(new OnlyBangBangNoShootCommand(1450,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450)));
-    	addParallel(new SetHoodCommand(40)); //temporary
-//    	addSequential(new FeedBallsToShooterForTimeCommand(15.0));
+    	addParallel(new SetHoodCommand(.1875)); //temporary
+		addSequential(new FeedBallsToShooterCommand(1.0));
     }
 }

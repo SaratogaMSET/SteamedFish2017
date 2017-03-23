@@ -54,6 +54,12 @@ public class OI {
 			}
 			return false;
 		}
+		public boolean isManualHood(){
+			if(operatorJoystick.getPOV() == 0||operatorJoystick.getPOV() == 45 || operatorJoystick.getPOV() == 315 ){
+				return true;
+			}
+			return false;
+		}
 		public boolean isRightPOV(){
 			return operatorJoystick.getPOV()==90;
 		}
@@ -80,12 +86,8 @@ public class OI {
 		public boolean runFunnelMotorOut() {
 			return operatorJoystick.getRawButton(6);
 		}
-
-		public boolean isDavidCamera() {
-			if (operatorJoystick.getRawButton(9)) {
-				return true;
-			}
-			return false;
+		public boolean getTeleopShot(){
+			return operatorJoystick.getRawButton(5);
 		}
 
 		public boolean funnelFlapOut() {

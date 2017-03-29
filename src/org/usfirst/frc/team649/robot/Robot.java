@@ -17,14 +17,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearNoShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearFarSide;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideGearNoShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearFarSide;
+import org.usfirst.frc.team649.autonomousSequences.RedSideGearNoShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
+import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.AllianceSelector;
 import org.usfirst.frc.team649.drivetrain.LeftDTPID;
 import org.usfirst.frc.team649.drivetrain.RightDTPID;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
@@ -75,7 +79,7 @@ public class Robot extends IterativeRobot {
 	public static IntakeSubsystem intake;
 	public static LeftShooter shootLeft;
 	public static RightShooter shootRight;
-	public static ShooterSubsystem shoot;
+	public static ShooterSubsystem shoot; 
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	public boolean prevStateShooting;
 	public static DrivetrainSubsystem drive;
@@ -102,6 +106,7 @@ public class Robot extends IterativeRobot {
 	public static boolean prevStateFunnelFlap;
 	public static String gearRollerState;
 	public static boolean leftPOVPrevState;
+	public static boolean isRed;
 	public static boolean rightPOVPrevState;
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
@@ -225,73 +230,73 @@ public class Robot extends IterativeRobot {
 	public void disabledInit() {
 		// for logging to file and reading parameters from file
 		// ********************
-		if (debugMode) {
-
-			System.out.printf("In disabledInit, tick: %d\n", tick);
-
-			// Output to log file
-			if (tick > 10) {
-				try {
-					outFileLog = new SimpleDateFormat("'/home/lvuser/logfile'.MMddhhmm'.csv'").format(new Date());
-					System.out.printf("outputfile is: %s\n",  outFileLog);
-					
-					File file = new File(outFileLog);
-					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
-
-					for( String name: mapRobotParams.keySet() ) {
-			            double value = mapRobotParams.get(name);    
-						writer.printf("%s, %f\n", name, value );
-					}
-
-					for (int i = 0; i < tick; i++) {
-						writer.printf("%d, %f", i, logTimer[i]);
-						writer.printf(", %f, %f", logDtLftSpd[i], logDtRtSpd[i]);
-						writer.printf(", %f, %f", logDtLftDist[i], logDtRtDist[i]);
-						// writer.printf(", %f, %f", logLftFly[i],logRtFly[i]);
-						writer.printf(", %f", logHangI[i]);
-						writer.printf("\r\n");
-					}
-					writer.close();
-
-				} catch (FileNotFoundException | UnsupportedEncodingException e) {
-					debugMode = false;
-				}
-			}
-
-			// input from param file
-			float value;
-			System.out.printf("Reading in parameter values\n");
-			try {
-				BufferedReader inputFile = new BufferedReader(new FileReader(inFileRobotParam)); // open
-																									// file
-				while ((inputLine = inputFile.readLine()) != null) {
-					if (!inputLine.isEmpty()) { // process non-empty lines
-						inputWords = inputLine.split("\\s+"); // break one line
-																// into 2 words
-						if (!inputWords[1].isEmpty()) {
-							value = Float.parseFloat(inputWords[1]); // convert
-																		// 2nd
-																		// word
-																		// into
-																		// float
-							mapRobotParams.put(inputWords[0], value);// add
-																		// parameter
-																		// and
-																		// value
-																		// to
-																		// map
-							System.out.format("%s, %s\n", inputWords[0], inputWords[1]);
-						}
-					}
-				} // end while
-				inputFile.close(); // close file
-			} catch (Exception e) {
-				debugMode = false;
-			}
-
-		} // end debug mode
-
-		// ********************************************************************************************
+//		if (debugMode) {
+//
+//			System.out.printf("In disabledInit, tick: %d\n", tick);
+//
+//			// Output to log file
+//			if (tick > 10) {
+//				try {
+//					outFileLog = new SimpleDateFormat("'/home/lvuser/logfile'.MMddhhmm'.csv'").format(new Date());
+//					System.out.printf("outputfile is: %s\n",  outFileLog);
+//					
+//					File file = new File(outFileLog);
+//					PrintWriter writer = new PrintWriter(outFileLog, "UTF-8");
+//
+//					for( String name: mapRobotParams.keySet() ) {
+//			            double value = mapRobotParams.get(name);    
+//						writer.printf("%s, %f\n", name, value );
+//					}
+//
+//					for (int i = 0; i < tick; i++) {
+//						writer.printf("%d, %f", i, logTimer[i]);
+//						writer.printf(", %f, %f", logDtLftSpd[i], logDtRtSpd[i]);
+//						writer.printf(", %f, %f", logDtLftDist[i], logDtRtDist[i]);
+//						// writer.printf(", %f, %f", logLftFly[i],logRtFly[i]);
+//						writer.printf(", %f", logHangI[i]);
+//						writer.printf("\r\n");
+//					}
+//					writer.close();
+//
+//				} catch (FileNotFoundException | UnsupportedEncodingException e) {
+//					debugMode = false;
+//				}
+//			}
+//
+//			// input from param file
+//			float value;
+//			System.out.printf("Reading in parameter values\n");
+//			try {
+//				BufferedReader inputFile = new BufferedReader(new FileReader(inFileRobotParam)); // open
+//																									// file
+//				while ((inputLine = inputFile.readLine()) != null) {
+//					if (!inputLine.isEmpty()) { // process non-empty lines
+//						inputWords = inputLine.split("\\s+"); // break one line
+//																// into 2 words
+//						if (!inputWords[1].isEmpty()) {
+//							value = Float.parseFloat(inputWords[1]); // convert
+//																		// 2nd
+//																		// word
+//																		// into
+//																		// float
+//							mapRobotParams.put(inputWords[0], value);// add
+//																		// parameter
+//																		// and
+//																		// value
+//																		// to
+//																		// map
+//							System.out.format("%s, %s\n", inputWords[0], inputWords[1]);
+//						}
+//					}
+//				} // end while
+//				inputFile.close(); // close file
+//			} catch (Exception e) {
+//				debugMode = false;
+//			}
+//
+//		} // end debug mode
+//
+//		// ********************************************************************************************
 
 	}
 
@@ -317,23 +322,30 @@ public class Robot extends IterativeRobot {
 		// ********************
 		tick = 0;
 		// *********************************************************************************
-		// new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
+//		 new AutoFullSequence(drive.getPotPosition(), drive.getAutoGoal(),
 		// drive.getAlliance());
 		// drive.resetEncoders();
 		// new DrivetrainPIDCommand(-90, true).start();
 		isShooterRunning = true;
-		new BlueSideGearShootMiddle().start();
-		
+//		new BlueSideGearShootMiddle().start();
+//		if(drive.getAlliance() == AllianceSelector.RED || drive.getAlliance() == AllianceSelector.RED_NO_SHOOT){
+//			isRed = true;
+//		}else{
+//			isRed = false;
+//		}
+//		new RedSideGearNoShootMiddle().start();
+//		new .start();
+//		new BlueSideBoilerGearNoShoot().start();
+//		new BlueSideGearShootMiddle().start();
 //		new BlueSideBoilerGearShoot().start();
-//		new RedSideGearShootMiddle().start();
-//		new RedSideGearShootFarSide().start();
+//		new RedSideGearNoShootMiddle().start();
+//		new RedSideGearFarSide().start();
 //		new RedSideBoilerGearShoot().start();
-//		new BlueSideGearShootFarSide().start();
-//		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
+//		new BlueSideGearFarSide().start();
+		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
 		//new DriveForTime(0.9).start();
 //		new ResetTurretSequence().start();
-//		new TurretPIDABS(15.0).start();
-		// new DriveForwardTurn().start();
+//		new TurretPIDABS(60.0).start();
 
 	}
 
@@ -355,7 +367,7 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// new RunCommpresorCommand(true).start();
 		isShooterRunning = false;
-
+		
 		timer.reset();
 		timer.start();
 		drive.resetEncoders();
@@ -443,9 +455,9 @@ public class Robot extends IterativeRobot {
 		// turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
 		turret.countCurrentPosition();
-		drive.driveFwdRot(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
+		drive.driveFwdRotTeleop(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
 		if(oi.operator.getTeleopShot()){
-			currentManualShootRPM = 1450;
+			currentManualShootRPM = 1575;
 		}else if(oi.operator.isLeftPOV() && !leftPOVPrevState){
 			if(currentManualShootRPM > 1100){
 				currentManualShootRPM -= 25;
@@ -467,17 +479,21 @@ public class Robot extends IterativeRobot {
 		}
 		if(oi.operator.isManualTurret()){
 			turret.turn(oi.operator.getX()/2);
-			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
+		}else if(oi.operator.getHang()){
+			if(!prevStateHang){
+//				new TurretPIDABS(180).start();
+			}
 		}else{
 			turret.turn(0.0);
 		}
 		if(oi.operator.getTeleopShot()){
-			hood.setServoRaw(.1875);
+			hood.setServoRaw(.39); //.31
 		}else if(oi.operator.isManualHood()){
 			hood.setServoRaw(-oi.operator.getSlider());
+			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
 		}
 //		if (oi.operator.intakeFlapUp()) {
-//			new SetIntakeWedgePistons(false).start();
+//			new SetIntakeWedgePistons(false).start();'
 //		} else if (oi.operator.intakeFlapDown()) {
 //			new SetIntakeWedgePistons(true).start();
 //
@@ -488,7 +504,9 @@ public class Robot extends IterativeRobot {
 			intake.setWheelRollers(1.0);
 //			 
 			isIntakeRunning = true;
-		} else {
+		}else if(oi.operator.purgeGear()){
+			intake.setWheelRollers(-1.0);
+		}else {
 			isIntakeRunning = false;
 			intake.setIntakeRollerMotor(0.0);
 			intake.setWheelRollers(0.0);
@@ -506,7 +524,7 @@ public class Robot extends IterativeRobot {
 				new SetFunnelCommand(true).start();
 			}
 			gearRollerState = "gear";
-			gear.setFunnelMotor(-1.0);
+			gear.setFunnelMotor(-0.6);
 		}else if(oi.operator.runFunnelMotorOut()){
 			if(gearRollerState != "ball"){
 				new SetFunnelCommand(true).start();
@@ -524,20 +542,18 @@ public class Robot extends IterativeRobot {
 		}
 		if(oi.operator.getHang()){
 			prevStateHang = true;
-			if(!isTurretPIDActive && !prevStateHang){
-//				new TurretPIDABS(180).start();
-			}
+			
 			intake.setHangMotor(1.0);
 		}else{
 			prevStateHang = false;
 		}
 		
 		if(oi.operator.slowShoot()){
-//		
-			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-//			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
-//			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
+		
+//			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+//			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
+			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
 
 			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
@@ -548,12 +564,11 @@ public class Robot extends IterativeRobot {
 		}else if(oi.operator.fastShoot()){
 			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
 			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-
-			
 			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(1.0);
 				intake.setWheelRollers(0.5);
+
 			}
 
 		}else{
@@ -637,10 +652,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
 		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
 		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
-		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
+//		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
 		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
-		SmartDashboard.putNumber("Hang Current", intake.currentMonitoring());
+		SmartDashboard.putNumber("Hang Current", intake.blackRollerMotor.getOutputCurrent());
 		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
 		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
 		SmartDashboard.putNumber("Program Pot value", drive.programSelectorPot.get());
@@ -684,23 +699,23 @@ public class Robot extends IterativeRobot {
 
 		// for logging to file and reading parameters from file
 		// ********************
-		if (debugMode) {
-			if (tick < maxTick) {
-				logTimer[tick] = timer.get();
-				logDtLftSpd[tick] = drive.leftEncoderSpeed();
-				logDtRtSpd[tick] = drive.rightEncoderSpeed();
-				// logDtLftDist[tick]=drive.getDistanceDTLeft();
-				// logDtRtDist[tick]=drive.getDistanceDTRight();
-				// logLftFly[tick]=shoot.getLeftFlywheelEin();
-				// logRtFly[tick]=shoot.getRightFlywheelEin();
-				// logHoodLft[tick]=hood.servoRight.getRaw();
-				// logHoodRt[tick]=hood.servoLeft.getRaw();
-				logHangI[tick] = intake.currentMonitoring();
-				// logLidarDist[tick]= lidar.getDistance();
-
-				tick++;
-			} // end maxTick check
-		} // end debugMode
+//		if (debugMode) {
+//			if (tick < maxTick) {
+//				logTimer[tick] = timer.get();
+//				logDtLftSpd[tick] = drive.leftEncoderSpeed();
+//				logDtRtSpd[tick] = drive.rightEncoderSpeed();
+//				// logDtLftDist[tick]=drive.getDistanceDTLeft();
+//				// logDtRtDist[tick]=drive.getDistanceDTRight();
+//				// logLftFly[tick]=shoot.getLeftFlywheelEin();
+//				// logRtFly[tick]=shoot.getRightFlywheelEin();
+//				// logHoodLft[tick]=hood.servoRight.getRaw();
+//				// logHoodRt[tick]=hood.servoLeft.getRaw();
+//				logHangI[tick] = intake.currentMonitoring();
+//				// logLidarDist[tick]= lidar.getDistance();
+//
+//				tick++;
+//			} // end maxTick check
+//		} // end debugMode
 			// **************************************************************************************
 	}
 

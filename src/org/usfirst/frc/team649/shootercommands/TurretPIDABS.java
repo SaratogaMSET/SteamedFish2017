@@ -14,6 +14,7 @@ public class TurretPIDABS extends Command {
 	double setPoint;
 	public PIDController turretPID;
 	Timer time;
+	
 	boolean isFinished;
     public TurretPIDABS(double angle) {
     	Robot.turret.countCurrentPosition();

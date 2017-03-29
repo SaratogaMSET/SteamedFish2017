@@ -20,6 +20,8 @@ public class IntakeSubsystem extends Subsystem {
 //	public DoubleSolenoid leftIntakeSol;
 //	public DoubleSolenoid rightIntakeSol;
 	public double sampleTime = 0.5;
+	public double current;
+	public double returnCurrent;
 	public Timer time;
 	
 	public IntakeSubsystem() {
@@ -29,6 +31,8 @@ public class IntakeSubsystem extends Subsystem {
 //		rightIntakeSol = new DoubleSolenoid(RobotMap.Intake.RIGHT_INTAKE_SOL[0], RobotMap.Intake.RIGHT_INTAKE_SOL[1],RobotMap.Intake.RIGHT_INTAKE_SOL[2]);
 		time = new Timer();
 		time.start();
+		current = 0;
+		returnCurrent = 0;
 	}
 //	public void setIntakeSol(boolean down){
 //		if(down){
@@ -66,8 +70,6 @@ public class IntakeSubsystem extends Subsystem {
     }
     
     public double currentMonitoring() {
-    	double current = 0;
-		double returnCurrent = 0;
 		if (blackRollerMotor.getOutputCurrent() > current) {
 			current = blackRollerMotor.getOutputCurrent();
 		}

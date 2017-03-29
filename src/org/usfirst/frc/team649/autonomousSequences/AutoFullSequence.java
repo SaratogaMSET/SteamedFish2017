@@ -44,7 +44,7 @@ public class AutoFullSequence extends CommandGroup {
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideGearShootMiddle());
 			}else if(alliance == AllianceSelector.RED_NO_SHOOT){
-				addSequential(new RedSideGearShootMiddle());
+				addSequential(new RedSideGearNoShootMiddle());
 			}else if(alliance == AllianceSelector.BLUE_NO_SHOOT){
 				addSequential(new BlueSideGearNoShootMiddle());
 			}
@@ -82,8 +82,8 @@ public class AutoFullSequence extends CommandGroup {
 			addSequential(new DriveForwardAuto());
 		}
 		
-		SmartDashboard.putString("Position", getPos());
-		SmartDashboard.putString("Goal", getGoal());
+//		SmartDashboard.putString("Position", getPos());
+//		SmartDashboard.putString("Goal", getGoal());
 
 	}
 

@@ -25,7 +25,8 @@ public class RunFunnelWheelsForBalls extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.gear.isGearLoaded();
+//        return Robot.gear.isGearLoaded();
+    	return true;
     }
 
     // Called once after isFinished returns true

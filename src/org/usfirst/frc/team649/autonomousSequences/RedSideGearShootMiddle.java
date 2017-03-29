@@ -29,7 +29,7 @@ public class RedSideGearShootMiddle extends CommandGroup {
 	    addSequential(new DrivetrainPIDCommand(72, false)); 
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(1));
-	    addParallel(new TurretPIDABS(180-0.43*60));
+	    addParallel(new TurretPIDABS(180-0.24*60));    	    
 		addParallel(new SetHoodCommand(0.625)); 
 	    addParallel(new OnlyBangBangNoShootCommand(1725,1925,1525,GetShooterValues.returnShooterMaxPower(1725),GetShooterValues.returnShooterMinPower(1725))); //1725, turret .98-.55 hood 0.625
 		addSequential(new DrivetrainPIDCommand(-30, false));

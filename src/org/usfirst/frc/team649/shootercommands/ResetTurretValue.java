@@ -20,7 +20,7 @@ public class ResetTurretValue extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.turret.turn(0.15);
+    	Robot.turret.turn(0.1);
     	prevStateHal = false;
     	halCount = 0;
     }
@@ -32,7 +32,7 @@ public class ResetTurretValue extends Command {
     		prevStateHal = true;
     		if(halCount == 0){
     			firstHal = Robot.turret.getTurretEncoderValue();
-    			Robot.turret.turn(-0.15);
+    			Robot.turret.turn(-0.1);
     		}else if(halCount == 1){
     			secondHal = Robot.turret.getTurretEncoderValue();
     			Robot.turret.turn(0);

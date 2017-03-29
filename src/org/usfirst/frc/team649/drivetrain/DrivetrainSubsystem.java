@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -40,11 +41,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static final double allianceScale = 0;
 		//public static double[] DO_NOTHING_RANGE = { 0.0, 1.25 };
 		//public static double[] NO_SHOOT = {1.26, 2.50};
-		public static double[] GO_BOILER = { 0.0, 0.125 };
-		public static double[] GO_MIDDLE = { 0.126, 0.250 };
-		public static double[] GO_FAR = { 0.251, 0.375 };
-		public static double[] GO_HOPPER = { 0.376, 0.50 };
-		public static double[] GO_FORWARD = { 4.35, 5.10 };
+		public static double[] GO_BOILER = { 0.137, 0.215 };
+		public static double[] GO_MIDDLE = { 0.216, 0.322 };
+		public static double[] GO_FAR = { 0.323, 0.5 };
+		public static double[] GO_HOPPER = { 0.095, 0.136 };
+		public static double[] GO_FORWARD = {0, 0.094 };
 		public static final int DO_NOTHING = -1;
 		public static final int BOILER = 1;
 		public static final int MIDDLE = 2;
@@ -54,10 +55,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public static class AllianceSelector {
-		public static double[] RED_NO_SHOOT_RANGE = {0.168,0.335};
-		public static double[] BLUE_NO_SHOOT_RANGE = {0.336,0.5};
-		public static double[] RED_RANGE = {0,0.167};
-		public static double[] BLUE_RANGE = {0.51, 7.8};
+		public static double[] RED_NO_SHOOT_RANGE = {0.317,0.387};
+		public static double[] BLUE_NO_SHOOT_RANGE = {0.153,0.246};
+		public static double[] RED_RANGE = {0.4,0.5};
+		public static double[] BLUE_RANGE = {0.247, 0.317};
+		public static double [] DO_NOTHING = {0.0,.153};
 		public static final int RED = 1;
 		public static final int BLUE = 2;
 		public static final int BLUE_NO_SHOOT = 3;
@@ -107,7 +109,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void shift(boolean highGear) {
-		driveSolLeft.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+		driveSolLeft.set(highGear ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 		driveSolRight.set(highGear ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
 
 		if (highGear) {
@@ -156,10 +158,24 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public void rawDrive(double left, double right) {
-		motors[0].set(left*.98); //0.915
-		motors[1].set(left*.98); //0.915
-		motors[2].set(-right);
-		motors[3].set(-right);
+		SmartDashboard.putNumber("left dt pwr", left);
+		SmartDashboard.putNumber("right dt pwr", right);
+		motors[0].set(left); //0.98
+		motors[1].set(left); //0.98
+		motors[2].set(-right*0.96);
+		motors[3].set(-right*.96);
+	}
+	public void driveFwdRotTeleop(double fwd, double roti){
+		double rot = roti * roti;
+		if(roti < 0){
+			rot = -1*rot;
+		}
+		double left = fwd + rot, right = fwd - rot;
+		double max = Math.max(1, Math.max(Math.abs(left), Math.abs(right)));
+		left /= max;
+		right /= max;
+		
+		rawDrive(left, right);
 	}
 
 	public void resetEncoders() {

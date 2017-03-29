@@ -21,7 +21,7 @@ public class GearSubsystem extends Subsystem {
 	 * when getting ball or gear from h-player actuate piston
 	 * spin motor in for gear out for ball
 	 */
-	public DigitalInput gearIRBreaker;
+//	public DigitalInput gearIRBreaker;
 	public CANTalon funnelMotor;
 	public DoubleSolenoid intakeFlapSol;
 	public DoubleSolenoid gearSol;
@@ -30,27 +30,27 @@ public class GearSubsystem extends Subsystem {
 	public static final double INTAKE_BALL_SPEED = -0.15;
 	
 	public GearSubsystem(){
-		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
+//		gearIRBreaker = new DigitalInput(RobotMap.Gear.GEAR_IR_PORT);
 		funnelMotor = new CANTalon(RobotMap.Gear.GEAR_ROLLER_PORT);
 		gearSol = new DoubleSolenoid(RobotMap.Gear.GEAR_SOL_PORT[0], RobotMap.Gear.GEAR_SOL_PORT[1], RobotMap.Gear.GEAR_SOL_PORT[2]);
 		intakeFlapSol = new DoubleSolenoid(RobotMap.Gear.GEAR_FUNNEL_PORT[0],RobotMap.Gear.GEAR_FUNNEL_PORT[1],RobotMap.Gear.GEAR_FUNNEL_PORT[2]);
 	}
 	
-	public boolean isGearLoaded(){
-		return gearIRBreaker.get();
-	}
+//	public boolean isGearLoaded(){
+//		return gearIRBreaker.get();
+//	}
 	public void setFunnelMotor(double speed){
 		funnelMotor.set(speed);
 	}
-	public void setFunnelPistonState(boolean isGear){
-		if(isGear){
+	public void setFunnelPistonState(boolean isBall){
+		if(!isBall){
 			intakeFlapSol.set(DoubleSolenoid.Value.kForward);
 		}else{
 			intakeFlapSol.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
-	public void setGearFlapSol(boolean isIn){
-		if(isIn){
+	public void setGearFlapSol(boolean isOut){
+		if(!isOut){
 			gearSol.set(DoubleSolenoid.Value.kForward);
 		}else{
 			gearSol.set(DoubleSolenoid.Value.kReverse);

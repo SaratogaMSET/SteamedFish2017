@@ -24,9 +24,9 @@ public class RedSideBoilerGearNoShoot extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-	    addSequential(new DrivetrainPIDCommand(72, false)); 
+		addSequential(new DrivetrainPIDCommand(82, false));
 	    addSequential(new DrivetrainPIDCommand(-65.5, true));
-	    addSequential(new DrivetrainPIDCommand(66,false));  
+	    addSequential(new DrivetrainPIDCommand(58.5,false));  
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(0.5));
 		addSequential(new DrivetrainPIDCommand(-20, false));

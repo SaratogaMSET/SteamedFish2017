@@ -32,10 +32,6 @@ public class RedSideGearFarSide extends CommandGroup {
 	    addSequential(new DrivetrainPIDCommand(61.5,false));  
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(0.5));
-//	    addParallel(new TurretPIDABS(162));
-		addParallel(new SetHoodCommand(40)); //temporary
-//	    addParallel(new OnlyBangBangNoShootCommand(1600,1750,1350,0.62,0.58));
 		addSequential(new DrivetrainPIDCommand(-20, false));
-//		addSequential(new FeedBallsToShooterCommand(1.0));
     }
 }

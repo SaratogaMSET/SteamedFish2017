@@ -160,12 +160,18 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public void rawDrive(double left, double right) {
 		SmartDashboard.putNumber("left dt pwr", left);
 		SmartDashboard.putNumber("right dt pwr", right);
-		motors[0].set(left); //0.98
+		//practice bot
+//		motors[0].set(left); //0.98	
+//		motors[1].set(left); //0.98
+//		motors[2].set(-right*0.96);
+//		motors[3].set(-right*.96);
+		motors[0].set(left); //0.98	
 		motors[1].set(left); //0.98
 		motors[2].set(-right*0.96);
 		motors[3].set(-right*.96);
 	}
 	public void driveFwdRotTeleop(double fwd, double roti){
+		
 		double rot = roti * roti;
 		if(roti < 0){
 			rot = -1*rot;

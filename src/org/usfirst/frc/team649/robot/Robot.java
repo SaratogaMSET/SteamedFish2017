@@ -486,9 +486,10 @@ public class Robot extends IterativeRobot {
 		}else{
 			turret.turn(0.0);
 		}
-		if(oi.operator.getTeleopShot()){
-			hood.setServoRaw(.39); //.31
-		}else if(oi.operator.isManualHood()){
+//		if(oi.operator.getTeleopShot()){
+//			hood.setServoRaw(.39); //.31
+//		}else 
+		if(oi.operator.isManualHood()){
 			hood.setServoRaw(-oi.operator.getSlider());
 			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
 		}
@@ -555,21 +556,23 @@ public class Robot extends IterativeRobot {
 			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
 			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
 
-			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
+//			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(0.5);
 				intake.setWheelRollers(0.5);
-			}
+//			}
 //			
 		}else if(oi.operator.fastShoot()){
-			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
+			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
+			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
+//			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+//			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+//			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(1.0);
 				intake.setWheelRollers(0.5);
 
-			}
+//			}
 
 		}else{
 			shootLeft.setLeftFlywheel(0.0);
@@ -582,6 +585,8 @@ public class Robot extends IterativeRobot {
 		 } else {
 			 drive.shift(false);
 		 }
+		 SmartDashboard.putNumber("FWD Drive", oi.driver.getForward());
+		 SmartDashboard.putNumber("ROT Drive", oi.driver.getRotation());
 		doTheDash();
 	}
 

@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj.Joystick;
 public class OI {
 	public Joystick operatorJoystick;
 	public Joystick driveJoystickHorizontal;
-	public Joystick driveJoystickVertical;
+	public Joystick driveJoystickVertical
+	;
 
 	public Driver driver;
 	public Operator operator;
@@ -33,6 +34,9 @@ public class OI {
 			return ((-operatorJoystick.getRawAxis(3))+1)/2;
 		}
 		public boolean intakeFlapDown() {
+			return operatorJoystick.getRawButton(7);
+		}
+		public boolean purgeGear(){
 			return operatorJoystick.getRawButton(7);
 		}
 
@@ -70,6 +74,7 @@ public class OI {
 		public double getX() {
 			return operatorJoystick.getX();
 		}
+		
 
 		public double getSlider() {
 			return operatorJoystick.getRawAxis(3);
@@ -91,11 +96,11 @@ public class OI {
 		}
 
 		public boolean funnelFlapOut() {
-			return operatorJoystick.getRawButton(10);
+			return operatorJoystick.getRawButton(9);
 		}
 
 		 public boolean funnelFlapIn() {
-		 return operatorJoystick.getRawButton(9);
+		 return operatorJoystick.getRawButton(10);
 		 }
 
 		public boolean getHang() {

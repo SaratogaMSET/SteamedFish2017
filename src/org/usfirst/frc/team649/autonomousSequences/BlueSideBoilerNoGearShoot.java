@@ -3,7 +3,6 @@ package org.usfirst.frc.team649.autonomousSequences;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
-import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommandWithTimeout;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
@@ -18,22 +17,19 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 /**
  *
  */
-public class BlueSideBoilerGearShoot extends CommandGroup {
+public class BlueSideBoilerNoGearShoot extends CommandGroup {
 
-    public BlueSideBoilerGearShoot() {
+    public BlueSideBoilerNoGearShoot() {
     	addSequential(new SwitchDTMode(true));
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
 	    addSequential(new DrivetrainPIDCommand(82, false));
 	    addSequential(new DrivetrainPIDCommand(65.5, true));
-	    addSequential(new DrivetrainPIDCommandWithTimeout(58.5,false));  
-	    addSequential(new SetGearFlap(false));
-	    addSequential(new WaitCommand(0.5));
+	    addSequential(new DrivetrainPIDCommand(10,false));  
 	    addParallel(new TurretPIDABS(60*2.17));
 	    addParallel(new SetHoodCommand(0.17)); 
 	    addParallel(new OnlyBangBangNoShootCommand(1450,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450))); //1425 hood:0.1406 turret: 2.17
-		addSequential(new DrivetrainPIDCommand(-50, false));
 		addSequential(new FeedBallsToShooterCommand(1.0));
 
     }

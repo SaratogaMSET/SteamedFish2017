@@ -29,11 +29,12 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new BlueSideGearFarSide());
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideGearFarSide());
-			} else if(alliance == AllianceSelector.RED_NO_SHOOT){
-				addSequential(new RedSideGearFarSide());
-			}else if(alliance == AllianceSelector.BLUE_NO_SHOOT){
-				addSequential(new BlueSideGearFarSide());
+			} else if(alliance == AllianceSelector.RED_NO_GEAR) {
+				addSequential(new RedSideNoGearFarSide());
+			} else if(alliance == AllianceSelector.BLUE_NO_GEAR) {
+				addSequential(new BlueSideNoGearFarSide());
 			}
+			
 		}
 		
 		if (program == AutoConstants.MIDDLE) {
@@ -43,10 +44,10 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new BlueSideGearShootMiddle());
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideGearShootMiddle());
-			}else if(alliance == AllianceSelector.RED_NO_SHOOT){
-				addSequential(new RedSideGearNoShootMiddle());
-			}else if(alliance == AllianceSelector.BLUE_NO_SHOOT){
-				addSequential(new BlueSideGearNoShootMiddle());
+			} else if(alliance == AllianceSelector.RED_NO_GEAR) {
+				addSequential(new RedSideNoGearShootMiddle());
+			} else if(alliance == AllianceSelector.BLUE_NO_GEAR) {
+				addSequential(new BlueSideNoGearShootMiddle());
 			}
 		}
 		
@@ -57,10 +58,10 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new BlueSideBoilerGearShoot());
 			} else if(alliance == AllianceSelector.RED) {
 				addSequential(new RedSideBoilerGearShoot());
-			}else if(alliance == AllianceSelector.RED_NO_SHOOT){
-				addSequential(new RedSideBoilerGearNoShoot());
-			}else if(alliance == AllianceSelector.BLUE_NO_SHOOT){
-				addSequential(new BlueSideBoilerGearNoShoot());
+			} else if(alliance == AllianceSelector.RED_NO_GEAR) {
+				addSequential(new RedSideBoilerNoGearShoot());
+			} else if(alliance == AllianceSelector.BLUE_NO_GEAR) {
+				addSequential(new BlueSideBoilerNoGearShoot());
 			}
 		}
 		
@@ -71,10 +72,6 @@ public class AutoFullSequence extends CommandGroup {
 				addSequential(new BlueSideHopperOnlyBoilerSide());
 			} else if (alliance == AllianceSelector.RED) {
 				addSequential(new RedSideHopperOnlyBoilerSide());
-			}else if(alliance == AllianceSelector.RED_NO_SHOOT){
-				addSequential(new RedSideHopperOnlyBoilerSide());
-			}else if(alliance == AllianceSelector.BLUE_NO_SHOOT){
-				addSequential(new BlueSideHopperOnlyBoilerSide());
 			}
 		}
 		if (program == AutoConstants.FOWARD) {

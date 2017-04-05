@@ -1,9 +1,12 @@
 package org.usfirst.frc.team649.autonomousSequences;
 
 import org.usfirst.frc.team649.commandgroups.DumpGearCommandGroup;
+import org.usfirst.frc.team649.commandgroups.GearRetry;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
+import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
+import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommandWithTimeout;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
@@ -26,7 +29,10 @@ public class RedSideGearShootMiddle extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-	    addSequential(new DrivetrainPIDCommand(72, false)); 
+	    addSequential(new DrivetrainPIDCommandWithTimeout(72, false)); 
+	    if (Robot.autoTimeout) {
+	    	addSequential(new GearRetry());
+	    }
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(1));
 	    addParallel(new TurretPIDABS(180-0.24*60));    	    

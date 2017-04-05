@@ -55,15 +55,15 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public static class AllianceSelector {
-		public static double[] RED_NO_SHOOT_RANGE = {0.317,0.387};
-		public static double[] BLUE_NO_SHOOT_RANGE = {0.153,0.246};
+		public static double[] RED_NO_GEAR_RANGE = {0.317,0.387};
+		public static double[] BLUE_NO_GEAR_RANGE = {0.153,0.246};
 		public static double[] RED_RANGE = {0.4,0.5};
 		public static double[] BLUE_RANGE = {0.247, 0.317};
 		public static double [] DO_NOTHING = {0.0,.153};
 		public static final int RED = 1;
 		public static final int BLUE = 2;
-		public static final int BLUE_NO_SHOOT = 3;
-		public static final int RED_NO_SHOOT = 4;
+		public static final int RED_NO_GEAR = 3;
+		public static final int BLUE_NO_GEAR = 4;
 	}
 
 	public static final double MAX_SPEED = 1500.0;	
@@ -382,10 +382,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			return AllianceSelector.BLUE;
 		} else if (isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_RANGE)) {
 			return AllianceSelector.RED;
-		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_NO_SHOOT_RANGE)){
-			return AllianceSelector.RED_NO_SHOOT;
-		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_NO_SHOOT_RANGE)){
-			return AllianceSelector.BLUE_NO_SHOOT;
+		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_NO_GEAR_RANGE)){
+			return AllianceSelector.RED_NO_GEAR;
+		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_NO_GEAR_RANGE)){
+			return AllianceSelector.BLUE_NO_GEAR;
 		}else{
 			// BIG ERROR in this case pull from FMS!
 			if (DriverStation.getInstance().getAlliance().Blue == DriverStation.getInstance().getAlliance()) {

@@ -111,6 +111,7 @@ public class Robot extends IterativeRobot {
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
 	public static boolean prevStateHang;
+	public static boolean autoTimeout;
 //	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 //	public VideoCapture video = new VideoCapture();
 //	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
@@ -194,6 +195,7 @@ public class Robot extends IterativeRobot {
 		isTurretPIDActive = false;
 		isShooterRunning = false;
 		prevStateHang = false;
+		autoTimeout = false;
 		gearRollerState = "off";
 		isGearFlickOut = gear.getGearFlapSolPos();
 //		isIntakeFlapDown = intake.isIntakeDown();
@@ -327,6 +329,7 @@ public class Robot extends IterativeRobot {
 		// drive.resetEncoders();
 		// new DrivetrainPIDCommand(-90, true).start();
 		isShooterRunning = true;
+		autoTimeout = false;
 //		new BlueSideGearShootMiddle().start();
 //		if(drive.getAlliance() == AllianceSelector.RED || drive.getAlliance() == AllianceSelector.RED_NO_SHOOT){
 //			isRed = true;

@@ -17,14 +17,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
-import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearNoShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearFarSide;
-import org.usfirst.frc.team649.autonomousSequences.BlueSideGearNoShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearFarSide;
-import org.usfirst.frc.team649.autonomousSequences.RedSideGearNoShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearShootMiddle;
 import org.usfirst.frc.team649.commandgroups.ResetTurretSequence;
 import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem;
@@ -43,13 +40,13 @@ import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 //import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.LeftShooter;
-import org.usfirst.frc.team649.robot.subsystems.LidarSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.RightShooter;
 import org.usfirst.frc.team649.robot.subsystems.ShooterSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.TurretSubsystem;
 import org.usfirst.frc.team649.shootercommands.TurretPIDABS;
 import org.usfirst.frc.team649.util.Center;
 import org.usfirst.frc.team649.util.GetShooterValues;
+import org.usfirst.frc.team649.util.Lidar;
 
 import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
@@ -58,6 +55,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -85,7 +83,6 @@ public class Robot extends IterativeRobot {
 	public static DrivetrainSubsystem drive;
 	public static LeftDTPID leftDT;
 	public static RightDTPID rightDT;
-	public static LidarSubsystem lidar;
 	public static GearSubsystem gear;
 
 	public static TurretSubsystem turret;
@@ -112,6 +109,12 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDTurn;
 	public static boolean prevStateHang;
 	public static boolean autoTimeout;
+	public static boolean prevStateMiddleAuto;
+	public static boolean prevStateBoilerAuto;
+	public static boolean prevStateFarAuto;
+	public Lidar lidar;
+	
+	
 //	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 //	public VideoCapture video = new VideoCapture();
 //	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
@@ -146,6 +149,8 @@ public class Robot extends IterativeRobot {
 
 	public static boolean isTurretMax, isTurretMin;
 	public static int currentManualShootRPM;
+	public static boolean isVisionAimed;
+	public static int count;
 	// more cam stuff still dont touch
 //	AxisCamera axis;
 //	UsbCamera usb;
@@ -203,6 +208,8 @@ public class Robot extends IterativeRobot {
 		turret = new TurretSubsystem();
 		turret.startingPos = turret.getTurretEncoderValue();
 		hood = new HoodSubsystem();
+		lidar = new Lidar(I2C.Port.kOnboard, 0xC4 >> 1);
+		count = 0;
 
 		// for logging to file and reading parameters from file
 		// ********************
@@ -220,7 +227,7 @@ public class Robot extends IterativeRobot {
 			// logLidarDist=new double[maxTick];
 		} // end debugMode
 			// *******************************************************************************
-
+ 
 	}
 
 	/**
@@ -337,8 +344,9 @@ public class Robot extends IterativeRobot {
 //			isRed = false;
 //		}
 //		new RedSideGearNoShootMiddle().start();
-//		new .start();
+//		new .start();tr3tr
 //		new BlueSideBoilerGearNoShoot().start();
+
 //		new BlueSideGearShootMiddle().start();
 //		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearNoShootMiddle().start();
@@ -359,9 +367,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		
-		SmartDashboard.putNumber("P", drive.encoderDrivePID.getP());
-		SmartDashboard.putNumber("I", drive.encoderDrivePID.getI());
-		SmartDashboard.putNumber("D", drive.encoderDrivePID.getD());
+//		SmartDashboard.putNumber("P", drive.encoderDrivePID.getP());
+//		SmartDashboard.putNumber("I", drive.encoderDrivePID.getI());
+//		SmartDashboard.putNumber("D", drive.encoderDrivePID.getD());
 
 		doTheDash();
 	}
@@ -384,6 +392,11 @@ public class Robot extends IterativeRobot {
 		// ********************
 		tick = 0;
 		currentManualShootRPM = 1100;
+		prevStateMiddleAuto = false;
+		prevStateBoilerAuto = false;
+		prevStateFarAuto = false;
+		startVisionThreads();	
+		isVisionAimed = false;
 		// *********************************************************************************
 
 	}
@@ -460,7 +473,7 @@ public class Robot extends IterativeRobot {
 		turret.countCurrentPosition();
 		drive.driveFwdRotTeleop(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
 		if(oi.operator.getTeleopShot()){
-			currentManualShootRPM = 1575;
+			currentManualShootRPM = 1475;
 		}else if(oi.operator.isLeftPOV() && !leftPOVPrevState){
 			if(currentManualShootRPM > 1100){
 				currentManualShootRPM -= 25;
@@ -489,10 +502,9 @@ public class Robot extends IterativeRobot {
 		}else{
 			turret.turn(0.0);
 		}
-//		if(oi.operator.getTeleopShot()){
-//			hood.setServoRaw(.39); //.31
-//		}else 
-		if(oi.operator.isManualHood()){
+		if(oi.operator.getTeleopShot()){
+			hood.setServoRaw(.35 ); //.31
+		}else if(oi.operator.isManualHood()){
 			hood.setServoRaw(-oi.operator.getSlider());
 			SmartDashboard.putNumber("Actual Hodd", -oi.operator.getSlider());
 		}
@@ -554,28 +566,28 @@ public class Robot extends IterativeRobot {
 		
 		if(oi.operator.slowShoot()){
 		
-//			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-//			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
-			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
+			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+//			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
+//			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
 
-//			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
+			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(0.5);
 				intake.setWheelRollers(0.5);
-//			}
+			}
 //			
 		}else if(oi.operator.fastShoot()){
-			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
-			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
-//			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-//			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
-//			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
+//			shootLeft.setLeftFlywheel(oi.operator.getSliderShoot());
+//			shootRight.setRightFlywheel(oi.operator.getSliderShoot());
+			shootLeft.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			shootRight.simpleBangBang(GetShooterValues.returnShooterMinPower(currentManualShootRPM), GetShooterValues.returnShooterMaxPower(currentManualShootRPM),currentManualShootRPM, currentManualShootRPM+200, currentManualShootRPM-200);
+			if(shootLeft.getLeftFlywheelEin() >currentManualShootRPM-100  && shootRight.getRightFlywheelEin() > currentManualShootRPM-100){
 				shoot.setFeedMotor(1.0);
 				shoot.setHooperMotor(1.0);
 				intake.setWheelRollers(0.5);
 
-//			}
+			}
 
 		}else{
 			shootLeft.setLeftFlywheel(0.0);
@@ -583,14 +595,37 @@ public class Robot extends IterativeRobot {
 			shoot.setFeedMotor(0);
 			shoot.setHooperMotor(0);
 		}
+//		if(oi.game.isMiddleAuto() && !prevStateMiddleAuto){
+//			if(drive.getAlliance() == 1 && drive.getAlliance() == 3){
+//				new RedSideGearShootMiddle().start();
+//			}else{
+//				new BlueSideGearShootMiddle().start();
+//			}
+//		}else if(oi.game.isBoilerAuto() && !prevStateBoilerAuto){
+//			if(drive.getAlliance() == 1 && drive.getAlliance() == 3){
+//				new RedSideBoilerGearShoot().start();
+//			}else{
+//				new BlueSideBoilerGearShoot().start();
+//			}
+//		}else if(oi.game.isFarAuto() && !prevStateFarAuto){
+//			if(drive.getAlliance() == 1 && drive.getAlliance() == 3){
+//				new RedSideGearFarSide().start();
+//			}else{
+//				new BlueSideGearFarSide().start();
+//			}
+//		}
 		 if (oi.driver.shiftUp()) {
 			 drive.shift(true);
 		 } else {
 			 drive.shift(false);
 		 }
-		 SmartDashboard.putNumber("FWD Drive", oi.driver.getForward());
-		 SmartDashboard.putNumber("ROT Drive", oi.driver.getRotation());
-		doTheDash();
+//		 prevStateMiddleAuto = oi.game.isMiddleAuto();
+//		 prevStateBoilerAuto = oi.game.isBoilerAuto();
+//		 prevStateFarAuto = oi.game.isFarAuto();
+//		 SmartDashboard.putNumber("FWD Drive", oi.driver.getForward());
+//		 SmartDashboard.putNumber("ROT Drive", oi.driver.getRotation());
+	
+		 doTheDash();
 	}
 
 	/**
@@ -615,95 +650,99 @@ public class Robot extends IterativeRobot {
 			return false;
 		}
 	}
+	public void startVisionThreads(){
+		System.out.println("STARTING VISION");
 
-	public static synchronized void updateCenter(Center c) {
-		if (c != null) {
-			currCenter = new Center(c.x, c.y);
-			rateCenterUpdated = 1 / (timer.get() - prevTimeCenterUpdated); // seconds
-			prevTimeCenterUpdated = timer.get();
-
-		} else {
-			System.out.println("ERROR: passed in null center");
+		
+		initThread = new InitializeServerSocketThread();
+		initThread.start();
+		
+		//wait for thread to finish the socket initialization
+		try {
+			Timer t = new Timer();
+			t.start();
+			while (!isRIOServerStarted){
+				if (t.get() > VISION_INIT_TIME_OUT){
+					throw new InterruptedException("DUN GOOFED -----> VISION TIMED OUT IN INIT");
+				}
+			}
+			System.out.println(">--VISION initialized & running --ROBOT");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("X--VISION initialize FAILED --ROBOT");
 		}
+		
+//		this.adbTimer = Executors.newSingleThreadScheduledExecutor();
+//		this.adbTimer.scheduleAtFixedRate(new Thread(new PullVisionTxtThread()), 0, PULL_PERIOD, TimeUnit.MILLISECONDS);
+	}
+//	public static synchronized void updateCenter(Center c) {
+//		if (c != null) {
+//			currCenter = new Center(c.x, c.y);
+//			rateCenterUpdated = 1 / (timer.get() - prevTimeCenterUpdated); // seconds
+//			prevTimeCenterUpdated = timer.get();
+//
+//		} else {
+//			System.out.println("ERROR: passed in null center");
+//		}
+//	}
+//
+//	public static synchronized void updateVisionDistance(double d) {
+//		if (d > 10.0) {
+//			visionDistance = d;
+//		} else {
+//			System.out.println("Target Not in View");
+//			visionDistance = 0.0;
+//		}
+//	}
+	public static synchronized void updateVisionOnTarget(boolean isAimed){
+		isVisionAimed = isAimed;
 	}
 
-	public static synchronized void updateVisionDistance(double d) {
-		if (d > 10.0) {
-			visionDistance = d;
-		} else {
-			System.out.println("Target Not in View");
-			visionDistance = 0.0;
-		}
-	}
-
-	public static void doTheDash() {
-		// SmartDashboard.putString("Shifting?", drive.getShift());
-		// SmartDashboard.putNumber("Goal Potentiometer", drive.getAutoGoal());
-		// SmartDashboard.putNumber("Auto Position Potentiometer",
-		// drive.getAutoGoal());
-		// SmartDashboard.putString("Alliance Color Indicator", "1 is blue, 2 is
-		// red!");
-		// SmartDashboard.putNumber("Alliance Color", drive.getAlliance());
-		// SmartDashboard.putBoolean("Is Compressor Running",
-		// rcc.getCompressorState());
-		SmartDashboard.putNumber("Agitator Curret", Robot.shoot.hooperMotor.getOutputCurrent());
-		SmartDashboard.putNumber("Right Motor Front Current", drive.motors[0].getOutputCurrent());
-		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor Front Current", drive.motors[2].getOutputCurrent());
-		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
-		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
-		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
-		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
-		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
+	public void doTheDash() {
+		
+//		SmartDashboard.putNumber("Agitator Curret", Robot.shoot.hooperMotor.getOutputCurrent());
+//		SmartDashboard.putNumber("Right Motor Front Current", drive.motors[0].getOutputCurrent());
+//		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
+//		SmartDashboard.putNumber("Left Motor Front Current", drive.motors[2].getOutputCurrent());
+//		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
+//		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
+//		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
+//		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
+//		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
 		SmartDashboard.putNumber("Left Ein", shootLeft.getLeftFlywheelEin());
 		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
-		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
-		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
+//		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
+//		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
 		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
 //		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
-		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
-		SmartDashboard.putNumber("Hang Current", intake.blackRollerMotor.getOutputCurrent());
-		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
+//		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
+//		SmartDashboard.putNumber("Hang Current", intake.blackRollerMotor.getOutputCurrent());
+//		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
 		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
 		SmartDashboard.putNumber("Program Pot value", drive.programSelectorPot.get());
 		SmartDashboard.putNumber("Pot", drive.alliancePot.get());
 		SmartDashboard.putNumber("Alliance Selection", drive.getAlliance());
 		SmartDashboard.putNumber("Get Goal", drive.getAutoGoal());
-		// SmartDashboard.putNumber("Left DT Current",
-		// drive.getCurrentDTLeft());
-		// SmartDashboard.putNumber("Right DT Current",
-		// drive.getCurrentDTRight());
+		drive.displayAutoProgram();
 
-		// SmartDashboard.putBoolean("is Close To Low", turret.is)
-		// SmartDashboard.putNumber("Turret Encoder Value",
-		// turret.getTurretEncoderValue());
-		// SmartDashboard.putNumber("Current Turret Position",
-		// turret.getCurrentPosition());
-		// SmartDashboard.putBoolean("Is gear Loaded", gear.isGearLoaded());H
-		// SmartDashboard.putBoolean("Intake flap Solenoid Open?",
-		// gear.getIntakeFlapPos());
-		// SmartDashboard.putBoolean("Gear Solenoid Position",
-		// gear.getGearFlapSolPos());
-		// SmartDashboard.putBoolean("At Hanging Limit?", hang.getHangLimit());
-		// SmartDashboard.putBoolean("At Hook Sol", hang.getHookSol());
-		// SmartDashboard.putNumber("Einstein Flywheel Count LEFT",
-		// shoot.getLeftFlywheelEin());
-		// SmartDashboard.putNumber("Einstein Flywheel COUNT RIGHT",
-		// shoot.getRightFlywheelEin());
-		// SmartDashboard.putNumber("Flywheel RPM LEFT",
-		// shoot.getLeftFlywheel());
-		// SmartDashboard.putNumber("Flywheel RPM RIGHT",
-		// shoot.getRightFlywheel());
-		// SmartDashboard.putBoolean("Is Right HAL tripped?",
-		// turret.getRightHal());
-		// SmartDashboard.putBoolean("Is Left HAL tripped?",
-		// turret.getLeftHal());
-		// SmartDashboard.putNumber("Distance Turret Moved",
-		// turret.getEncoderDistance());
-		// SmartDashboard.putString("Current Autonomous Position",
-		// afs.getPos());
-		// SmartDashboard.putString("Current Autonomous Goal", afs.getGoal());
+		if(count == 12){
+			boolean isLidarAimed;
+			double lidarValue = lidar.getSample();
+			 if(lidarValue > Lidar.minDistance && lidarValue < Lidar.minDistance){
+					isLidarAimed = true;
+			 }else{
+				 	isLidarAimed = false;
+			 }
+			 SmartDashboard.putBoolean("is lidar aimed", isLidarAimed);
+				SmartDashboard.putNumber("lidar value", lidarValue);
+				count = 0;
+		}
+		count ++;
+		
+
+		 SmartDashboard.putBoolean("Is Vision Lined Up", isVisionAimed);
 
 		// for logging to file and reading parameters from file
 		// ********************

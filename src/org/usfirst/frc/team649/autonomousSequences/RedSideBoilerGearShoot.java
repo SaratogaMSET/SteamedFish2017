@@ -26,14 +26,14 @@ public class RedSideBoilerGearShoot extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-		addSequential(new DrivetrainPIDCommand(82, false));
-	    addSequential(new DrivetrainPIDCommand(-65.5, true));
-	    addSequential(new DrivetrainPIDCommandWithTimeout(58.5,false));  
+		addSequential(new DrivetrainPIDCommand(72, false));
+	    addSequential(new DrivetrainPIDCommand(-60, true));
+	    addSequential(new DrivetrainPIDCommand(59,false));  
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(0.5));
-	    addParallel(new TurretPIDABS(180-60*2.17));
-	    addParallel(new SetHoodCommand(0.17)); 
-	    addParallel(new OnlyBangBangNoShootCommand(1450,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450))); //1425 hood:0.1406 turret: 2.17
+	    addParallel(new TurretPIDABS(180-60*2.08));
+	    addParallel(new SetHoodCommand(0.14)); 
+	    addParallel(new OnlyBangBangNoShootCommand(1400,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450))); //1425 hood:0.1406 turret: 2.17
 		addSequential(new DrivetrainPIDCommand(-20, false));
 		addSequential(new FeedBallsToShooterCommand(1.0));
 		

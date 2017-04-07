@@ -1,4 +1,4 @@
-package org.usfirst.frc.team649.shootercommands;
+package org.usfirst.frc.team649.robot.commands;
 
 import org.usfirst.frc.team649.robot.Robot;
 
@@ -8,38 +8,41 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class FeedBallsToShooterCommand extends Command {
-	double speed;
+public class ConditionalWaitCommand extends Command {
 	Timer time;
-    public FeedBallsToShooterCommand(double speed) {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
-    	this.speed = speed;
-    	time = new Timer();
+	boolean isFinished;
+	double timeRun;
+    public ConditionalWaitCommand(double timeSec) {
+        time = new Timer();
+        isFinished = false;
+        timeRun = timeSec;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.shoot.setFeedMotor(speed);
-    	Robot.intake.redWheelRoller.set(-0.6);
-    	Robot.shoot.setHooperMotor(speed);
+    	if(!Robot.autoTimeout){
+    		isFinished = true;
+    	}
+    	time.start();
+  
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	if(time.get()>timeRun){
+    		isFinished = true;
+    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	
-    	return false; 
+        return isFinished;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.shoot.setFeedMotor(0);
-    	Robot.intake.redWheelRoller.set(0);
-    	Robot.shoot.setHooperMotor(0);
+    	time.stop();
+    	time.reset();
     }
 
     // Called when another command which requires one or more of the same

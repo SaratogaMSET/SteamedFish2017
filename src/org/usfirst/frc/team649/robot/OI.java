@@ -12,20 +12,34 @@ import edu.wpi.first.wpilibj.Joystick;
 public class OI {
 	public Joystick operatorJoystick;
 	public Joystick driveJoystickHorizontal;
-	public Joystick driveJoystickVertical
-	;
-
+	public Joystick driveJoystickVertical;
+//	public Joystick gamePad;
+//
 	public Driver driver;
 	public Operator operator;
+//	public Pad game;
 
 	public OI() {
 		operatorJoystick = new Joystick(RobotMap.OPERATOR_JOYSTICK);
 		driveJoystickHorizontal = new Joystick(RobotMap.DRIVE_JOYSTICK_HORIZONTAL);
 		driveJoystickVertical = new Joystick(RobotMap.DRIVE_JOYSTICK_VERTICAL);
+//		gamePad = new Joystick(3);
 		driver = new Driver();
 		operator = new Operator();
+//		game = new Pad();
 	}
-
+	
+//	public class Pad{
+//		public boolean isMiddleAuto(){
+//			return gamePad.getRawButton(1);
+//		}
+//		public boolean isBoilerAuto(){
+//			return gamePad.getRawButton(0);
+//		}
+//		public boolean isFarAuto(){
+//			return gamePad.getRawButton(3);
+//		}
+//	}
 	public class Operator {
 		public boolean intakeFlapUp() {
 			return operatorJoystick.getRawButton(8);

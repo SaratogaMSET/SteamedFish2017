@@ -81,6 +81,8 @@ public class AutoFullSequence extends CommandGroup {
 		
 //		SmartDashboard.putString("Position", getPos());
 //		SmartDashboard.putString("Goal", getGoal());
+		SmartDashboard.putString("Auto Program", getGoal()+getPos());
+
 
 	}
 

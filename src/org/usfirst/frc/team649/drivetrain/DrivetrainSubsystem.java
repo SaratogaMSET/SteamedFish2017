@@ -37,6 +37,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public static class AutoConstants {
+		public static String alliance;
+		public static String program;
 		public static final double goalScale = 0;
 		public static final double allianceScale = 0;
 		//public static double[] DO_NOTHING_RANGE = { 0.0, 1.25 };
@@ -55,10 +57,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public static class AllianceSelector {
-		public static double[] RED_NO_GEAR_RANGE = {0.317,0.387};
-		public static double[] BLUE_NO_GEAR_RANGE = {0.153,0.246};
-		public static double[] RED_RANGE = {0.4,0.5};
-		public static double[] BLUE_RANGE = {0.247, 0.317};
+		public static double[]	BLUE_NO_GEAR_RANGE = {0.177,0.250};
+		public static double[] RED_NO_GEAR_RANGE = {0.322,0.40};
+		public static double[] RED_RANGE = {0.402, 0.5};
+		public static double[] BLUE_RANGE = {0.257, 0.320};
 		public static double [] DO_NOTHING = {0.0,.153};
 		public static final int RED = 1;
 		public static final int BLUE = 2;
@@ -362,30 +364,43 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public int getAutoGoal() {
 		if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_BOILER)) {
+			AutoConstants.program = "Boiler";
 			return AutoConstants.BOILER;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_MIDDLE)) {
+			AutoConstants.program = "Middle";
 			return AutoConstants.MIDDLE;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FAR)) {
+			AutoConstants.program = "Far";
 			return AutoConstants.FAR;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_HOPPER)) {
+			AutoConstants.program = "Hopper";
 			return AutoConstants.HOPPER;
 		} else if (isProgramPotWithinRange(programSelectorPot, AutoConstants.GO_FORWARD)) {
+			AutoConstants.program = "Forward";
 			return AutoConstants.FOWARD;
 		} else {
 			// DEFAULT CASE
+			AutoConstants.program = "Doing Nothing";
 			return AutoConstants.DO_NOTHING;
 		}
 	}
 
 	public int getAlliance() {
 		if (isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_RANGE)) {
+			AutoConstants.alliance = "Blue";
 			return AllianceSelector.BLUE;
 		} else if (isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_RANGE)) {
+			AutoConstants.alliance = "Red";
 			return AllianceSelector.RED;
 		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.RED_NO_GEAR_RANGE)){
+			AutoConstants.alliance = "Red No Gear";
 			return AllianceSelector.RED_NO_GEAR;
 		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.BLUE_NO_GEAR_RANGE)){
+			AutoConstants.alliance = "Blue No Gear";
 			return AllianceSelector.BLUE_NO_GEAR;
+		}else if(isAlliancePotWithinRange(alliancePot, AllianceSelector.DO_NOTHING)) {
+			AutoConstants.alliance = "doing nothing";
+			return AutoConstants.DO_NOTHING;
 		}else{
 			// BIG ERROR in this case pull from FMS!
 			if (DriverStation.getInstance().getAlliance().Blue == DriverStation.getInstance().getAlliance()) {
@@ -397,5 +412,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 				return AutoConstants.DO_NOTHING;
 			}
 		}
+	}
+	public void displayAutoProgram() {
+		SmartDashboard.putString("Auto Program", AutoConstants.alliance + AutoConstants.program);
 	}
 }

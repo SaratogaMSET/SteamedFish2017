@@ -17,7 +17,6 @@ public class FastBangBangThenShoot extends Command {
 	boolean isAtSpeed;
 	double minRPMThresh;
 	double maxRPMThresh;
-	Timer hooperTimer;
     public FastBangBangThenShoot(int targetRPM, double minSpeedRight, double maxSpeedRight, double maxSpeedLeft, double minSpeedLeft, int minRPMThresh, int maxRPMThresh) {
     	requires(Robot.shoot);
     	this.targetRPM = targetRPM;
@@ -27,13 +26,11 @@ public class FastBangBangThenShoot extends Command {
     	minRightSpeed = minSpeedRight;
     	this.minRPMThresh = minRPMThresh;
     	this.maxRPMThresh = maxRPMThresh;
-    	hooperTimer = new Timer();
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	isAtSpeed = false;
-    	hooperTimer.start();
     	Robot.shoot.feederMotor.set(0.0);
     	
     }

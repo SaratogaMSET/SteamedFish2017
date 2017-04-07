@@ -73,11 +73,12 @@ public class InitializeServerSocketThread extends Thread {
 				
 				//READ ONCE MESSAGE RECIEVED
 				DataInputStream dis = new DataInputStream(socket.getInputStream());
-				String s = dis.readUTF();
+				boolean s = dis.readBoolean();
 				//System.out.println("Recieved: " + s);
-				String[] message = s.split(",");
+
 				//UPDATE CENTER
-				Robot.updateCenter(  new Center(Double.parseDouble( message[0]), Double.parseDouble(message[1]) )  );
+				Robot.updateVisionOnTarget(s);
+//				Robot.updateCenter(  new Center(Double.parseDouble( message[0]), Double.parseDouble(message[1]) )  );
 //				Robot.droidIP = message[2];
 //				System.out.println("Received from Client: " + dis.readUTF());
 				dis.close();
@@ -149,7 +150,7 @@ public class InitializeServerSocketThread extends Thread {
 				else{
 					Robot.isReceivingData = true;
 					
-					double diff = Robot.currCenter.x - Robot.GOOD_X; //positive means turn right
+//					double diff = Robot.currCenter.x - Robot.GOOD_X; //positive means turn right
 					
 //					if(Robot.currCenter.x == -1) {
 //						Robot.drive.setLEDs(DrivetrainSubsystem.RED, DrivetrainSubsystem.RED);

@@ -5,6 +5,8 @@ import org.usfirst.frc.team649.commandgroups.GearRetry;
 import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.Robot;
+import org.usfirst.frc.team649.robot.commands.ConditionalDrivetrainPID;
+import org.usfirst.frc.team649.robot.commands.ConditionalWaitCommand;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommandWithTimeout;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
@@ -29,13 +31,10 @@ public class RedSideGearShootMiddle extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-	    addSequential(new DrivetrainPIDCommandWithTimeout(72, false)); 
-	    if (Robot.autoTimeout) {
-	    	addSequential(new GearRetry());
-	    }
+	    addSequential(new DrivetrainPIDCommand(69, false));
 	    addSequential(new SetGearFlap(false));
 	    addSequential(new WaitCommand(1));
-	    addParallel(new TurretPIDABS(180-0.24*60));    	    
+	    addParallel(new TurretPIDABS(180-0.24*60));
 		addParallel(new SetHoodCommand(0.625)); 
 	    addParallel(new OnlyBangBangNoShootCommand(1725,1925,1525,GetShooterValues.returnShooterMaxPower(1725),GetShooterValues.returnShooterMinPower(1725))); //1725, turret .98-.55 hood 0.625
 		addSequential(new DrivetrainPIDCommand(-30, false));

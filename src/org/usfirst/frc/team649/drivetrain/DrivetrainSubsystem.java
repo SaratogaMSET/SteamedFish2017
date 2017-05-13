@@ -43,10 +43,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static final double allianceScale = 0;
 		//public static double[] DO_NOTHING_RANGE = { 0.0, 1.25 };
 		//public static double[] NO_SHOOT = {1.26, 2.50};
-		public static double[] GO_BOILER = { 0.137, 0.215 };
-		public static double[] GO_MIDDLE = { 0.216, 0.322 };
+		public static double[] GO_BOILER = { 0.184, 0.252 };
+		public static double[] GO_MIDDLE = { 0.253, 0.322 };
 		public static double[] GO_FAR = { 0.323, 0.5 };
-		public static double[] GO_HOPPER = { 0.095, 0.136 };
+		public static double[] GO_HOPPER = { 0.095, 0.183 };
 		public static double[] GO_FORWARD = {0, 0.094 };
 		public static final int DO_NOTHING = -1;
 		public static final int BOILER = 1;

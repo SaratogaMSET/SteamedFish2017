@@ -206,7 +206,7 @@ public class Robot extends IterativeRobot {
 //		isIntakeFlapDown = intake.isIntakeDown();
 		drive.resetEncoders();
 		turret = new TurretSubsystem();
-		turret.startingPos = turret.getTurretEncoderValue();
+		turret.startingPos = 0.232;
 		hood = new HoodSubsystem();
 		lidar = new Lidar(I2C.Port.kOnboard, 0xC4 >> 1);
 		count = 0;
@@ -347,13 +347,13 @@ public class Robot extends IterativeRobot {
 //		new .start();tr3tr
 //		new BlueSideBoilerGearNoShoot().start();
 
-//		new BlueSideGearShootMiddle().start();
+		new BlueSideGearShootMiddle().start();
 //		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearNoShootMiddle().start();
 //		new RedSideGearFarSide().start();
 //		new RedSideBoilerGearShoot().start();
 //		new BlueSideGearFarSide().start();
-		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
+//		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
 		//new DriveForTime(0.9).start();
 //		new ResetTurretSequence().start();
 //		new TurretPIDABS(60.0).start();
@@ -514,20 +514,7 @@ public class Robot extends IterativeRobot {
 //			new SetIntakeWedgePistons(true).start();
 //
 //		}
-		if (oi.operator.runIntake()) {
-			
-			intake.setIntakeRollerMotor(1.0);
-			intake.setWheelRollers(1.0);
-//			 
-			isIntakeRunning = true;
-		}else if(oi.operator.purgeGear()){
-			intake.setWheelRollers(-1.0);
-		}else {
-			isIntakeRunning = false;
-			intake.setIntakeRollerMotor(0.0);
-			intake.setWheelRollers(0.0);
-
-		}
+		
 		if (oi.operator.getGearFlap()) {
 
 			new SetGearFlap(false).start();
@@ -540,7 +527,7 @@ public class Robot extends IterativeRobot {
 				new SetFunnelCommand(true).start();
 			}
 			gearRollerState = "gear";
-			gear.setFunnelMotor(-0.6);
+			gear.setFunnelMotor(-0.57);
 		}else if(oi.operator.runFunnelMotorOut()){
 			if(gearRollerState != "ball"){
 				new SetFunnelCommand(true).start();
@@ -560,8 +547,19 @@ public class Robot extends IterativeRobot {
 			prevStateHang = true;
 			
 			intake.setHangMotor(1.0);
+		}else if (oi.operator.runIntake()) {
+			
+			intake.setIntakeRollerMotor(1.0);
+			intake.setWheelRollers(1.0);
+//			 
+			isIntakeRunning = true;
+		}else if(oi.operator.purgeGear()){
+			intake.setWheelRollers(-1.0);
 		}else{
-			prevStateHang = false;
+//			prevStateHang = false;
+			intake.setHangMotor(0.0);
+			intake.setWheelRollers(0.0);
+
 		}
 		
 		if(oi.operator.slowShoot()){
@@ -717,7 +715,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
 //		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
-//		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
+		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
 //		SmartDashboard.putNumber("Hang Current", intake.blackRollerMotor.getOutputCurrent());
 //		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
 		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
@@ -725,6 +723,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Pot", drive.alliancePot.get());
 		SmartDashboard.putNumber("Alliance Selection", drive.getAlliance());
 		SmartDashboard.putNumber("Get Goal", drive.getAutoGoal());
+//		SmartDashboard.putNumber("slider for hood", oi.operator.getSlider());
+//		SmartDashboard.putNumber("Encoder Value Turret", value)
 		drive.displayAutoProgram();
 
 		if(count == 12){

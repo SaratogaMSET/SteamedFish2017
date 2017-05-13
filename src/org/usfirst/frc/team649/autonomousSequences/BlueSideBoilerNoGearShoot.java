@@ -24,12 +24,12 @@ public class BlueSideBoilerNoGearShoot extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-		 addSequential(new DrivetrainPIDCommand(72, false));
+		 addSequential(new DrivetrainPIDCommand(76, false));
 		    addSequential(new DrivetrainPIDCommand(60, true));
 	    addSequential(new DrivetrainPIDCommand(39,false));  
-	    addParallel(new TurretPIDABS(60*2.08));
+	    addParallel(new TurretPIDABS(60*2.03));
 	    addParallel(new SetHoodCommand(0.17)); 
-	    addParallel(new OnlyBangBangNoShootCommand(1450,1650,1250,GetShooterValues.returnShooterMaxPower(1450),GetShooterValues.returnShooterMinPower(1450))); //1425 hood:0.1406 turret: 2.17
+	    addParallel(new OnlyBangBangNoShootCommand(1375,1475,1275,GetShooterValues.returnShooterMaxPower(1375),GetShooterValues.returnShooterMinPower(1375))); //1425 hood:0.1406 turret: 2.17
 		addSequential(new FeedBallsToShooterCommand(1.0));
 
     }

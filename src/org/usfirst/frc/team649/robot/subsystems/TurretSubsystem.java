@@ -94,8 +94,8 @@ public class TurretSubsystem extends PIDSubsystem {
    	}
 	@Override
     protected void usePIDOutput(double output) {
-		SmartDashboard.putNumber("output of turret pid", -output);
-    	turretMotor.set(-output);
+		SmartDashboard.putNumber("output of turret pid", output);
+    	turretMotor.set(output);
     }
 //	public boolean isOnTarget(double distance) {
 //		// TODO Auto-generated method stub
@@ -111,7 +111,7 @@ public class TurretSubsystem extends PIDSubsystem {
     
     //S&A
     public void turn(double power){
-		turretMotor.set(power);
+		turretMotor.set(-power);
 	}
 
 

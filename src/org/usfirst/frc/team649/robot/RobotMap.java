@@ -40,8 +40,8 @@ public class RobotMap {
 
 	public static class Shooter {
 		public static final int SHOOTER_FEEDER_PORT = 3;
-		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 8;
-		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 9;
+		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 9;
+		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 8;
 		public static final int LEFT_SHOOTER_EIN_PORT = 9;
 		public static final int RIGHT_SHOOTER_EIN_PORT = 8;
 		public static final int HOOPER_PORT = 10;

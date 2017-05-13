@@ -27,9 +27,9 @@ public class RedSideNoGearShootMiddle extends CommandGroup {
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
 	    addSequential(new DrivetrainPIDCommand(39, false)); 
-	    addParallel(new TurretPIDABS(180-0.24*60));    	    
-		addParallel(new SetHoodCommand(0.625)); 
-	    addParallel(new OnlyBangBangNoShootCommand(1725,1925,1525,GetShooterValues.returnShooterMaxPower(1725),GetShooterValues.returnShooterMinPower(1725))); //1725, turret .98-.55 hood 0.625
+	    addParallel(new TurretPIDABS(180-0.27*60));    	    
+	    addParallel(new SetHoodCommand(0.453)); 
+	    addParallel(new OnlyBangBangNoShootCommand(1550,1650,1450,GetShooterValues.returnShooterMaxPower(1550),GetShooterValues.returnShooterMinPower(1550))); //1725, turret .98-.55 hood 0.625
 		addSequential(new FeedBallsToShooterCommand(1.0));
 
     }

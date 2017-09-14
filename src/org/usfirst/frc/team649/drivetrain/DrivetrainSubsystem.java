@@ -169,8 +169,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 //		motors[3].set(-right*.96);
 		motors[0].set(left); //0.98	
 		motors[1].set(left); //0.98
-		motors[2].set(-right*0.96);
-		motors[3].set(-right*.96);
+		motors[2].set(-right*0.95);
+		motors[3].set(-right*.95);
 	}
 	public void driveFwdRotTeleop(double fwd, double roti){
 		
@@ -336,7 +336,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public double getTranslationalDistanceForTurn(double angle) {
 		System.out.println((angle / 360.0) * (25.125 * Math.PI));
-		return (angle / 360.0) * (25.125 * Math.PI) * 1.08;
+		return (angle / 360.0) * (25.125 * Math.PI) * 1;
 	}
 
 	public boolean isOnTarget(double distance) {
@@ -413,7 +413,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			}
 		}
 	}
+	
+	
 	public void displayAutoProgram() {
+		getAlliance();
+		getAutoGoal();
 		SmartDashboard.putString("Auto Program", AutoConstants.alliance + AutoConstants.program);
 	}
 }

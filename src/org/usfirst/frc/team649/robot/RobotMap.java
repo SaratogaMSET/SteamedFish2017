@@ -53,7 +53,8 @@ public class RobotMap {
 	}
 
 	public static class Turret {
-		public static final int TURRET_MOTOR_PORT = 11;
+		public static
+		final int TURRET_MOTOR_PORT = 11;
 		//public static final int[] TURRET_ABS_ENCODER_PORT = { 8, 9 };
 		public static final int TURRET_ABS_ENCODER_PORT = 3;
 		public static final int TURRET_HALL = 1;

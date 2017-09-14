@@ -26,7 +26,7 @@ public class BlueSideGearShootMiddle extends CommandGroup {
     		addSequential(new ShiftDT(false));
     	    addSequential(new SetGearFlap(true));
     		addSequential(new SetFunnelCommand(false));
-    	    addSequential(new DrivetrainPIDCommand(73, false)); 
+    	    addSequential(new DrivetrainPIDCommand(70, false)); 
     	    addSequential(new SetGearFlap(false));
     	    addSequential(new WaitCommand(1));
     	    addParallel(new TurretPIDABS(0.24*60));

@@ -30,17 +30,17 @@ public class HoodSubsystem extends Subsystem {
 	public static Servo servoLeft;
 	
 	public HoodSubsystem() {
-		servoRight = new Servo(RobotMap.Hood.HOOD_SERVO_RIGHT_PORT);
-		servoLeft = new Servo(RobotMap.Hood.HOOD_SERVO_LEFT_PORT);
+//		servoRight = new Servo(RobotMap.Hood.HOOD_SERVO_RIGHT_PORT);
+//		servoLeft = new Servo(RobotMap.Hood.HOOD_SERVO_LEFT_PORT);
 	}
 	public void setServoRaw(double joystickVal) {
-		servoRight.setRaw((int) ((joystickVal + 1.0) / 2.0 * 285) + 1500);
-		servoLeft.setRaw((int) ((-joystickVal + 1.0) / 2.0 * 285) + 187);
+//		servoRight.setRaw((int) ((joystickVal + 1.0) / 2.0 * 285) + 1500);
+//		servoLeft.setRaw((int) ((-joystickVal + 1.0) / 2.0 * 285) + 187);
 	}
 	public void setServoWithAngle(double angle) {
 		if(angle <= maxAngle && angle >= minAngle){
-			servoRight.setRaw((int)((angle-minAngle)*anglePerPWMRight+1500)); //1215
-			servoLeft.setRaw((int) ((angle-minAngle)*anglePerPWMLeft + 187));
+//			servoRight.setRaw((int)((angle-minAngle)*anglePerPWMRight+1500)); //1215
+//			servoLeft.setRaw((int) ((angle-minAngle)*anglePerPWMLeft + 187));
 		}
 	}
 	public int getPWMValueRight(double degree) {

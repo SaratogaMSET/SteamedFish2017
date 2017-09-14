@@ -43,6 +43,8 @@ public class  DrivetrainPIDCommand extends Command {
     // Called just before this Command runs the first time
     @Override
 	protected void initialize() {
+//    	Robot.gyro.resetGyro();
+//		startAngle = Robot.gyro.getAngle();
     	Robot.isPIDTurn = isTurning;
     	Robot.drive.resetEncoders();
     	drivePID.enable();
@@ -93,6 +95,7 @@ public class  DrivetrainPIDCommand extends Command {
 
     	encoderRight = Robot.drive.rightEncoder.getDistance();
     	encoderLeft = Robot.drive.leftEncoder.getDistance();
+//    	endAngle = Robot.gyro.getAngle();
         return isFinished;
     }
 
@@ -109,6 +112,16 @@ public class  DrivetrainPIDCommand extends Command {
     	Robot.isPIDActive = false;
     	time.stop();
     	time.reset();
+//    	double deltaAngle = endAngle - startAngle;
+//    	if (isTurning) {
+//    		Robot.turnAngle = deltaAngle;
+//    	} else {
+//    		if (Robot.straightAngle1 == 0) {
+//    			Robot.straightAngle1 = deltaAngle;
+//    		} else {
+//    			Robot.straightAngle2 = deltaAngle;
+//    		}
+//    	}
     	//Robot.drivetrain.resetEncoders();
     	//Robot.drive.printPIDValues();
 

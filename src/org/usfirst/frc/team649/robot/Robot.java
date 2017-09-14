@@ -40,6 +40,7 @@ import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.robot.runnables.InitializeServerSocketThread;
 import org.usfirst.frc.team649.robot.subsystems.CameraSwitcher;
 import org.usfirst.frc.team649.robot.subsystems.GearSubsystem;
+import org.usfirst.frc.team649.robot.subsystems.GyroSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.HoodSubsystem;
 //import org.usfirst.frc.team649.robot.subsystems.HopperSubsystem;
 import org.usfirst.frc.team649.robot.subsystems.IntakeSubsystem;
@@ -88,7 +89,7 @@ public class Robot extends IterativeRobot {
 	public static LeftDTPID leftDT;
 	public static RightDTPID rightDT;
 	public static GearSubsystem gear;
-
+	public static GyroSubsystem gyro;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
@@ -118,8 +119,9 @@ public class Robot extends IterativeRobot {
 	public static boolean prevStateFarAuto;
 	public Lidar lidar;
 	
-	public double turnAngle;
-	
+	public static double turnAngle;
+	public static double straightAngle1;
+	public static double straightAngle2;
 //	public UsbCamera lifecam = new UsbCamera("cam2", 1);
 //	public VideoCapture video = new VideoCapture();
 //	public AxisCamera axiscam = new AxisCamera("axis", "10.6.49.35");
@@ -193,7 +195,8 @@ public class Robot extends IterativeRobot {
 		shootLeft = new LeftShooter();
 		shootRight = new RightShooter();
 		camera = new CameraSwitcher();
-		gear = new GearSubsystem();
+		//gear = new GearSubsystem();
+		gyro = new GyroSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
@@ -216,7 +219,9 @@ public class Robot extends IterativeRobot {
 		lidar = new Lidar(I2C.Port.kOnboard, 0xC4 >> 1);
 		count = 0;
 		turnAngle = 0;
-
+		straightAngle1 = 0;
+		straightAngle2 = 0;
+		gyro.resetGyro();
 		// for logging to file and reading parameters from file
 		// ********************
 		if (debugMode) {
@@ -741,6 +746,10 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("slider for hood", oi.operator.getSlider());
 //		SmartDashboard.putNumber("Encoder Value Turret", value)
 		drive.displayAutoProgram();
+//		SmartDashboard.putNumber("Straight Deviation 1", straightAngle1);
+//		SmartDashboard.putNumber("Straight Deviation 2", straightAngle2);
+//		SmartDashboard.putNumber("PID Turn Gyro Angle", turnAngle);
+//		SmartDashboard.putNumber("Gyro Val", gyro.getAngle());
 
 		if(count == 12){
 			boolean isLidarAimed;

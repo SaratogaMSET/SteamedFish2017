@@ -89,7 +89,7 @@ public class Robot extends IterativeRobot {
 	public static LeftDTPID leftDT;
 	public static RightDTPID rightDT;
 	public static GearSubsystem gear;
-	public static GyroSubsystem gyro;
+//	public static GyroSubsystem gyro;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
@@ -195,8 +195,8 @@ public class Robot extends IterativeRobot {
 		shootLeft = new LeftShooter();
 		shootRight = new RightShooter();
 		camera = new CameraSwitcher();
-		//gear = new GearSubsystem();
-		gyro = new GyroSubsystem();
+		gear = new GearSubsystem();
+		//gyro = new GyroSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
@@ -221,7 +221,7 @@ public class Robot extends IterativeRobot {
 		turnAngle = 0;
 		straightAngle1 = 0;
 		straightAngle2 = 0;
-		gyro.resetGyro();
+		//gyro.resetGyro();
 		// for logging to file and reading parameters from file
 		// ********************
 		if (debugMode) {
@@ -341,13 +341,13 @@ public class Robot extends IterativeRobot {
 		// for logging to file and reading parameters from file
 		// ********************
 		tick = 0;
+		 drive.resetEncoders();
+
 		// *********************************************************************************
-//		 new AutoFullSequence(drive.getAlliance(), drive.getAutoGoal());
 		// drive.getAlliance());
-		// drive.resetEncoders();
-		new SwitchDTMode(true);
-    	new ShiftDT(false);
-		new DrivetrainPIDCommand(70, false).start();
+//		new SwitchDTMode(true);
+//    	new ShiftDT(false);
+//		new DrivetrainPIDCommand(70, false).start();
 		isShooterRunning = true;
 		autoTimeout = false;
 		turnAngle = 0;
@@ -357,6 +357,9 @@ public class Robot extends IterativeRobot {
 //		}else{
 //			isRed = false;
 //		}
+		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
+		SmartDashboard.putNumber("Get Alliance", drive.getAlliance());
+		SmartDashboard.putNumber("Get Program", drive.getAutoGoal());
 //		new RedSideBoilerGearShoot().start();
 //		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearShootMiddle().start();
@@ -726,17 +729,17 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
 //		SmartDashboard.putNumber("Left Motor Front Current", drive.motors[2].getOutputCurrent());
 //		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
-		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
-		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
-		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
-		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
-		SmartDashboard.putNumber("Left Ein", shootLeft.getLeftFlywheelEin());
-		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
+//		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
+//		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
+//		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
+//		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
+//		SmartDashboard.putNumber("Left Ein", shootLeft.getLeftFlywheelEin());
+//		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
 //		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
 //		SmartDashboard.putNumber("Hood Servo Left", hood.servoLeft.getRaw());
-		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
+//		SmartDashboard.putNumber("Slider", oi.operator.getSliderShoot());
 //		SmartDashboard.putBoolean("IR Break", gear.isGearLoaded());
-		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
+//		SmartDashboard.putNumber("Raw Turret", turret.getTurretEncoderValue());
 //		SmartDashboard.putNumber("Hang Current", intake.blackRollerMotor.getOutputCurrent());
 //		SmartDashboard.putBoolean("Turret Hal", Robot.turret.getTurretHal());
 		SmartDashboard.putNumber("Program Pot value", drive.programSelectorPot.get());

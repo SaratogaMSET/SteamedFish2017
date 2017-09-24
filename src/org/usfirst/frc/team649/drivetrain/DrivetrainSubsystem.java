@@ -43,11 +43,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static final double allianceScale = 0;
 		//public static double[] DO_NOTHING_RANGE = { 0.0, 1.25 };
 		//public static double[] NO_SHOOT = {1.26, 2.50};
-		public static double[] GO_BOILER = { 0.184, 0.252 };
-		public static double[] GO_MIDDLE = { 0.253, 0.322 };
-		public static double[] GO_FAR = { 0.323, 0.5 };
-		public static double[] GO_HOPPER = { 0.095, 0.183 };
-		public static double[] GO_FORWARD = {0, 0.094 };
+		public static double[] GO_BOILER = { 0.2454, 0.33}; //{ 0.184, 0.252 };
+		public static double[] GO_MIDDLE = { 0.1545, 0.2413 }; //{ 0.253, 0.322 };
+		public static double[] GO_FAR = {0, 0.1543};//{ 0.323, 0.5 };
+		public static double[] GO_HOPPER = { 0.3301, 0.4632}; //{ 0.095, 0.183 };
+		public static double[] GO_FORWARD = { 0.4666, 0.4941 };//{0, 0.094 };
 		public static final int DO_NOTHING = -1;
 		public static final int BOILER = 1;
 		public static final int MIDDLE = 2;
@@ -57,11 +57,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public static class AllianceSelector {
-		public static double[]	BLUE_NO_GEAR_RANGE = {0.177,0.250};
-		public static double[] RED_NO_GEAR_RANGE = {0.322,0.40};
-		public static double[] RED_RANGE = {0.402, 0.5};
-		public static double[] BLUE_RANGE = {0.257, 0.320};
-		public static double [] DO_NOTHING = {0.0,.153};
+		public static double[]	BLUE_RANGE = { 0.1028, 0.1465 }; //{0.177,0.250};
+		public static double[] RED_NO_GEAR_RANGE = { 0.0389, 0.0839 }; //{0.322,0.40};
+		public static double[] RED_RANGE = { 0, 0.0253 }; //{0.402, 0.5};
+		public static double[] BLUE_NO_GEAR_RANGE = { 0.1849, 0.2614}; //{0.257, 0.320};
+		public static double [] DO_NOTHING = { 0.234, 0.478 }; //{0.0,.153};
 		public static final int RED = 1;
 		public static final int BLUE = 2;
 		public static final int RED_NO_GEAR = 3;

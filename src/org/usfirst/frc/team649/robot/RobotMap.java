@@ -23,10 +23,10 @@ public class RobotMap {
 		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
 		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };
 		public static final int[] LEFT_DRIVE_SOL = { 2, 2, 3 };
-		public static final int GYRO_PORT = 0;
+		//public static final int GYRO_PORT = 2;
 		
 		public static final int SELECTOR_POT = 1;
-		public static final int ALLIANCE_POT = 2;
+		public static final int ALLIANCE_POT = 0;
 	}
 
 	public static class Intake {

@@ -15,7 +15,7 @@ public class GyroSubsystem extends Subsystem {
 	AnalogGyro gyro;
 	
 	public GyroSubsystem() {
-		gyro = new AnalogGyro(RobotMap.Drivetrain.GYRO_PORT);
+//		gyro = new AnalogGyro(RobotMap.Drivetrain.GYRO_PORT);
 		
 	}
 	

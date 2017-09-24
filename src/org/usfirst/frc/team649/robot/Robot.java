@@ -89,7 +89,7 @@ public class Robot extends IterativeRobot {
 	public static LeftDTPID leftDT;
 	public static RightDTPID rightDT;
 	public static GearSubsystem gear;
-//	public static GyroSubsystem gyro;
+	public static GyroSubsystem gyro;
 	public static TurretSubsystem turret;
 	public static HoodSubsystem hood;
 	public static RunCommpresorCommand rcc;
@@ -196,7 +196,7 @@ public class Robot extends IterativeRobot {
 		shootRight = new RightShooter();
 		camera = new CameraSwitcher();
 		gear = new GearSubsystem();
-		//gyro = new GyroSubsystem();
+		gyro = new GyroSubsystem();
 		isPIDActive = false;
 		isPIDActiveLeft = false;
 		isPIDActiveRight = false;
@@ -221,7 +221,7 @@ public class Robot extends IterativeRobot {
 		turnAngle = 0;
 		straightAngle1 = 0;
 		straightAngle2 = 0;
-		//gyro.resetGyro();
+		gyro.resetGyro();
 		// for logging to file and reading parameters from file
 		// ********************
 		if (debugMode) {
@@ -357,9 +357,10 @@ public class Robot extends IterativeRobot {
 //		}else{
 //			isRed = false;
 //		}
-		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
-		SmartDashboard.putNumber("Get Alliance", drive.getAlliance());
-		SmartDashboard.putNumber("Get Program", drive.getAutoGoal());
+		new TurretPIDABS(0.21*60).start();
+//		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
+//		SmartDashboard.putNumber("Get Alliance", drive.getAlliance());
+//		SmartDashboard.putNumber("Get Program", drive.getAutoGoal());
 //		new RedSideBoilerGearShoot().start();
 //		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearShootMiddle().start();
@@ -752,7 +753,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Straight Deviation 1", straightAngle1);
 //		SmartDashboard.putNumber("Straight Deviation 2", straightAngle2);
 //		SmartDashboard.putNumber("PID Turn Gyro Angle", turnAngle);
-//		SmartDashboard.putNumber("Gyro Val", gyro.getAngle());
+		SmartDashboard.putNumber("Gyro Val", gyro.getAngle());
 
 		if(count == 12){
 			boolean isLidarAimed;

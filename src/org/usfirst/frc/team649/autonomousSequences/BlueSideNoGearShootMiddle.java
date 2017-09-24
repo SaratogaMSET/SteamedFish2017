@@ -32,5 +32,5 @@ public class BlueSideNoGearShootMiddle extends CommandGroup {
     	    addParallel(new OnlyBangBangNoShootCommand(2050,2150,1950,GetShooterValues.returnShooterMaxPower(2050),GetShooterValues.returnShooterMinPower(2050))); //1725, turret .98-.55 hood 0.625
     		addSequential(new FeedBallsToShooterCommand(1.0));
     }
- 
+
 }

@@ -6,6 +6,7 @@ import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommadTimeoutBackup;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommandTurnTimeout;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommandWithTimeout;
+import org.usfirst.frc.team649.robot.commands.GyroTurnPID;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
 import org.usfirst.frc.team649.shootercommands.FeedBallsToShooterCommand;
@@ -28,7 +29,8 @@ public class BlueSideBoilerGearShoot extends CommandGroup {
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
 	    addSequential(new DrivetrainPIDCommand(71, false));
-	    addSequential(new DrivetrainPIDCommand(60, true));
+//	    addSequential(new DrivetrainPIDCommand(60, true));
+	    addSequential(new GyroTurnPID(60));
 	    addSequential(new DrivetrainPIDCommandWithTimeout(62)); 
 	    addSequential(new DrivetrainPIDCommandTurnTimeout(10));
 	    addSequential(new DrivetrainPIDCommadTimeoutBackup(-15));

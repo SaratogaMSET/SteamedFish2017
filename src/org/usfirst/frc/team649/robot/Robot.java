@@ -20,6 +20,7 @@ import org.usfirst.frc.team649.autonomousSequences.AutoFullSequence;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearFarSide;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddle;
+import org.usfirst.frc.team649.autonomousSequences.BlueSideGearShootMiddleWithTimeout;
 import org.usfirst.frc.team649.autonomousSequences.BlueSideNoGearShootMiddle;
 import org.usfirst.frc.team649.autonomousSequences.RedSideBoilerGearShoot;
 import org.usfirst.frc.team649.autonomousSequences.RedSideGearFarSide;
@@ -113,7 +114,8 @@ public class Robot extends IterativeRobot {
 	public static boolean robotEnabled = false;
 	public static boolean isPIDTurn;
 	public static boolean prevStateHang;
-	public static boolean autoTimeout;
+	public static boolean isAutoTimedOut;
+	public static boolean isAutoTimeoutTurnTimedOut;
 	public static boolean prevStateMiddleAuto;
 	public static boolean prevStateBoilerAuto;
 	public static boolean prevStateFarAuto;
@@ -208,7 +210,6 @@ public class Robot extends IterativeRobot {
 		isTurretPIDActive = false;
 		isShooterRunning = false;
 		prevStateHang = false;
-		autoTimeout = false;
 		gearRollerState = "off";
 		isGearFlickOut = gear.getGearFlapSolPos();
 //		isIntakeFlapDown = intake.isIntakeDown();
@@ -338,6 +339,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		isAutoTimedOut = false;
+		isAutoTimeoutTurnTimedOut = false;
 		// for logging to file and reading parameters from file
 		// ********************
 		tick = 0;
@@ -349,15 +352,17 @@ public class Robot extends IterativeRobot {
 //    	new ShiftDT(false);
 //		new DrivetrainPIDCommand(70, false).start();
 		isShooterRunning = true;
-		autoTimeout = false;
+		
+
 		turnAngle = 0;
+		new BlueSideGearShootMiddleWithTimeout().start();
 //		new BlueSideGearShootMiddle().start();
 //		if(drive.getAlliance() == AllianceSelector.RED || drive.getAlliance() == AllianceSelector.RED_NO_SHOOT){
 //			isRed = true;
 //		}else{
 //			isRed = false;
 //		}
-		new TurretPIDABS(0.21*60).start();
+//		new TurretPIDABS(0.21*60).start();
 //		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
 //		SmartDashboard.putNumber("Get Alliance", drive.getAlliance());
 //		SmartDashboard.putNumber("Get Program", drive.getAutoGoal());
@@ -393,7 +398,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("P", drive.encoderDrivePID.getP());
 //		SmartDashboard.putNumber("I", drive.encoderDrivePID.getI());
 //		SmartDashboard.putNumber("D", drive.encoderDrivePID.getD());
-
+		SmartDashboard.putBoolean("IS THE AUTO ACTUALY", Robot.isAutoTimedOut);
 		doTheDash();
 	}
 

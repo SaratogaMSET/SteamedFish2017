@@ -57,7 +57,7 @@ public class DrivetrainPIDCommandWithTimeout extends Command {
     	if(time.get()> 0.2){
     		isFinished = true;
     	}
-    	if(timeOut.get() > 3.0){
+    	if(timeOut.get() > 7){
     		isFinished = true;
     		Robot.isAutoTimedOut = true;
     	}

@@ -6,6 +6,8 @@ import org.usfirst.frc.team649.drivetrain.DrivetrainSubsystem.PIDConstants;
 import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.RobotMap;
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -26,8 +28,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	 * Values for Drivetrain Speeds
 	 */
 
+	
 	public static class PIDConstants {
-		public static final double PID_ABSOLUTE_TOLERANCE = 3; //2
+		public static final double PID_ABSOLUTE_TOLERANCE = 3.25; //2
 		public static double k_P = 0.03;//0.45;//0.03; // 0.01
 		public static double k_I = 0.0;//0.15;//0;
 		public static double k_D = 0.05;//0.35;//0.5; // 0.2
@@ -70,6 +73,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	public static final double MAX_SPEED = 1500.0;	
 	public static final double MAX_LOW_SPEED = 700.0;
+	public static final int MAX_RPM_LEFT_LOW = 750;
+	public static final int MAX_RPM_RIGHT_LOW = 750;
+	public static final int MAX_RPM_LEFT_HIGH = 500;//change
+	public static final int MAX_RPM_RIGHT_HIGH = 500;
 
 	public Encoder leftEncoder, rightEncoder;
 	public CANTalon[] motors;
@@ -80,6 +87,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public AnalogPotentiometer programSelectorPot;
 	public AnalogPotentiometer alliancePot;
 	public String isHighGear;
+	public boolean isHighBol;
+
 	public double sampleTime = 2.0;
 	public ArrayList<Double> PIDValues;
 
@@ -96,15 +105,37 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		 true);
 		 leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
 		 rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
+		 encoderDrivePID = this.getPIDController();
+		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
+		 encoderDrivePID.setOutputRange(-0.65, 0.65); // 0.65
 		 driveSolLeft = new DoubleSolenoid(RobotMap.Drivetrain.LEFT_DRIVE_SOL[0],RobotMap.Drivetrain.LEFT_DRIVE_SOL[1],RobotMap.Drivetrain.LEFT_DRIVE_SOL[2]);
 		 driveSolRight = new DoubleSolenoid(RobotMap.Drivetrain.RIGHT_DRIVE_SOL[0],RobotMap.Drivetrain.RIGHT_DRIVE_SOL[1],RobotMap.Drivetrain.RIGHT_DRIVE_SOL[2]);
 		motors = new CANTalon[4];
 		for (int i = 0; i < motors.length; i++) {
 			motors[i] = new CANTalon(RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
-		 encoderDrivePID = this.getPIDController();
-		 encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		 encoderDrivePID.setOutputRange(-0.65, 0.65); // 0.65
+		isHighBol = false;
+		motors[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		motors[2].reverseSensor(false);
+//		motors[2].configEncoderCodesPerRev(2048);
+		motors[2].configNominalOutputVoltage(+0.0f, -0.0f);
+		motors[2].configPeakOutputVoltage(+12.0f, -12.0f);
+//		motors[2].setF(0.2); //0.2
+//		motors[2].setP(0.14); //0.14
+//		motors[2].setI(0); //off-limits!!
+//		motors[2].setD(0.175); //0.175
+		motors[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		motors[0].reverseSensor(false);
+//		motors[0].configEncoderCodesPerRev(2048);
+		motors[0].configNominalOutputVoltage(+0.0f, -0.0f);
+		motors[0].configPeakOutputVoltage(+12.0f, -12.0f);
+//		motors[0].setF(0.2); //0.2
+//		motors[0].setP(0.14); //0.14
+//		motors[0].setI(0); //off-limits!!
+//		motors[0].setD(0.175); //0.175
+//		
+		
+		
 		 PIDValues = new ArrayList<Double>(0);
 		 programSelectorPot = new AnalogPotentiometer(RobotMap.Drivetrain.SELECTOR_POT); 
 		 alliancePot = new AnalogPotentiometer(RobotMap.Drivetrain.ALLIANCE_POT);
@@ -122,6 +153,13 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 			isHighGear = "Low Gear!";
 			leftEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
 			rightEncoder.setDistancePerPulse(PIDConstants.DISTANCE_PER_PULSE_LOW);
+		}
+		if (highGear) {
+			isHighBol = true;
+			isHighGear = "High Gear!";
+		} else if (!highGear) {
+			isHighBol = false;
+			isHighGear = "Low Gear!";
 		}
 	}
 
@@ -172,7 +210,139 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		motors[2].set(-right*0.95);
 		motors[3].set(-right*.95);
 	}
-	public void driveFwdRotTeleop(double fwd, double roti){
+	public void rawDriveVelPidLeft(double left){
+		motors[0].configEncoderCodesPerRev(2048);
+		if(Math.abs(left) > 0.05){
+			motors[0].changeControlMode(TalonControlMode.Speed);
+			motors[1].changeControlMode(TalonControlMode.Follower);
+			motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+			if(isHighBol){
+				motors[0].setF(0.2); //0.2
+				motors[0].setP(0.14); //0.14
+				motors[0].setI(0); //off-limits!!
+				motors[0].setD(0.175); 
+				motors[0].set(-left * MAX_RPM_LEFT_HIGH); 
+
+			}else{
+				motors[0].setF(0.2); //0.2
+				motors[0].setP(0.14); //0.14
+				motors[0].setI(0); //off-limits!!
+				motors[0].setD(0.175); 
+				motors[0].set(-left * MAX_RPM_LEFT_LOW); 
+			}
+		}else{
+			motors[0].changeControlMode(TalonControlMode.PercentVbus);
+			motors[1].changeControlMode(TalonControlMode.Follower);
+			motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+			motors[0].set(0);
+		}
+	}
+	public void rawDriveVelPidRight(double right){
+		motors[2].configEncoderCodesPerRev(2048);
+
+		if(Math.abs(right) > 0.05){
+			motors[2].changeControlMode(TalonControlMode.Speed);
+			motors[3].changeControlMode(TalonControlMode.Follower);
+			motors[3].set(RobotMap.Drivetrain.MOTOR_PORTS[2]);
+			if(isHighBol){
+				motors[2].setF(0.2); //0.2
+				motors[2].setP(0.14); //0.14
+				motors[2].setI(0); //off-limits!!
+				motors[2].setD(0.175); 
+				motors[2].set(right*MAX_RPM_RIGHT_HIGH);
+			}else{
+				motors[2].setF(0.2); //0.2
+				motors[2].setP(0.14); //0.14
+				motors[2].setI(0); //off-limits!!
+				motors[2].setD(0.175); 
+				motors[2].set(right*MAX_RPM_RIGHT_LOW);
+			}
+		}else{
+			motors[2].changeControlMode(TalonControlMode.PercentVbus);
+			motors[3].changeControlMode(TalonControlMode.Follower);
+			motors[3].set(5);
+			motors[2].set(0);
+		}
+	}
+	public void rawDriveVelPidAnkur(double in, double out, boolean isLeft, boolean isForward){
+		motors[0].changeControlMode(TalonControlMode.Speed);
+		motors[1].changeControlMode(TalonControlMode.Follower);
+		motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+		motors[0].changeControlMode(TalonControlMode.Speed);
+		motors[1].changeControlMode(TalonControlMode.Follower);
+		motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+		
+		if(isForward){
+			if(!isLeft){
+				if(isHighBol){
+					setVelPID(true);
+					motors[0].set(-out*MAX_RPM_LEFT_HIGH);
+					motors[2].set(in*MAX_RPM_RIGHT_HIGH);
+				}else{
+					setVelPID(false);
+					motors[0].set(-out*MAX_RPM_LEFT_LOW);
+					motors[2].set(in*MAX_RPM_RIGHT_LOW);
+				}
+				
+			}else{
+				if(isHighBol){
+					setVelPID(true);
+					motors[0].set(-in*MAX_RPM_LEFT_HIGH);
+					motors[2].set(out*MAX_RPM_RIGHT_HIGH);
+				}else{
+					setVelPID(false);
+					motors[0].set(-in*MAX_RPM_LEFT_LOW);
+					motors[2].set(out*MAX_RPM_RIGHT_LOW);
+				}
+			}
+		}else{
+			if(!isLeft){
+				if(isHighBol){
+					setVelPID(true);
+					motors[0].set(out*MAX_RPM_LEFT_HIGH);
+					motors[2].set(-in*MAX_RPM_RIGHT_HIGH);
+				}else{
+					setVelPID(false);
+					motors[0].set(out*MAX_RPM_LEFT_LOW);
+					motors[2].set(-in*MAX_RPM_RIGHT_LOW);
+				}
+				
+			}else{
+				if(isHighBol){
+					setVelPID(true);
+					motors[0].set(in*MAX_RPM_LEFT_HIGH);
+					motors[2].set(-out*MAX_RPM_RIGHT_HIGH);
+				}else{
+					setVelPID(false);
+					motors[0].set(in*MAX_RPM_LEFT_LOW); 
+					motors[2].set(-out*MAX_RPM_RIGHT_LOW);
+				}
+			}
+		}
+	}
+	public void setVelPID(boolean isHigh){
+		if(isHigh){
+			motors[0].setF(0.2); //0.2
+			motors[0].setP(0.14); //0.14
+			motors[0].setI(0); //off-limits!!
+			motors[0].setD(0.175); 
+			motors[2].setF(0.2); //0.2
+			motors[2].setP(0.14); //0.14
+			motors[2].setI(0); //off-limits!!
+			motors[2].setD(0.175); 
+		}else{
+			motors[0].setF(0.2); //0.2
+			motors[0].setP(0.14); //0.14
+			motors[0].setI(0); //off-limits!!
+			motors[0].setD(0.175); 
+			motors[2].setF(0.2); //0.2
+			motors[2].setP(0.14); //0.14
+			motors[2].setI(0); //off-limits!!
+			motors[2].setD(0.175); 
+		}
+		
+	}
+	public void driveFwdRotTeleop(double fwd, double roti, boolean isVBus){
 		
 		double rot = roti * roti;
 		if(roti < 0){
@@ -182,8 +352,12 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		double max = Math.max(1, Math.max(Math.abs(left), Math.abs(right)));
 		left /= max;
 		right /= max;
-		
-		rawDrive(left, right);
+		if(isVBus){
+			rawDrive(left, right);
+		}else{
+			rawDriveVelPidRight(right);
+			rawDriveVelPidLeft(left);
+		}
 	}
 
 	public void resetEncoders() {
@@ -197,7 +371,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	}
 
 	public double getDistanceDTLeft() {
-		return leftEncoder.getDistance();
+//		if(!Robot.isTalonSRX) {
+			return leftEncoder.getDistance();
+//		} else {
+//			return motors[0].get();
+//		}
 	}
 
 	public double getDistanceDTRight() {

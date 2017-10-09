@@ -34,6 +34,7 @@ public class  DrivetrainPIDCommand extends Command {
     	this.distance = distance;
     	this.isTurning = isTurning;
     	time = new Timer();
+    	timeout = new Timer();
     	isFinished = false;
     	startAngle = 0;
     	endAngle = 0;
@@ -42,8 +43,8 @@ public class  DrivetrainPIDCommand extends Command {
     // Called just before this Command runs the first time
     @Override
 	protected void initialize() {
-//    	Robot.gyro.resetGyro();
-//		startAngle = Robot.gyro.getAngle();
+    	Robot.gyro.resetGyro();
+		startAngle = Robot.gyro.getAngle();
     	Robot.isPIDTurn = isTurning;
     	Robot.drive.resetEncoders();
     	drivePID.enable();
@@ -53,7 +54,6 @@ public class  DrivetrainPIDCommand extends Command {
     	if (Robot.isPIDTurn == true) { //positive angle is turning to the right
     		setpoint = Robot.drive.getPosition() + Robot.drive.getTranslationalDistanceForTurn(distance);
     		drivePID.setPID(0.2, 0, 0.01); //turning needs new PID values these are pretty good
-    		//setpoint = Robot.drivetrain.getGyroValue() + distance;
     	} else {
     		setpoint = Robot.drive.getPosition() + distance;
     		drivePID.setPID(0.03, 0, 0.05);
@@ -62,7 +62,7 @@ public class  DrivetrainPIDCommand extends Command {
     	SmartDashboard.putNumber("Setpoint", setpoint);
     	//drivePIDRight.setSetpoint(setpoint);
     	System.out.println("DT PID: setpoint = " + setpoint);
-    	
+    	timeout.start();
 //    	Robot.logMessage("DT driving with PID, initial Enc: " + Robot.drivetrain.getPosition() + ", moving to: " + setpoint);
     }
 
@@ -70,6 +70,9 @@ public class  DrivetrainPIDCommand extends Command {
     @Override
 	protected void execute() {
 //    	if(Math.abs(Robot.drive.getDistanceDTBoth() - distanceTraveled) < 0.01){
+//    		isFinished = true;
+//    	}
+//    	if (timeout.get() > 7) {
 //    		isFinished = true;
 //    	}
     	if(drivePID.onTarget() && time.get() < 0.01){
@@ -94,7 +97,7 @@ public class  DrivetrainPIDCommand extends Command {
 
     	encoderRight = Robot.drive.rightEncoder.getDistance();
     	encoderLeft = Robot.drive.leftEncoder.getDistance();
-//    	endAngle = Robot.gyro.getAngle();
+    	endAngle = Robot.gyro.getAngle();
         return isFinished;
     }
 
@@ -111,16 +114,16 @@ public class  DrivetrainPIDCommand extends Command {
     	Robot.isPIDActive = false;
     	time.stop();
     	time.reset();
-//    	double deltaAngle = endAngle - startAngle;
-//    	if (isTurning) {
-//    		Robot.turnAngle = deltaAngle;
-//    	} else {
-//    		if (Robot.straightAngle1 == 0) {
-//    			Robot.straightAngle1 = deltaAngle;
-//    		} else {
-//    			Robot.straightAngle2 = deltaAngle;
-//    		}
-//    	}
+    	double deltaAngle = endAngle - startAngle;
+    	if (isTurning) {
+    		Robot.turnAngle = deltaAngle;
+    	} else {
+    		if (Robot.straightAngle1 == 0) {
+    			Robot.straightAngle1 = deltaAngle;
+    		} else {
+    			Robot.straightAngle2 = deltaAngle;
+    		}
+    	}
     	//Robot.drivetrain.resetEncoders();
     	//Robot.drive.printPIDValues();
 

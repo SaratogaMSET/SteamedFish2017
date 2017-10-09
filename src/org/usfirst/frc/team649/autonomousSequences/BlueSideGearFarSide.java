@@ -31,7 +31,7 @@ public class BlueSideGearFarSide extends CommandGroup {
 		addSequential(new SetFunnelCommand(false));
 	    addSequential(new DrivetrainPIDCommand(70, false)); // 85.375, 78.375, 70, 68, 70.5, 68, 69
 //	    addSequential(new DrivetrainPIDCommand(-60, true));
-	    addSequential(new GyroTurnPID(-60));
+	    addSequential(new GyroTurnPID(-56));
 	    addSequential(new DrivetrainPIDCommandWithTimeout(63.5)); 
 	    addSequential(new DrivetrainPIDCommandTurnTimeout(10));
 	    addSequential(new DrivetrainPIDCommadTimeoutBackup(-15));

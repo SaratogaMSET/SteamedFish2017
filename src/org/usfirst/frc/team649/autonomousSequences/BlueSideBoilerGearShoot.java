@@ -30,7 +30,7 @@ public class BlueSideBoilerGearShoot extends CommandGroup {
 		addSequential(new SetFunnelCommand(false));
 	    addSequential(new DrivetrainPIDCommand(71, false));
 //	    addSequential(new DrivetrainPIDCommand(60, true));
-	    addSequential(new GyroTurnPID(60));
+	    addSequential(new GyroTurnPID(56));
 	    addSequential(new DrivetrainPIDCommandWithTimeout(62)); 
 	    addSequential(new DrivetrainPIDCommandTurnTimeout(10));
 	    addSequential(new DrivetrainPIDCommadTimeoutBackup(-15));

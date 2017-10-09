@@ -35,6 +35,7 @@ import org.usfirst.frc.team649.gearcommands.SetFunnelCommand;
 import org.usfirst.frc.team649.gearcommands.SetGearFlap;
 import org.usfirst.frc.team649.robot.commands.DriveForTime;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
+import org.usfirst.frc.team649.robot.commands.GyroTurnPID;
 import org.usfirst.frc.team649.robot.commands.RunCommpresorCommand;
 import org.usfirst.frc.team649.robot.commands.ShiftDT;
 import org.usfirst.frc.team649.robot.commands.SwitchDTMode;
@@ -160,6 +161,8 @@ public class Robot extends IterativeRobot {
 	public static int currentManualShootRPM;
 	public static boolean isVisionAimed;
 	public static int count;
+	
+	public static boolean isTalonSRX;
 	// more cam stuff still dont touch
 //	AxisCamera axis;
 //	UsbCamera usb;
@@ -215,7 +218,7 @@ public class Robot extends IterativeRobot {
 //		isIntakeFlapDown = intake.isIntakeDown();
 		drive.resetEncoders();
 		turret = new TurretSubsystem();
-		turret.startingPos = 0.232;
+		turret.startingPos = 0.8684379317960067;
 		hood = new HoodSubsystem();
 		lidar = new Lidar(I2C.Port.kOnboard, 0xC4 >> 1);
 		count = 0;
@@ -239,7 +242,8 @@ public class Robot extends IterativeRobot {
 			// logLidarDist=new double[maxTick];
 		} // end debugMode
 			// *******************************************************************************
- 
+		
+		isTalonSRX = false;
 	}
 
 	/**
@@ -345,6 +349,8 @@ public class Robot extends IterativeRobot {
 		// ********************
 		tick = 0;
 		 drive.resetEncoders();
+		 gyro.resetGyro();
+		 turret.resetEncoder();
 
 		// *********************************************************************************
 		// drive.getAlliance());
@@ -355,7 +361,11 @@ public class Robot extends IterativeRobot {
 		
 
 		turnAngle = 0;
-		new BlueSideGearShootMiddleWithTimeout().start();
+//		new RedSideGearShootMiddle().start();
+//		new BlueSideGearShootMiddle().start();
+//		new TurretPIDABS(0.21*60).start();
+//		new GyroTurnPID(56).start();
+//		new BlueSideGearShootMiddleWithTimeout().start();
 //		new BlueSideGearShootMiddle().start();
 //		if(drive.getAlliance() == AllianceSelector.RED || drive.getAlliance() == AllianceSelector.RED_NO_SHOOT){
 //			isRed = true;
@@ -370,7 +380,7 @@ public class Robot extends IterativeRobot {
 //		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearShootMiddle().start();
 //		new BlueSideGearShootMiddle().start();
-//		new RedSideGearFarSide().start();
+		new RedSideGearFarSide().start();
 		//new BlueSideGearFarSide().start();
 //		new .start();tr3tr
 //		new BlueSideBoilerGearNoShoot().start();
@@ -406,7 +416,7 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// new RunCommpresorCommand(true).start();
 		isShooterRunning = false;
-		
+		gyro.resetGyro();
 		timer.reset();
 		timer.start();
 		drive.resetEncoders();
@@ -499,7 +509,82 @@ public class Robot extends IterativeRobot {
 		// turret.translateAngleToABS(90));
 		Scheduler.getInstance().run();
 		turret.countCurrentPosition();
-		drive.driveFwdRotTeleop(Robot.oi.driver.getForward(), -Robot.oi.driver.getRotation());
+		double joyXVal = Robot.oi.driver.getRotation();
+		double joyYVal = Robot.oi.driver.getForward();
+		if(((Math.abs(joyXVal) < 0.2) && joyYVal == 0 )|| Robot.oi.driver.isVBusPush()){
+			//Vbus
+			drive.driveFwdRotTeleop(joyYVal, joyXVal,true);
+			if(Robot.oi.driver.isVBusPush()){
+				drive.driveFwdRotTeleop(joyYVal, -joyXVal,true);
+
+			}
+		}else if(Math.abs(joyXVal) < 0.2 && Math.abs(joyYVal)<0.2){
+			drive.driveFwdRotTeleop(joyYVal, -joyXVal,true);
+		}else{
+			if(joyYVal > 0){
+				joyYVal = Math.pow(Math.abs(joyYVal), 1.32);
+			}else{
+				joyYVal = -Math.pow(Math.abs(joyYVal), 1.32);
+			}
+			if(joyXVal > 0){
+			    if(joyXVal > 0.3){
+					joyXVal = Math.pow(Math.abs(joyXVal), 1.75);
+				}else{
+					joyXVal = Math.pow(Math.abs(joyXVal), 3);
+				}
+				
+			}else{
+				if(joyXVal < -0.3){
+					joyXVal = -Math.pow(Math.abs(joyXVal), 1.75);
+				}else{
+					joyXVal = -Math.pow(Math.abs(joyXVal), 3);
+				}
+			}
+			drive.driveFwdRotTeleop(-joyYVal, joyXVal,false);
+		}
+		SmartDashboard.putNumber("Left Speed", Robot.drive.getLeftSpeed());
+		SmartDashboard.putNumber("Right Speed", Robot.drive.getRightSpeed());
+		SmartDashboard.putNumber("Left Distance", Robot.drive.getDistanceDTLeft());
+		SmartDashboard.putNumber("Right Distance", Robot.drive.getDistanceDTRight());
+	//ANKURS VERSION TEST AFTER CORRECT DISTANCE VALUES
+//		double raw;
+//		double outRaw;
+//		double inRaw;
+//		double outDist;
+//		double inDist;
+//		double outSpeed;
+//		double inSpeed;
+//		if(joyXVal != 0){
+//			raw = Math.abs(27.0/2.0 *joyYVal/joyXVal);
+//			outRaw = raw + 27/2;
+//			inRaw = raw - 27/2;
+//			outDist = 2 * Math.PI * outRaw;
+//			inDist = 2 * Math.PI * inRaw;
+//			double outspeed = Math.abs(joyYVal)+Math.abs(joyXVal);
+//			double inspeed = outspeed*inDist/outDist;
+//			if(outspeed>1){
+//				outspeed/=outspeed;
+//				inspeed/=outspeed;
+//			}
+//			if(joyXVal > 0){
+//				if(joyYVal> 0){
+//					Robot.drive.rawDriveVelPidAnkur(-outspeed, -inspeed, false, true);
+//				}else{
+//					Robot.drive.rawDriveVelPidAnkur(-outspeed, -inspeed, false, false);
+//				}
+//				
+//			}else{
+//				if(joyYVal> 0){
+//					Robot.drive.rawDriveVelPidAnkur(-outspeed, -inspeed, true, true);
+//				}else{
+//					Robot.drive.rawDriveVelPidAnkur(-outspeed, -inspeed, true, false);
+//				}
+//			}
+//		}else{
+//			Robot.drive.driveFwdRotTeleop(-joyYVal, 0, false);
+//		}
+		
+
 		if(oi.operator.getTeleopShot()){
 			currentManualShootRPM = 1475;
 		}else if(oi.operator.isLeftPOV() && !leftPOVPrevState){
@@ -737,8 +822,8 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Left Motor Back Current", drive.motors[3].getOutputCurrent());
 //		SmartDashboard.putNumber("Encoder Left Speed", drive.leftEncoderSpeed());
 //		SmartDashboard.putNumber("Encoder Right Speed", drive.rightEncoderSpeed());
-//		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
-//		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
+		SmartDashboard.putNumber("Encoder Left Distance", drive.getDistanceDTLeft());
+		SmartDashboard.putNumber("Encoder Right Distance", drive.getDistanceDTRight());
 //		SmartDashboard.putNumber("Left Ein", shootLeft.getLeftFlywheelEin());
 //		SmartDashboard.putNumber("Right Ein", shootRight.getRightFlywheelEin());
 //		SmartDashboard.putNumber("Hood Servo Right", hood.servoRight.getRaw());
@@ -757,7 +842,7 @@ public class Robot extends IterativeRobot {
 		drive.displayAutoProgram();
 //		SmartDashboard.putNumber("Straight Deviation 1", straightAngle1);
 //		SmartDashboard.putNumber("Straight Deviation 2", straightAngle2);
-//		SmartDashboard.putNumber("PID Turn Gyro Angle", turnAngle);
+		SmartDashboard.putNumber("PID Turn Gyro Angle", turnAngle);
 		SmartDashboard.putNumber("Gyro Val", gyro.getAngle());
 
 		if(count == 12){

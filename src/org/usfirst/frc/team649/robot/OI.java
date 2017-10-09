@@ -131,7 +131,9 @@ public class OI {
 			}
 
 		}
-
+		public boolean isVBusPush(){
+			return driveJoystickHorizontal.getRawButton(2) || driveJoystickVertical.getRawButton(2);
+		}
 		public double getRotation() {
 			if (driveJoystickHorizontal.getX() >= 0.05 || driveJoystickHorizontal.getX() <= -0.05) {
 				return -driveJoystickHorizontal.getX();

@@ -24,7 +24,7 @@ public class GyroSubsystem extends PIDSubsystem {
 		// 0.2, 0, 0.01
 		public static final double k_p = 0.05;
 		public static final double k_i = 0;
-		public static final double k_d = 0.1;
+		public static final double k_d = 0.08;
 		
 		public static final double PID_ABS_TOLERANCE = 1.0;
 	}

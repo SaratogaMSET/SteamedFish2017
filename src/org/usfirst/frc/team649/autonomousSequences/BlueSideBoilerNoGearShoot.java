@@ -27,7 +27,7 @@ public class BlueSideBoilerNoGearShoot extends CommandGroup {
 		addSequential(new SetFunnelCommand(false));
 		addSequential(new DrivetrainPIDCommand(71, false));
 //		addSequential(new DrivetrainPIDCommand(60, true));
-	    addSequential(new GyroTurnPID(60));
+	    addSequential(new GyroTurnPID(56));
 	    addSequential(new DrivetrainPIDCommand(39,false));  
 	    addParallel(new TurretPIDABS(60*2.03));
 	    addParallel(new SetHoodCommand(0.17)); 

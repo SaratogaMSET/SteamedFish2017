@@ -20,12 +20,13 @@ public class RobotMap {
 		public static final int[] LEFT_SIDE_ENCODER = { 4, 5 };
 		public static final int[] RIGHT_SIDE_ENCODER = { 6, 7 };
 		// FR,BR,BL,FL
-		public static final int[] MOTOR_PORTS = { 13, 14, 15, 16 };
+		public static final int[] MOTOR_PORTS = { 9, 14, 5, 16 };
 		public static final int[] RIGHT_DRIVE_SOL = { 2, 0, 1 };
 		public static final int[] LEFT_DRIVE_SOL = { 2, 2, 3 };
 		public static final int GYRO_PORT = 0;
 		
 		public static final int SELECTOR_POT = 3;
+		
 		public static final int ALLIANCE_POT = 1;
 	}
 
@@ -40,7 +41,7 @@ public class RobotMap {
 
 	public static class Shooter {
 		public static final int SHOOTER_FEEDER_PORT = 3;
-		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 9;
+		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 13;
 		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 8;
 		public static final int LEFT_SHOOTER_EIN_PORT = 9;
 		public static final int RIGHT_SHOOTER_EIN_PORT = 8;

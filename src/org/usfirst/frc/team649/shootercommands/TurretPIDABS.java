@@ -20,7 +20,10 @@ public class TurretPIDABS extends Command {
     	Robot.turret.countCurrentPosition();
     	turretPID = Robot.turret.getPIDController();
     	Robot.turret.countCurrentPosition();
-    	setPoint = Robot.turret.translateAngleToABS(angle) + Robot.turret.startingPos;
+    	SmartDashboard.putNumber("Turret Starting Position", Robot.turret.getPosition());
+//    	setPoint = Robot.turret.translateAngleToABS(angle) + Robot.turret.startingPos;
+    	setPoint = Robot.turret.translateAngleToABS(angle) + Robot.turret.getPosition();
+    	SmartDashboard.putNumber("Turret Setpoint", setPoint);
     	time = new Timer();
     }
 

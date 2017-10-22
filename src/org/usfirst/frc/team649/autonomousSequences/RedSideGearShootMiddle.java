@@ -21,7 +21,7 @@ import org.usfirst.frc.team649.util.GetShooterValues;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
-/**
+/**l
  *
  */
 public class RedSideGearShootMiddle extends CommandGroup {
@@ -31,7 +31,7 @@ public class RedSideGearShootMiddle extends CommandGroup {
     	addSequential(new ShiftDT(false));
     	addSequential(new SetGearFlap(true));
 		addSequential(new SetFunnelCommand(false));
-		addSequential(new DrivetrainPIDCommandWithTimeout(70)); 
+		addSequential(new DrivetrainPIDCommandWithTimeout(71)); 
 	    addSequential(new DrivetrainPIDCommandTurnTimeout(10));
 	    addSequential(new DrivetrainPIDCommadTimeoutBackup(-15));
 	    addSequential(new DrivetrainPIDCommadTimeoutBackup(13));

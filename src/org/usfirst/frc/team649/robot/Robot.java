@@ -55,6 +55,8 @@ import org.usfirst.frc.team649.util.Center;
 import org.usfirst.frc.team649.util.GetShooterValues;
 import org.usfirst.frc.team649.util.Lidar;
 
+import com.ctre.CANTalon.TalonControlMode;
+
 import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
@@ -62,6 +64,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -121,7 +124,7 @@ public class Robot extends IterativeRobot {
 	public static boolean prevStateBoilerAuto;
 	public static boolean prevStateFarAuto;
 	public Lidar lidar;
-	
+	public double matchTime;
 	public static double turnAngle;
 	public static double straightAngle1;
 	public static double straightAngle2;
@@ -373,14 +376,21 @@ public class Robot extends IterativeRobot {
 //			isRed = false;
 //		}
 //		new TurretPIDABS(0.21*60).start();
+		drive.motors[0].changeControlMode(TalonControlMode.PercentVbus);
+		drive.motors[1].changeControlMode(TalonControlMode.Follower);
+		drive.motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+		drive.motors[2].changeControlMode(TalonControlMode.PercentVbus);
+		drive.motors[3].changeControlMode(TalonControlMode.Follower);
+		drive.motors[3].set(RobotMap.Drivetrain.MOTOR_PORTS[2]);
+//		new RedSideGearShootMiddle().start();
 //		new AutoFullSequence(drive.getAutoGoal(), drive.getAlliance()).start();
 //		SmartDashboard.putNumber("Get Alliance", drive.getAlliance());
 //		SmartDashboard.putNumber("Get Program", drive.getAutoGoal());
 //		new RedSideBoilerGearShoot().start();
-//		new BlueSideBoilerGearShoot().start();
+		new BlueSideBoilerGearShoot().start();
 //		new RedSideGearShootMiddle().start();
 //		new BlueSideGearShootMiddle().start();
-		new RedSideGearFarSide().start();
+//		new RedSideGearFarSide().start();
 		//new BlueSideGearFarSide().start();
 //		new .start();tr3tr
 //		new BlueSideBoilerGearNoShoot().start();
@@ -416,6 +426,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// new RunCommpresorCommand(true).start();
 		isShooterRunning = false;
+		
+
 		gyro.resetGyro();
 		timer.reset();
 		timer.start();
@@ -514,10 +526,7 @@ public class Robot extends IterativeRobot {
 		if(((Math.abs(joyXVal) < 0.2) && joyYVal == 0 )|| Robot.oi.driver.isVBusPush()){
 			//Vbus
 			drive.driveFwdRotTeleop(joyYVal, joyXVal,true);
-			if(Robot.oi.driver.isVBusPush()){
-				drive.driveFwdRotTeleop(joyYVal, -joyXVal,true);
 
-			}
 		}else if(Math.abs(joyXVal) < 0.2 && Math.abs(joyYVal)<0.2){
 			drive.driveFwdRotTeleop(joyYVal, -joyXVal,true);
 		}else{
@@ -814,7 +823,7 @@ public class Robot extends IterativeRobot {
 		
 		SmartDashboard.putNumber("Turret Encoder", turret.getTotalDist());
 		SmartDashboard.putNumber("Turret Speed Set", currentManualShootRPM);
-
+		
 //		SmartDashboard.putNumber("Agitator Curret", Robot.shoot.hooperMotor.getOutputCurrent());
 //		SmartDashboard.putNumber("Right Motor Front Current", drive.motors[0].getOutputCurrent());
 //		SmartDashboard.putNumber("Right Motor Back Current", drive.motors[1].getOutputCurrent());
@@ -844,6 +853,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Straight Deviation 2", straightAngle2);
 		SmartDashboard.putNumber("PID Turn Gyro Angle", turnAngle);
 		SmartDashboard.putNumber("Gyro Val", gyro.getAngle());
+		SmartDashboard.putNumber("Match Time", drive.getMatchTime());
 
 		if(count == 12){
 			boolean isLidarAimed;

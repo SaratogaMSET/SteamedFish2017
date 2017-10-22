@@ -30,7 +30,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
 	
 	public static class PIDConstants {
-		public static final double PID_ABSOLUTE_TOLERANCE = 3.25; //2
+		public static final double PID_ABSOLUTE_TOLERANCE = 4; //2
 		public static double k_P = 0.03;//0.45;//0.03; // 0.01
 		public static double k_I = 0.0;//0.15;//0;
 		public static double k_D = 0.05;//0.35;//0.5; // 0.2
@@ -88,7 +88,6 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public AnalogPotentiometer alliancePot;
 	public String isHighGear;
 	public boolean isHighBol;
-
 	public double sampleTime = 2.0;
 	public ArrayList<Double> PIDValues;
 
@@ -96,7 +95,6 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		super(PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_P);
 		time = new Timer();
 		isAutoShiftTrue = false;
-		
 		 leftEncoder = new Encoder(RobotMap.Drivetrain.LEFT_SIDE_ENCODER[0],
 		 RobotMap.Drivetrain.LEFT_SIDE_ENCODER[1],
 		 false);
@@ -200,15 +198,20 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public void rawDrive(double left, double right) {
 		SmartDashboard.putNumber("left dt pwr", left);
 		SmartDashboard.putNumber("right dt pwr", right);
+		
 		//practice bot
 //		motors[0].set(left); //0.98	
 //		motors[1].set(left); //0.98
 //		motors[2].set(-right*0.96);
 //		motors[3].set(-right*.96);
+		motors[0].changeControlMode(TalonControlMode.PercentVbus);
+		motors[1].changeControlMode(TalonControlMode.Follower);
+		motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+		motors[2].changeControlMode(TalonControlMode.PercentVbus);
+		motors[3].changeControlMode(TalonControlMode.Follower);
+		motors[3].set(RobotMap.Drivetrain.MOTOR_PORTS[2]);
 		motors[0].set(left); //0.98	
-		motors[1].set(left); //0.98
 		motors[2].set(-right*0.95);
-		motors[3].set(-right*.95);
 	}
 	public void rawDriveVelPidLeft(double left){
 		motors[0].configEncoderCodesPerRev(2048);
@@ -260,9 +263,12 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		}else{
 			motors[2].changeControlMode(TalonControlMode.PercentVbus);
 			motors[3].changeControlMode(TalonControlMode.Follower);
-			motors[3].set(5);
+			motors[3].set(RobotMap.Drivetrain.MOTOR_PORTS[2]);
 			motors[2].set(0);
 		}
+	}
+	public double getMatchTime() {
+		return DriverStation.getInstance().getMatchTime();
 	}
 	public void rawDriveVelPidAnkur(double in, double out, boolean isLeft, boolean isForward){
 		motors[0].changeControlMode(TalonControlMode.Speed);
@@ -353,7 +359,14 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		left /= max;
 		right /= max;
 		if(isVBus){
-			rawDrive(left, right);
+			motors[0].changeControlMode(TalonControlMode.PercentVbus);
+			motors[1].changeControlMode(TalonControlMode.Follower);
+			motors[1].set(RobotMap.Drivetrain.MOTOR_PORTS[0]);
+			motors[0].set(left);
+			motors[2].changeControlMode(TalonControlMode.PercentVbus);
+			motors[3].changeControlMode(TalonControlMode.Follower);
+			motors[3].set(RobotMap.Drivetrain.MOTOR_PORTS[2]);
+			motors[2].set(-right);
 		}else{
 			rawDriveVelPidRight(right);
 			rawDriveVelPidLeft(left);
